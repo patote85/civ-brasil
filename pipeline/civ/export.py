@@ -11,6 +11,7 @@ import h3
 
 from pipeline.civ.rules import LensRule
 from pipeline.grid.h3_grid import H3_RESOLUTION, MunicipioHexRow
+from pipeline.reconcile.points import AssignedPoint
 from pipeline.sources._common import atomic_write_bytes
 from pipeline.sources.ibge_malhas import Municipio
 from pipeline.types import CdMun, H3Index, UfCode
@@ -73,6 +74,9 @@ def export_uf_web_bundle(
     output_dir: Path,
     pop_by_mun: Mapping[CdMun, float] | None = None,
     pib_by_mun: Mapping[CdMun, float] | None = None,
+    points: Sequence[AssignedPoint] | None = None,
+    rejected_points_count: int = 0,
+    city_profiles: Sequence[dict[str, Any]] | None = None,
 ) -> dict[str, int]:
     grouped_rows: dict[str, list[MunicipioHexRow]] = defaultdict(list)
     for row in mun_hex_rows:
@@ -236,4 +240,82 @@ def export_uf_web_bundle(
     ).encode("utf-8")
     atomic_write_bytes(lentes_dir / "index.json", index_bytes)
     written_bytes["lentes/index.json"] = len(index_bytes)
+
+    cell_to_idx = {cell: i for i, cell in enumerate(ordered_cells)}
+    mun_by_cd = {CdMun(m.cd_mun): m for m in municipios}
+
+    if points is not None:
+        usinas_out: list[dict[str, Any]] = []
+        portos_out: list[dict[str, Any]] = []
+        hospitais_raw: list[dict[str, Any]] = []
+        for pt in points:
+            px, py = project_xy(pt.lon, pt.lat)
+            entry: dict[str, Any] = {
+                "name": pt.name,
+                "cat": pt.category,
+                "val": round(pt.value, 2),
+                "unit": pt.unit,
+                "x": round(px, 1),
+                "y": round(py, 1),
+                "hex_idx": cell_to_idx.get(str(pt.h3), -1),
+            }
+            if pt.kind == "usina":
+                usinas_out.append(entry)
+            elif pt.kind == "porto":
+                portos_out.append(entry)
+            else:
+                hospitais_raw.append(entry)
+        hospitais_raw.sort(key=lambda h: (-float(h["val"]), str(h["name"])))
+        hospitais_out = hospitais_raw[:250]
+
+        pontos_payload = {
+            "uf": uf,
+            "rejected_count": rejected_points_count,
+            "usinas": usinas_out,
+            "portos": portos_out,
+            "hospitais": hospitais_out,
+        }
+        pontos_bytes = json.dumps(
+            pontos_payload,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+        atomic_write_bytes(output_dir / "pontos.json", pontos_bytes)
+        written_bytes["pontos.json"] = len(pontos_bytes)
+
+    if city_profiles is not None:
+        enriched_cities: list[dict[str, Any]] = []
+        for city in city_profiles:
+            cd = CdMun(str(city["cd_mun"]))
+            mun = mun_by_cd.get(cd)
+            if mun is None:
+                continue
+            rep = mun.geometry.representative_point()
+            cx_city, cy_city = project_xy(rep.x, rep.y)
+            m_name = mun.nome
+            m_idx = mun_to_idx.get(m_name, -1)
+            hex_candidates = [i for i, ids in enumerate(mun_idx_list) if m_idx in ids]
+            best_hex = (
+                min(
+                    hex_candidates,
+                    key=lambda i: (cx_list[i] - cx_city) ** 2 + (cy_list[i] - cy_city) ** 2,
+                )
+                if hex_candidates
+                else -1
+            )
+            enriched = dict(city)
+            enriched["x"] = round(cx_city, 1)
+            enriched["y"] = round(cy_city, 1)
+            enriched["hex_idx"] = best_hex
+            enriched_cities.append(enriched)
+
+        cities_payload = {"uf": uf, "cities": enriched_cities}
+        cities_bytes = json.dumps(
+            cities_payload,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+        atomic_write_bytes(output_dir / "cities.json", cities_bytes)
+        written_bytes["cities.json"] = len(cities_bytes)
+
     return written_bytes

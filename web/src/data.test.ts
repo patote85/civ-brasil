@@ -1,14 +1,18 @@
 import { describe, expect, it } from "vitest";
 
+import { renderCityView } from "./city-view/cityView";
 import {
   bucketIndexForValue,
   colorForValue,
   formatPtBrCompact,
   NO_DATA_COLOR,
+  parseCitiesDataset,
   parseLensIndex,
+  parsePointsDataset,
   parsePositionalLens,
   parseUfGridDataset,
   searchMunicipalities,
+  type CityProfile,
   type LensMetadata,
   type PositionalLensData,
   type UfGridDataset,
@@ -173,3 +177,69 @@ describe("ui rendering", () => {
     expect(html).toContain("São José dos Campos");
   });
 });
+
+describe("PR 3 points, cities, and City View", () => {
+  it("formats QL and MW units and parses pontos.json and cities.json", () => {
+    expect(formatPtBrCompact(12.34, "QL")).toBe("12,3x QL");
+    expect(formatPtBrCompact(450.2, "MW")).toBe("450,2 MW");
+    expect(formatPtBrCompact(1520, "MW")).toBe("1,52 GW");
+
+    const parsedPoints = parsePointsDataset({
+      uf: "SP",
+      rejected_count: 2,
+      usinas: [{ name: "UHE Ilha Solteira", cat: "UHE", val: 3444, unit: "MW", x: 120, y: 180, hex_idx: 0 }],
+      portos: [{ name: "Porto de Santos", cat: "Porto Organizado", val: 1, unit: "instalação", x: 740, y: 520, hex_idx: 1 }],
+      hospitais: [{ name: "Hospital Municipal", cat: "Hospital Geral", val: 320, unit: "leitos", x: 700, y: 460, hex_idx: 0 }],
+    });
+    expect(parsedPoints.usinas).toHaveLength(1);
+    expect(parsedPoints.portos[0]?.name).toBe("Porto de Santos");
+
+    const sjcProfile: CityProfile = {
+      cd_mun: "3549904",
+      nome: "São José dos Campos",
+      pop: 697054,
+      pib_mil: 47200000,
+      vinculos: 245000,
+      estabelecimentos_rais: 22000,
+      x: 780,
+      y: 420,
+      hex_idx: 1,
+      districts: [{ div: "30", name: "Distrito Aeroespacial e Naval", ql: 14.5, vinculos: 18500 }],
+      citizens: [
+        { sector: "Serviços", vinculos: 110000, pct: 44.9 },
+        { sector: "Indústria", vinculos: 75000, pct: 30.6 },
+      ],
+      education: {
+        escolas: 310,
+        matriculas_basica: 132000,
+        ies: 14,
+        matriculas_superior: 42000,
+        ideb_ai: 6.8,
+        ideb_af: 5.9,
+        ideb_em: 5.1,
+        ideb_medio: 5.9,
+      },
+      health: { estabelecimentos: 1450, hospitais: 14, leitos: 1420 },
+      infra: { usinas: 4, potencia_mw: 182.5, portos: 0 },
+    };
+
+    const parsedCities = parseCitiesDataset({ uf: "SP", cities: [sjcProfile] });
+    expect(parsedCities.cities[0]?.districts[0]?.ql).toBe(14.5);
+
+    const drawer = document.createElement("aside");
+    let closed = false;
+    renderCityView(drawer, sjcProfile, () => {
+      closed = true;
+    });
+    expect(drawer.textContent).toContain("São José dos Campos");
+    expect(drawer.textContent).toContain("Distrito Aeroespacial e Naval");
+    expect(drawer.textContent).toContain("14,5x QL");
+    expect(drawer.textContent).toContain("Serviços");
+    expect(drawer.textContent).toContain("MTE RAIS 2025");
+
+    const closeBtn = drawer.querySelector("button");
+    closeBtn?.click();
+    expect(closed).toBe(true);
+  });
+});
+

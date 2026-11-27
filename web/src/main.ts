@@ -1,12 +1,18 @@
 import "./styles.css";
 
+import { renderCityView } from "./city-view/cityView";
 import {
+  normalizeSearchText,
+  parseCitiesDataset,
   parseLensIndex,
+  parsePointsDataset,
   parsePositionalLens,
   parseUfGridDataset,
   searchMunicipalities,
+  type CityProfile,
   type LensIndex,
   type LensMetadata,
+  type PointsDataset,
   type PositionalLensData,
   type UfGridDataset,
   type VisualMode,
@@ -22,6 +28,10 @@ import {
 
 const GRID_URL = "/data/sp/grid.json";
 const LENS_INDEX_URL = "/data/sp/lentes/index.json";
+const POINTS_URL = "/data/sp/pontos.json";
+const CITIES_URL = "/data/sp/cities.json";
+
+type PointsMode = "auto" | "on" | "off";
 
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url);
@@ -52,10 +62,12 @@ async function bootstrap(): Promise<void> {
   const yieldsBar = document.getElementById("yields-bar");
   const lensButtons = document.getElementById("lens-buttons");
   const legend = document.getElementById("legend");
+  const cityDrawer = document.getElementById("city-drawer");
   const status = document.getElementById("status");
   const tooltip = document.getElementById("tooltip");
   const btnMode = document.getElementById("btn-mode");
   const btnBanners = document.getElementById("btn-banners");
+  const btnPoints = document.getElementById("btn-points");
   const btnPng = document.getElementById("btn-png");
   const btnReset = document.getElementById("btn-reset");
   const btnSearch = document.getElementById("btn-search");
@@ -70,10 +82,12 @@ async function bootstrap(): Promise<void> {
     !yieldsBar ||
     !lensButtons ||
     !legend ||
+    !cityDrawer ||
     !status ||
     !tooltip ||
     !btnMode ||
     !btnBanners ||
+    !btnPoints ||
     !btnPng ||
     !btnReset ||
     !btnSearch ||
@@ -92,16 +106,39 @@ async function bootstrap(): Promise<void> {
   let lensIndex: LensIndex;
   let activeLensMeta: LensMetadata;
   let activeLensData: PositionalLensData;
+  let pointsData: PointsDataset | null = null;
+  const cityByCd = new Map<string, CityProfile>();
+  const cityByNormName = new Map<string, CityProfile>();
+
   let mode: VisualMode = "atlas";
   let showBanners = true;
+  let pointsMode: PointsMode = "auto";
   let hoverIndex: number | null = null;
   let selectedIndex: number | null = null;
   let filterBucket: number | null = null;
   let dragging = false;
+  let downX = 0;
+  let downY = 0;
   let lastX = 0;
   let lastY = 0;
 
   const camera: CameraState = { x: 500, y: 350, zoom: 1.0 };
+
+  const shouldRenderPoints = (): boolean => {
+    if (!pointsData) return false;
+    if (pointsMode === "on") return true;
+    if (pointsMode === "off") return false;
+    return activeLensMeta.id === "infra" || activeLensMeta.id === "saude";
+  };
+
+  const closeCityView = (): void => {
+    cityDrawer.classList.add("hidden");
+  };
+
+  const openCityView = (city: CityProfile): void => {
+    renderCityView(cityDrawer, city, closeCityView);
+    cityDrawer.classList.remove("hidden");
+  };
 
   const redraw = (): void => {
     const ms = renderer.render({
@@ -110,6 +147,8 @@ async function bootstrap(): Promise<void> {
       lensData: activeLensData,
       mode,
       showBanners,
+      showPoints: shouldRenderPoints(),
+      points: pointsData,
       camera,
       hoverIndex,
       selectedIndex,
@@ -149,12 +188,24 @@ async function bootstrap(): Promise<void> {
   };
 
   try {
-    const [rawGrid, rawIndex] = await Promise.all([
+    const [rawGrid, rawIndex, rawPoints, rawCities] = await Promise.all([
       fetchJson(GRID_URL),
       fetchJson(LENS_INDEX_URL),
+      fetchJson(POINTS_URL).catch(() => null),
+      fetchJson(CITIES_URL).catch(() => null),
     ]);
     grid = parseUfGridDataset(rawGrid);
     lensIndex = parseLensIndex(rawIndex);
+    if (rawPoints) {
+      pointsData = parsePointsDataset(rawPoints);
+    }
+    if (rawCities) {
+      const parsedCities = parseCitiesDataset(rawCities);
+      for (const c of parsedCities.cities) {
+        cityByCd.set(c.cd_mun, c);
+        cityByNormName.set(normalizeSearchText(c.nome), c);
+      }
+    }
     renderYieldsBar(yieldsBar, grid);
     renderer.resize();
     await loadLens(readInitialLensId(lensIndex));
@@ -166,6 +217,8 @@ async function bootstrap(): Promise<void> {
 
   canvas.addEventListener("pointerdown", (e) => {
     dragging = true;
+    downX = e.clientX;
+    downY = e.clientY;
     lastX = e.clientX;
     lastY = e.clientY;
     canvas.setPointerCapture(e.pointerId);
@@ -199,8 +252,45 @@ async function bootstrap(): Promise<void> {
     }
   });
 
-  canvas.addEventListener("pointerup", () => {
+  canvas.addEventListener("pointerup", (e) => {
+    const wasClick = Math.hypot(e.clientX - downX, e.clientY - downY) < 5;
     dragging = false;
+    if (!wasClick) return;
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+
+    if (showBanners) {
+      const hub = renderer.pickHubAtScreen(sx, sy, grid, camera);
+      if (hub) {
+        const profile = cityByCd.get(hub.cd_mun) ?? cityByNormName.get(normalizeSearchText(hub.nome));
+        if (profile) {
+          if (profile.hex_idx >= 0) selectedIndex = profile.hex_idx;
+          openCityView(profile);
+          redraw();
+          return;
+        }
+      }
+    }
+
+    const pickedHex = renderer.pickHex(sx, sy, grid, camera);
+    if (pickedHex !== null) {
+      selectedIndex = pickedHex;
+      const munIds = grid.mun_idx[pickedHex] ?? [];
+      let bestCity: CityProfile | null = null;
+      for (const mIdx of munIds) {
+        const mName = grid.municipios[mIdx];
+        if (!mName) continue;
+        const candidate = cityByNormName.get(normalizeSearchText(mName));
+        if (candidate && (!bestCity || candidate.pop > bestCity.pop)) {
+          bestCity = candidate;
+        }
+      }
+      if (bestCity) {
+        openCityView(bestCity);
+      }
+      redraw();
+    }
   });
 
   canvas.addEventListener("pointerleave", () => {
@@ -241,11 +331,18 @@ async function bootstrap(): Promise<void> {
     btnBanners.textContent = showBanners ? "Cidades: ON" : "Cidades: OFF";
     redraw();
   });
+  btnPoints.addEventListener("click", () => {
+    pointsMode = pointsMode === "auto" ? "on" : pointsMode === "on" ? "off" : "auto";
+    btnPoints.textContent =
+      pointsMode === "auto" ? "Pontos: AUTO" : pointsMode === "on" ? "Pontos: ON" : "Pontos: OFF";
+    redraw();
+  });
   btnReset.addEventListener("click", () => {
     camera.x = 500;
     camera.y = 350;
     camera.zoom = 1.0;
     selectedIndex = null;
+    closeCityView();
     redraw();
   });
   btnPng.addEventListener("click", () => {
@@ -280,6 +377,10 @@ async function bootstrap(): Promise<void> {
         camera.y = match.y;
         camera.zoom = 2.8;
         searchModal.classList.add("hidden");
+        const profile = cityByNormName.get(normalizeSearchText(match.nome));
+        if (profile) {
+          openCityView(profile);
+        }
         redraw();
       };
       li.addEventListener("click", selectMatch);
@@ -320,7 +421,11 @@ async function bootstrap(): Promise<void> {
       const next = lensIndex.lenses[(idx + step + lensIndex.lenses.length) % lensIndex.lenses.length];
       if (next) void loadLens(next.id);
     } else if (e.key === "Escape") {
-      searchModal.classList.add("hidden");
+      if (!searchModal.classList.contains("hidden")) {
+        searchModal.classList.add("hidden");
+      } else {
+        closeCityView();
+      }
     }
   });
 

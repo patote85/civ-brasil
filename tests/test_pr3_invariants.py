@@ -97,10 +97,7 @@ def test_inep_escolar_superior_and_ideb_reconciliation(tmp_path: Path) -> None:
 
     sup_csv = tmp_path / "MICRODADOS_CADASTRO_CURSOS_2025.CSV"
     sup_csv.write_text(
-        "CO_MUNICIPIO;CO_IES;QT_MAT\n"
-        "3500105;101;450\n"
-        "3500105;101;150\n"
-        "3500204;202;300\n",
+        "CO_MUNICIPIO;CO_IES;QT_MAT\n3500105;101;450\n3500105;101;150\n3500204;202;300\n",
         encoding="latin-1",
     )
     sup_zip = tmp_path / "superior.zip"
@@ -154,12 +151,8 @@ def test_inep_escolar_superior_and_ideb_reconciliation(tmp_path: Path) -> None:
     assert ideb_map[CdMun("3500204")].ideb_af == 5.2
 
     pop_by_mun = {CdMun(m.cd_mun): 10000.0 for m in municipios}
-    rate_by_mun = {
-        cd: rec.ideb_medio
-        for cd, rec in ideb_map.items()
-        if rec.ideb_medio is not None
-    }
-    hex_ideb = reconcile_rate(rate_by_mun, pop_by_mun, weights)
+    rate_by_mun = {cd: rec.ideb_medio for cd, rec in ideb_map.items() if rec.ideb_medio is not None}
+    hex_ideb = reconcile_rate(rate_by_mun, weights, pop_by_mun)
     non_null = [v for v in hex_ideb.values() if v is not None]
     assert non_null
     assert all(4.5 <= v <= 7.0 for v in non_null)
@@ -181,9 +174,7 @@ def test_cnes_aneel_antaq_points_and_rejection_report(tmp_path: Path) -> None:
     )
     leitos_csv = tmp_path / "cnes_leitos_2025.csv"
     leitos_csv.write_text(
-        "CO_CNES;CO_MUNICIPIO;QT_EXIST\n"
-        "1000001;350010;120\n"
-        "1000001;350010;30\n",
+        "CO_CNES;CO_MUNICIPIO;QT_EXIST\n1000001;350010;120\n1000001;350010;30\n",
         encoding="latin-1",
     )
     cnes_mun, cnes_pts, cnes_rej = load_cnes_from_files(
@@ -234,10 +225,7 @@ def test_cnes_aneel_antaq_points_and_rejection_report(tmp_path: Path) -> None:
     )
     plants, pre_rejected = load_aneel_siga_from_file(siga_json, uf="SP")
     accepted, grid_rejected = assign_points_to_grid(
-        [
-            ("usina", p.nome, p.fonte, p.potencia_mw, "MW", p.lat, p.lon, "")
-            for p in plants
-        ],
+        [("usina", p.nome, p.fonte, p.potencia_mw, "MW", p.lat, p.lon, "") for p in plants],
         valid_hexes=valid_hexes,
         source_name="aneel_siga",
     )

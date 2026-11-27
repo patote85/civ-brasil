@@ -1,0 +1,1224 @@
+{
+  "uf": "SP",
+  "count": 174,
+  "items": [
+    {
+      "source": "aneel_siga",
+      "name": "Anil",
+      "reason": "fora_da_grade_uf",
+      "raw_lat": "-20.81871",
+      "raw_lon": "-45.06023"
+    },
+    {
+      "source": "aneel_siga",
+      "name": "Brisas Suaves",
+      "reason": "fora_da_grade_uf",
+      "raw_lat": "-15.54019",
+      "raw_lon": "-43.62830"
+    },
+    {
+      "source": "cnes",
+      "name": "AMEC ASSISTENCIA MEDICO CIRURGICA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "AMESP HOSP JARAGUA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "ANALIA FRANCO DAY HOSPITAL DE CIRURGIA PLASTICA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "ANDALUCIA CENTRO DE REC DE FARMACODEPENDENCIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "ANEXO PSIQUIATRICO IRMA VALENTINA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "BENEFICENCIA PORTUGUESA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CAISM CENTRO DE ATENCAO INTEGRAL DE SAUDE DA MULHER CAMPINAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CASA DA CRIANCA HOSPITAL INFANTIL CAMPOS DO JORDAO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CASA DE SAUDE D PEDRO II",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CASA DE SAUDE E MATERNIDADE SAO JOSE MIRANDOPOLIS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CASA DE SAUDE NSRA DO CAMINHO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CASA DE SAUDE SANTA EMILIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CEIVA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CENTRO DE ATENDIMENTO HOSPITALAR A MULHER PRESA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CENTRO TERAPEUTICO ARACOIABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CENTRO TRATAMENTO E REAB EM SAUDE MENTAL SEBASTIAO PAIVA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CIES GLOBAL III",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CIES GLOBAL SOROCABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA CRISTALIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA DE REPOUSO DOM BOSCO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA DIA DO HOSPITAL DOS FORNECEDORES DE CANA PIRACICABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA GABAS DE CIRURGIA PLASTICA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA MAIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA MEDICA VILA SERENA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CLINICA OFTALMOLOGICA SANTA VIRGINIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CMAW INTERNACAO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "COMPLEXO HOSPITALAR GRANJA VIANA LTDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "COMPLEXO HOSPITALAR PAULISTA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CONSAUDE PEDREIRA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "CONVIVER",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "DUAL HOSPITAL DIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "EMED HOSPITAL E MATERNIDADE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "GOTA DE LEITE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "GRUPO DE APOIO AMOR A VIDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HARAS SARACURAS DE ESPORTES EQUESTRES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HC DA FMUSP HOSPITAL AUXILIAR DE SUZANO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HO HOSPITAL DO OLHO LTDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP ANCHIETA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP DA PENHA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP DAS CLINICASHOSP AUXILIAR DE COTOXO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP EVALDO FOZ",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP GERAL GODOI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP GLORIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT ARABE BRASILEIRO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT CASA VERDE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT MODELO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT SAO LEOPOLDO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT STA MARTA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT STO ANTONIO DO TUCURUVI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP MAT V CARRAO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP PANAMERICANO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP SAO CARLOS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP SAO CONRADO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP STA MAGGIORE ANALIA FRANCO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP STA MAGGIORE BELA VISTA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP STO AMARO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSP VASCO DA GAMA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL ALLAN KARDEC PRES PRUDENTE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL ALVORADA CHACARA FLORA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL AMA S A",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL AVAPE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL BENEDITA FERNANDES ARACATUBA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL BOM JESUS DE TREMEMBE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL CAMPOS SALLES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL CASA DE SAUDE GUARULHOS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DA GRACA COTIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DA MULHER ANA FERNANDES DE FREITAS GUARUJA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DE CAMPANHA COVID 19 MOGI DAS CRUZES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DE CONCHAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DE CONCHAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DE SAO ROQUE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DO CANCER DR FLAVIO ISAIAS RODRIGUES MOGI DAS CRUZE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL DO CORACAO BAURU",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE BAETA NEVES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE BRASIL DE GUARULHOS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE MONTREAL",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE NOVA VIDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE RENASCENCA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE SAINT VIVANT LTDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL E MATERNIDADE SAO LUIZ DE PRESIDENTE PRUDENTE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL ESPLANADA TERREO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL FELICIO LUCHINI BIRIGUI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL GERAL DA PENHA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL INDEPENDENCIA DE PIRACICABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL INFANTIL ANDRE LUIZ",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL IPIRANGA DE MOGI DAS CRUZES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL IPIRANGA UNIDADE MATERNO INFANTIL",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL JARDIM DAS ACACIAS SOROCABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL LEONOR MENDES DE BARROS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL LUIZ VALENTE PENAPOLIS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL MARQUES CAMPOS LTDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL MATERNIDADE FREI GALVAO PINDAMONHANGABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL MAUA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL MEDICAMP INTERMEDICA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL MENTAL SOROCABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL MUNICIPAL DE CONCHAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL OFTALMOLOGICO SOROCABA UNID OTORRINOLARINGOLOGIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL PEDRO TREBBI DE CASTRO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL PINDA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL PRONTOCOR DE BAURU",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL PSIQUIATRICO FIGUEIRA CAMPOS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL PSIQUIATRICO VERA CRUZ SOROCABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL REGIONAL DE BOTUCATU",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAINT PAUL",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SALT LAKE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAMAM",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTA CASA DE JARDINOPOLIS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTA CATARINA VOTUPORANGA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTA FE PEDERNEIRAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTA ISABEL DE CLINICAS DE TAUBATE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTA MARIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTA TEREZA SANTA ALBERTINA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTO ANTONIO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTO ANTONIO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SANTO ANTONIO PARANAPUA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO BERNARDO S A UNIDADE BAETA NEVES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO CAETANO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO CAETANO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO FRANCISCO MARILIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO GERALDO DE NUPORANGA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO JOAO PRESIDENTE PRUDENTE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO LUCAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO PAULO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO PEDRO BRAGANCA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SAO PEDRO SAO PEDRO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL SOROCABANA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL STA MARIA DE PIRAPOZINHO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL TALITA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL TEIXEIRA LIMA SOROCABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL UNIMED DE PENAPOLIS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL UNIMED DE RIO CLARO UNIDADE II",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL UNIVERSITARIO I DE MARILIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL VALE DO RIO GRANDE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "HOSPITAL VIVALLE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "ICC HOSPITAL E PRONTO SOCORRO DO CORACAO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "INSTITUTO DA CRIANCA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "INSTITUTO DE CARDIOLOGIA CLINICA DAIRO BICUDO PIRACICABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "INSTITUTO DE PSIQUIATRIA TUPA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "MANTIQUEIRA SERVICOS DE SAUDE SOCIEDADE COOPERATIVA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "MATER MARIA PERPETUA SCRPARDO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "MATERNIDADE SANTA ANA ARACATUBA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "MISERICORDIA BOTUCATUENSE BOTUCATU",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "-22.887661",
+      "raw_lon": "48.445866"
+    },
+    {
+      "source": "cnes",
+      "name": "NEOMATER",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "NOVA CLINICA SANTA CASA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SAE HOSPITAL DIA DE AIDS BOTUCATU",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANATORIO ISMAEL",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANATORIO S3 CAMPOS DO JORDAO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANATORIO SANTA CRUZ",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA CAMPOS DO JORDAO",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE AGUAI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE IRAPURU",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE MISERICORDIA DE MANDURI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE MURUTINGA DO SUL",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE PARAIBUNA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE SANTA BRANCA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA DE SUZANO UNIDADE II",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA E MATERNIDADE DE PRESIDENTE ALVES",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA CASA TAPIRAI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SANTA MARINA HOSPITAL GERAL E MATERNIDADE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SAO FRANCISCO DAY HOSPITAL",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SAREH",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SEMEAR",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "SUZANCOR",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "UNAD UNIDADE DE ATENDIMENTO AO DEPENDENTE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "UNIDADE DE DOENCAS CARDIOVASCULARES DE CAMPINAS",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "UNIDADE HOSPITALAR DE PERUIBE",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "UNIMED",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "UNIMED HOSPITAL DIA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "UNION CLINICA MEDICA E LABORATORIOS EIRELLI",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "VILA SERENIDADE SOROCABA",
+      "reason": "coordenada_invalida_ou_ausente",
+      "raw_lat": "",
+      "raw_lon": ""
+    },
+    {
+      "source": "cnes",
+      "name": "PRONTO SOCORRO DA VILA DIRCE",
+      "reason": "fora_da_grade_uf",
+      "raw_lat": "-24.52300",
+      "raw_lon": "-46.83600"
+    },
+    {
+      "source": "cnes",
+      "name": "UNIDADE MISTA DE SAUDE MONS CID FRANCA SANTOS",
+      "reason": "fora_da_grade_uf",
+      "raw_lat": "-22.40521",
+      "raw_lon": "-44.19110"
+    }
+  ]
+}

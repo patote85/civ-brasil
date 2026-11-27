@@ -16,8 +16,11 @@ MAX_SP_HEXES = 1150
 EXPECTED_SP_MUNICIPIOS = 645
 EXPECTED_SP_POP_2022 = 44_411_238
 MAX_SP_GRID_JSON_BYTES = 220_000
-MAX_SP_LENS_JSON_BYTES = 40_000
+MAX_SP_LENS_JSON_BYTES = 50_000
+MAX_SP_POINTS_JSON_BYTES = 200_000
+MAX_SP_CITIES_JSON_BYTES = 200_000
 MAX_JS_BUNDLE_BYTES = 150_000
+MIN_PR3_LENSES = 8
 
 
 def verify_artifacts(
@@ -179,6 +182,14 @@ def verify_artifacts(
         sp_public_dir=sp_public_dir,
         expected_hex_count=hex_count,
     )
+    _verify_pr3_economy_services_and_points(
+        errors=errors,
+        dist_dir=dist_dir,
+        sp_processed_dir=sp_processed_dir,
+        sp_public_dir=sp_public_dir,
+        expected_hex_count=hex_count,
+        seen_hexes=seen_hexes,
+    )
 
     return errors
 
@@ -267,8 +278,8 @@ def _verify_pr2_reconciliation_and_web(
 
     index_data = json.loads(index_public.read_text(encoding="utf-8"))
     lenses = index_data.get("lenses", [])
-    if len(lenses) < 4:
-        errors.append(f"Menos de 4 lentes no index.json: {len(lenses)}")
+    if len(lenses) < MIN_PR3_LENSES:
+        errors.append(f"Menos de {MIN_PR3_LENSES} lentes no index.json: {len(lenses)}")
 
     col_map = {"ouro": "pib", "producao": "vab_ind", "comida": "vab_agro", "cidadaos": "pop"}
     for entry in lenses:
@@ -301,6 +312,102 @@ def _verify_pr2_reconciliation_and_web(
                 )
 
 
+def _verify_pr3_economy_services_and_points(
+    errors: list[str],
+    dist_dir: Path,
+    sp_processed_dir: Path,
+    sp_public_dir: Path,
+    expected_hex_count: int,
+    seen_hexes: set[str],
+) -> None:
+    trabalho_path = sp_processed_dir / "mun_trabalho.parquet"
+    distritos_path = sp_processed_dir / "mun_distritos.parquet"
+    servicos_path = sp_processed_dir / "mun_servicos.parquet"
+    hex_econ_path = sp_processed_dir / "hex_economia.parquet"
+    pontos_pq_path = sp_processed_dir / "pontos_infra.parquet"
+
+    pr3_parquets = (trabalho_path, distritos_path, servicos_path, hex_econ_path, pontos_pq_path)
+    missing = [p for p in pr3_parquets if not p.is_file()]
+    for path in missing:
+        errors.append(f"Parquet PR 3 ausente: {path}")
+
+    if not missing:
+        trab_tbl = pq.read_table(trabalho_path)
+        dist_tbl = pq.read_table(distritos_path)
+        serv_tbl = pq.read_table(servicos_path)
+        hecon_tbl = pq.read_table(hex_econ_path)
+        pts_tbl = pq.read_table(pontos_pq_path)
+
+        if serv_tbl.num_rows != EXPECTED_SP_MUNICIPIOS:
+            errors.append(f"mun_servicos.parquet tem {serv_tbl.num_rows} linhas")
+        if hecon_tbl.num_rows != expected_hex_count:
+            errors.append(f"hex_economia.parquet tem {hecon_tbl.num_rows} linhas")
+        if dist_tbl.num_rows == 0:
+            errors.append("mun_distritos.parquet vazio")
+
+        trab_vinc_sum = sum(float(v) for v in trab_tbl.column("vinculos").to_pylist())
+        hex_vinc_sum = sum(float(v) for v in hecon_tbl.column("vinculos").to_pylist())
+        if trab_vinc_sum <= 0 or not math.isclose(hex_vinc_sum, trab_vinc_sum, rel_tol=1e-6):
+            errors.append(
+                f"Conservação quebrada em vinculos: hex={hex_vinc_sum} vs mun={trab_vinc_sum}"
+            )
+
+        for mun_col, hex_col in (
+            ("matriculas_basica", "matriculas_basica"),
+            ("matriculas_superior", "matriculas_superior"),
+            ("cnes_estabelecimentos", "cnes_estabelecimentos"),
+            ("cnes_leitos", "leitos"),
+        ):
+            m_sum = sum(float(v) for v in serv_tbl.column(mun_col).to_pylist())
+            h_sum = sum(float(v) for v in hecon_tbl.column(hex_col).to_pylist())
+            if m_sum <= 0 or not math.isclose(h_sum, m_sum, rel_tol=1e-6):
+                errors.append(f"Conservação quebrada em {hex_col}: hex={h_sum} vs mun={m_sum}")
+
+        pts_h3 = pts_tbl.column("h3").to_pylist()
+        pts_kind = pts_tbl.column("kind").to_pylist()
+        pts_val = pts_tbl.column("value").to_pylist()
+        outside = [str(c) for c in pts_h3 if str(c) not in seen_hexes]
+        if outside:
+            errors.append(f"pontos_infra.parquet tem {len(outside)} pontos fora do grid H3 de SP")
+
+        usinas_mw = sum(
+            float(v) for k, v in zip(pts_kind, pts_val, strict=True) if str(k) == "usina"
+        )
+        hex_mw = sum(float(v) for v in hecon_tbl.column("potencia_mw").to_pylist())
+        if usinas_mw <= 0 or not math.isclose(hex_mw, usinas_mw, rel_tol=1e-6):
+            errors.append(f"Conservação quebrada em potencia_mw: hex={hex_mw} vs pts={usinas_mw}")
+
+    pontos_public = sp_public_dir / "pontos.json"
+    pontos_dist = dist_dir / "data" / "sp" / "pontos.json"
+    cities_public = sp_public_dir / "cities.json"
+    cities_dist = dist_dir / "data" / "sp" / "cities.json"
+    for candidate in (pontos_public, pontos_dist, cities_public, cities_dist):
+        if not candidate.is_file():
+            errors.append(f"Artefato web PR 3 ausente: {candidate}")
+
+    if pontos_public.is_file():
+        if pontos_dist.is_file() and pontos_public.read_bytes() != pontos_dist.read_bytes():
+            errors.append("web/dist/data/sp/pontos.json diverge de web/public/data/sp/pontos.json")
+        if pontos_public.stat().st_size > MAX_SP_POINTS_JSON_BYTES:
+            errors.append(
+                f"pontos.json ({pontos_public.stat().st_size} B) excede "
+                f"{MAX_SP_POINTS_JSON_BYTES} B"
+            )
+
+    if cities_public.is_file():
+        if cities_dist.is_file() and cities_public.read_bytes() != cities_dist.read_bytes():
+            errors.append("web/dist/data/sp/cities.json diverge de web/public/data/sp/cities.json")
+        if cities_public.stat().st_size > MAX_SP_CITIES_JSON_BYTES:
+            errors.append(
+                f"cities.json ({cities_public.stat().st_size} B) excede "
+                f"{MAX_SP_CITIES_JSON_BYTES} B"
+            )
+        cities_payload = json.loads(cities_public.read_text(encoding="utf-8"))
+        cities_list = cities_payload.get("cities", [])
+        if len(cities_list) < 20:
+            errors.append(f"cities.json tem poucas cidades: {len(cities_list)}")
+
+
 def main() -> int:
     errors = verify_artifacts()
     if errors:
@@ -308,11 +415,15 @@ def main() -> int:
             print(f"ERRO: {err}", file=sys.stderr)
         return 1
     payload = json.loads(Path("web/public/data/sp/grid.json").read_text(encoding="utf-8"))
+    idx_payload = json.loads(
+        Path("web/public/data/sp/lentes/index.json").read_text(encoding="utf-8")
+    )
     js_total = sum(f.stat().st_size for f in Path("web/dist/assets").glob("*.js"))
     print(
         "Verificacao OK: "
         f"web/dist presente ({js_total} B JS, 0 unpkg), "
         f"{payload['hex_count']} hexes H3 res {payload['resolution']}, "
+        f"{len(idx_payload['lenses'])} lentes, "
         f"pop={payload['yields']['pop']:,}, area={payload['total_area_km2']:.2f} km2."
     )
     return 0
