@@ -14,3 +14,4 @@ web/dist/
 agy-*.log
 *-stream.jsonl
 .DS_Store
+data/raw/

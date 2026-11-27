@@ -5,6 +5,9 @@ export UV_PYTHON := /usr/bin/python3
 export npm_config_cache := /workspace/civbr-dados/cache-npm
 export npm_config_offline := true
 endif
+ifneq ($(wildcard /workspace/civbr-dados/raw),)
+export CIVBR_RAW ?= /workspace/civbr-dados/raw
+endif
 
 .PHONY: setup lint typecheck test check data-sp web-build verify
 

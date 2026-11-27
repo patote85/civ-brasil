@@ -24,7 +24,7 @@ SP_MUNICIPIOS_URL = "https://servicodados.ibge.gov.br/api/v1/localidades/estados
 
 MALHA_FILENAME = "sp_malha_municipios.geojson"
 MUNICIPIOS_FILENAME = "sp_municipios.json"
-DEFAULT_RAW_ROOT = Path("/workspace/civbr-dados/raw")
+DEFAULT_RAW_ROOT = Path("data/raw")
 
 Fetcher = Callable[[str], bytes]
 
@@ -57,7 +57,8 @@ class SyncResult:
 
 
 def get_raw_root() -> Path:
-    return Path(os.environ.get("CIVBR_RAW", str(DEFAULT_RAW_ROOT)))
+    configured = os.environ.get("CIVBR_RAW", "").strip()
+    return Path(configured) if configured else DEFAULT_RAW_ROOT
 
 
 def _sha256_bytes(data: bytes) -> str:

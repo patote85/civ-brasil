@@ -42,3 +42,9 @@ Este PR inaugura a base técnica e o primeiro recorte funcional do **civ-brasil*
 
 ## Achados do Bugbot e correções
 
+- **Hardcoded sandbox data path** (`pipeline/sources/ibge_malhas/loader.py#L26-L60`, [comentário #4722439172](https://github.com/patote85/civ-brasil/pull/1#discussion_r4722439172)):
+  - **Causa raiz**: `DEFAULT_RAW_ROOT` fixava o caminho privado `/workspace/civbr-dados/raw` em código Python versionado, fora da exceção `wildcard` do `Makefile`, fazendo `make data-sp` falhar fora do sandbox quando `CIVBR_RAW` não estava definido.
+  - **Correção**: `DEFAULT_RAW_ROOT` alterado para `Path("data/raw")` (portável, relativo ao projeto) e `get_raw_root()` tratando `CIVBR_RAW` vazio; `Makefile` exporta `CIVBR_RAW ?= /workspace/civbr-dados/raw` apenas dentro de `wildcard`; `.gitignore` passa a ignorar `data/raw/`.
+  - **Testes e check determinístico**: `test_get_raw_root_defaults_to_portable_relative_path_and_respects_env` em `tests/test_ibge_malhas.py` e `test_no_private_sandbox_paths_outside_makefile` + padrão `data/raw/` em `tests/test_repo_hygiene.py`.
+
+
