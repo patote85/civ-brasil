@@ -12,6 +12,7 @@ import {
   parsePositionalLens,
   parseUfGridDataset,
   searchMunicipalities,
+  tryParseOptional,
   type CityProfile,
   type LensMetadata,
   type PositionalLensData,
@@ -240,6 +241,12 @@ describe("PR 3 points, cities, and City View", () => {
     const closeBtn = drawer.querySelector("button");
     closeBtn?.click();
     expect(closed).toBe(true);
+  });
+
+  it("degrades gracefully when optional pontos.json or cities.json is malformed", () => {
+    expect(tryParseOptional({ broken: true }, parsePointsDataset)).toBeNull();
+    expect(tryParseOptional({ broken: true }, parseCitiesDataset)).toBeNull();
+    expect(tryParseOptional(null, parsePointsDataset)).toBeNull();
   });
 });
 

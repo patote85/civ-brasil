@@ -246,12 +246,10 @@ def load_cnes_from_files(
                         }
                     )
 
-        # Fallback to direct municipality totals if CNES IDs did not overlap.
+        # Keep authoritative municipal bed totals even when CNES IDs only partially overlap.
         records: dict[CdMun, CnesMunRecord] = {}
         for cd in sorted(valid_cd_muns):
-            beds = leitos_by_mun.get(cd, 0)
-            if beds == 0 and cd in leitos_by_mun_direct:
-                beds = leitos_by_mun_direct[cd]
+            beds = max(leitos_by_mun.get(cd, 0), leitos_by_mun_direct.get(cd, 0))
             records[cd] = CnesMunRecord(
                 cd_mun=cd,
                 estabelecimentos=estab_count.get(cd, 0),

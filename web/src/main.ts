@@ -9,6 +9,7 @@ import {
   parsePositionalLens,
   parseUfGridDataset,
   searchMunicipalities,
+  tryParseOptional,
   type CityProfile,
   type LensIndex,
   type LensMetadata,
@@ -196,11 +197,9 @@ async function bootstrap(): Promise<void> {
     ]);
     grid = parseUfGridDataset(rawGrid);
     lensIndex = parseLensIndex(rawIndex);
-    if (rawPoints) {
-      pointsData = parsePointsDataset(rawPoints);
-    }
-    if (rawCities) {
-      const parsedCities = parseCitiesDataset(rawCities);
+    pointsData = tryParseOptional(rawPoints, parsePointsDataset);
+    const parsedCities = tryParseOptional(rawCities, parseCitiesDataset);
+    if (parsedCities) {
       for (const c of parsedCities.cities) {
         cityByCd.set(c.cd_mun, c);
         cityByNormName.set(normalizeSearchText(c.nome), c);
