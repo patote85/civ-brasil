@@ -1,0 +1,16 @@
+{
+  "sources": {
+    "ibge_malhas/sp_malha_municipios.geojson": {
+      "feature_count": 645,
+      "fetched_at": "2026-11-27T16:29:31.463236Z",
+      "sha256": "a9296e20334db2f4c6d86e74d97dec46842ab0c849f5b93076633c5e8348668d",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/35?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/sp_municipios.json": {
+      "feature_count": 645,
+      "fetched_at": "2026-11-27T16:29:31.463597Z",
+      "sha256": "c06b7327c3bf7475d0c63c90c5f8c9122464fd0ed84bc98709a2a7f82649d14b",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios"
+    }
+  }
+}

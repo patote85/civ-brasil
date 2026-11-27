@@ -1,0 +1,189 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0d1520;
+  color: #edf2f7;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #131f2e;
+  border-bottom: 1px solid #24364d;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #f6e05e;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #a0aec0;
+  white-space: nowrap;
+}
+
+.status {
+  font-size: 0.82rem;
+  color: #cbd5e0;
+  text-align: right;
+}
+
+.status.error {
+  color: #feb2b2;
+}
+
+.map-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+.map-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.legend {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 10;
+  background: rgba(19, 31, 46, 0.92);
+  border: 1px solid #2d435e;
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: min(260px, calc(100vw - 32px));
+  backdrop-filter: blur(4px);
+}
+
+.legend-title {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #e2e8f0;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #cbd5e0;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.deck-tooltip-card {
+  max-width: min(300px, calc(100vw - 24px));
+  line-height: 1.4;
+}
+
+.deck-tooltip-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #f6e05e;
+  margin-bottom: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.deck-tooltip-meta {
+  font-size: 0.78rem;
+  color: #cbd5e0;
+  margin-bottom: 4px;
+}
+
+.deck-tooltip-list {
+  font-size: 0.78rem;
+  color: #edf2f7;
+  word-break: break-word;
+}
+
+@media (max-width: 600px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 12px;
+  }
+
+  .brand {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .subtitle {
+    white-space: normal;
+  }
+
+  .status {
+    text-align: left;
+    font-size: 0.75rem;
+  }
+
+  .legend {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    max-width: none;
+    padding: 8px 10px;
+  }
+
+  .legend-items {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+}

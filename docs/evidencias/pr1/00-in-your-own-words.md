@@ -1,0 +1,11 @@
+# In Your Own Words — PR 1 (civ-brasil)
+
+## Objetivo do usuário e problema a resolver
+
+O usuário quer inaugurar a base técnica e o primeiro recorte funcional do **civ-brasil** (versão brasileira inspirada no USA Civ de Andrej Karpathy), começando pelo estado de São Paulo como piloto. O problema central é estabelecer uma fundação determinística, auditável e reproduzível — sem banco de dados, sem chamadas de modelo lendo dados brutos e sem serviços pagos — capaz de:
+
+1. Estruturar o repositório com governança de qualidade desde o primeiro PR (Python 3.13 com `uv`, `ruff`, `mypy --strict`, `pytest`, `import-linter`; frontend com Vite 6, TypeScript estrito, Vitest 3, ESLint 9, deck.gl 9 e `h3-js` 4; Makefile que funciona offline no sandbox via caches locais e online no CI do GitHub sem caminhos específicos do ambiente local; CI em `pull_request`, ADR inicial, catálogo de QA, `GEMINI.md` e `.cursor/BUGBOT.md`).
+2. Ingerir de forma determinística e idempotente a malha municipal e a lista de municípios de SP do IBGE, validando integridade via SHA-256 em `data/manifest.json` (reaproveitando os arquivos brutos já presentes em `CIVBR_RAW`, sem re-download quando íntegros) e expondo um schema tipado na fronteira do módulo.
+3. Projetar os 645 municípios paulistas sobre uma grade hexagonal H3 resolução 5 (incluindo hexágonos de borda que tocam o estado), calculando áreas de interseção em projeção de área igual (`+proj=aea +lat_0=-32 +lon_0=-60 +lat_1=-5 +lat_2=-42 +ellps=GRS80 +units=m`), gerando a tabela `data/processed/sp_municipio_hex.parquet` e comprovando por TDD (teste falhando antes, passando depois) todos os invariantes matemáticos e de determinismo.
+4. Entregar um mapa mínimo estático em `web/` (deck.gl `H3HexagonLayer`, sem mapa base e sem chamadas externas de rede) consumindo `web/public/data/sp_hex.json`, exibindo a contagem de municípios por hexágono com tooltip, legenda e layout funcional em 1280 px e 375 px, pronto para deploy estático na Vercel (`vercel.json`).
+5. Garantir verificabilidade de ponta a ponta com `make check`, `make data-sp` (idempotente na segunda execução), `make web-build` e `make verify`, registrando todas as evidências em `docs/evidencias/pr1/` e no diretório de saída do operador.
