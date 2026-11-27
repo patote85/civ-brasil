@@ -22,6 +22,7 @@ REQUIRED_GITIGNORE_PATTERNS = {
     ".ruff_cache/",
     ".import_linter_cache/",
     ".DS_Store",
+    "data/raw/",
 }
 
 
@@ -87,3 +88,43 @@ def test_makefile_uses_locked_uv_sync() -> None:
     assert uv_sync_lines, "Makefile deve conter comando 'uv sync'"
     unlocked = [line for line in uv_sync_lines if "--locked" not in line.split()]
     assert not unlocked, f"Comandos 'uv sync' sem '--locked' no Makefile: {unlocked}"
+
+
+def test_no_private_sandbox_paths_outside_makefile() -> None:
+    forbidden = re.compile(r"/workspace/|/home/box/|civbr-dados")
+    self_path = Path(__file__).resolve()
+    scan_dirs = [
+        REPO_ROOT / "pipeline",
+        REPO_ROOT / "tests",
+        REPO_ROOT / "web" / "src",
+        REPO_ROOT / ".github",
+    ]
+    scan_files = [
+        REPO_ROOT / "pyproject.toml",
+        REPO_ROOT / "vercel.json",
+        REPO_ROOT / "web" / "package.json",
+        REPO_ROOT / "web" / "vite.config.ts",
+    ]
+
+    candidates: list[Path] = [path for path in scan_files if path.is_file()]
+    for directory in scan_dirs:
+        if directory.is_dir():
+            for path in sorted(directory.rglob("*")):
+                if path.is_file() and path.resolve() != self_path:
+                    candidates.append(path)
+
+    offenders: list[str] = []
+    for path in candidates:
+        if path.suffix in {".pyc", ".parquet", ".png", ".jpg", ".zip"}:
+            continue
+        text = path.read_text(encoding="utf-8")
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            if forbidden.search(line):
+                rel = path.relative_to(REPO_ROOT)
+                offenders.append(f"{rel}:{lineno}: {line.strip()}")
+
+    assert not offenders, (
+        "Caminhos locais privados de sandbox encontrados fora da exceção wildcard do Makefile: "
+        f"{offenders}"
+    )
+

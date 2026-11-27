@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from pipeline.sources.ibge_malhas import (
+    DEFAULT_RAW_ROOT,
     MALHA_FILENAME,
     MUNICIPIOS_FILENAME,
     SP_MALHA_URL,
@@ -15,6 +16,7 @@ from pipeline.sources.ibge_malhas import (
     IntegrityError,
     ManifestCorruptedError,
     ensure_sp_raw_files,
+    get_raw_root,
     load_municipios_from_files,
 )
 
@@ -142,3 +144,40 @@ def test_load_municipios_validates_boundary_schema(tmp_path: Path) -> None:
     bad_mun.write_text(json.dumps([{"id": "123", "nome": "Curto"}]), encoding="utf-8")
     with pytest.raises(ValueError, match="Código IBGE"):
         load_municipios_from_files(SAMPLE_MALHA, bad_mun)
+
+
+def test_get_raw_root_defaults_to_portable_relative_path_and_respects_env(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("CIVBR_RAW", raising=False)
+    monkeypatch.chdir(tmp_path)
+
+    assert not DEFAULT_RAW_ROOT.is_absolute()
+    assert Path("data/raw") == DEFAULT_RAW_ROOT
+    assert get_raw_root() == Path("data/raw")
+
+    malha_bytes = SAMPLE_MALHA.read_bytes()
+    mun_bytes = SAMPLE_MUNICIPIOS.read_bytes()
+
+    def fake_fetcher(url: str) -> bytes:
+        if url == SP_MALHA_URL:
+            return malha_bytes
+        if url == SP_MUNICIPIOS_URL:
+            return mun_bytes
+        raise AssertionError(f"URL inesperada: {url}")
+
+    result = ensure_sp_raw_files(
+        manifest_path=tmp_path / "data" / "manifest.json",
+        fetcher=fake_fetcher,
+    )
+    assert result.malha_path == Path("data/raw/ibge_malhas") / MALHA_FILENAME
+    assert (tmp_path / "data" / "raw" / "ibge_malhas" / MALHA_FILENAME).is_file()
+
+    custom_raw = tmp_path / "custom-raw"
+    monkeypatch.setenv("CIVBR_RAW", str(custom_raw))
+    assert get_raw_root() == custom_raw
+
+    monkeypatch.setenv("CIVBR_RAW", "   ")
+    assert get_raw_root() == Path("data/raw")
+
