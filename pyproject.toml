@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "h3==4.5.1",
+    "openpyxl==3.1.5",
+    "py7zr==1.1.4",
     "pyarrow==26.0.1",
     "pyogrio==0.13.0",
     "pyproj==3.8.0",
@@ -39,7 +41,18 @@ strict = true
 files = ["pipeline", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["h3", "h3.*", "pyarrow", "pyarrow.*", "pyogrio", "pyogrio.*"]
+module = [
+    "h3",
+    "h3.*",
+    "openpyxl",
+    "openpyxl.*",
+    "py7zr",
+    "py7zr.*",
+    "pyarrow",
+    "pyarrow.*",
+    "pyogrio",
+    "pyogrio.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
