@@ -53,3 +53,13 @@ Os dois testes validam pela interface pública (`load_municipios_from_files`, `b
 4. Soma das áreas das interseções igual à área total do estado na projeção de área igual (`+proj=aea +lat_0=-32 +lon_0=-60 +lat_1=-5 +lat_2=-42 +ellps=GRS80 +units=m`), dentro de ±0,5% de 248.219 km²;
 5. Contagem total de hexágonos entre 900 e 1.100;
 6. Determinismo completo (resultados idênticos em duas execuções consecutivas).
+
+## 3. Achados do Bugbot (TDD RED → GREEN)
+
+- **Achado**: `DEFAULT_RAW_ROOT = Path("/workspace/civbr-dados/raw")` em `pipeline/sources/ibge_malhas/loader.py` (comentário Bugbot `#4722439172`).
+- **Fase RED**: `uv run pytest tests/test_ibge_malhas.py tests/test_repo_hygiene.py` → **exit 1** (`3 failed`: `test_get_raw_root_defaults_to_portable_relative_path_and_respects_env`, `test_gitignore_contains_required_patterns` por `data/raw/`, `test_no_private_sandbox_paths_outside_makefile` apontando `pipeline/sources/ibge_malhas/loader.py:27`).
+- **Fase GREEN**: após trocar `DEFAULT_RAW_ROOT` para `Path("data/raw")`, exportar `CIVBR_RAW ?= /workspace/civbr-dados/raw` condicionalmente via `wildcard` no `Makefile` e adicionar `data/raw/` no `.gitignore`:
+  - `make check` → **exit 0** (`ruff`, `lint-imports` 2/2, `eslint`, `mypy --strict`, `tsc --noEmit`, 13 passed pytest, 5 passed vitest)
+  - `make web-build` → **exit 0**
+  - `make verify` → **exit 0**
+

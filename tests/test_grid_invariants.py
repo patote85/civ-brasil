@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import os
 from collections import defaultdict
 from pathlib import Path
 
@@ -15,9 +14,9 @@ from pipeline.grid.h3_grid import (
     compute_equal_area_km2,
 )
 from pipeline.sources.ibge_malhas import (
-    DEFAULT_RAW_ROOT,
     MALHA_FILENAME,
     MUNICIPIOS_FILENAME,
+    get_raw_root,
     load_municipios_from_files,
 )
 
@@ -27,8 +26,7 @@ SAMPLE_MUNICIPIOS = FIXTURES_DIR / "sp_sample_municipios.json"
 
 
 def _raw_ibge_dir() -> Path:
-    raw_root = Path(os.environ.get("CIVBR_RAW", str(DEFAULT_RAW_ROOT)))
-    return raw_root / "ibge_malhas"
+    return get_raw_root() / "ibge_malhas"
 
 
 def _has_sp_raw_files() -> bool:
