@@ -9,7 +9,9 @@ ifneq ($(wildcard /workspace/civbr-dados/raw),)
 export CIVBR_RAW ?= /workspace/civbr-dados/raw
 endif
 
-.PHONY: setup lint typecheck test check data-sp web-build verify
+.PHONY: setup lint typecheck test check data data-sp web-build verify
+
+UF ?= SP
 
 setup:
 	@if [ ! -f uv.lock ]; then uv lock; fi
@@ -31,8 +33,11 @@ test:
 
 check: lint typecheck test
 
+data:
+	uv run python -m pipeline.run_uf --uf $(UF)
+
 data-sp:
-	uv run python -m pipeline.grid.sp
+	uv run python -m pipeline.run_uf --uf SP
 
 web-build:
 	npm --prefix web run build

@@ -1,16 +1,37 @@
 {
   "sources": {
+    "ibge_censo/sp_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 645,
+      "fetched_at": "2026-11-27T19:30:43.301676Z",
+      "sha256": "c9c20a3aa61ea3e19ca9d38d13c2fd4a8fb49caba0b19ccac2ff0094c2f7abb9",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2035/v/93/p/2022"
+    },
+    "ibge_grade/BR1KM_20251002.zip": {
+      "ano_ref": 2022,
+      "fetched_at": "2026-11-27T19:30:46.012661Z",
+      "resolution": "1km",
+      "sha256": "944579f28d7dab3184b400d6badca808de98517ef11af160314696159616870a",
+      "url": "https://geoftp.ibge.gov.br/recortes_para_fins_estatisticos/grade_estatistica/censo_2022/grade_1km/BR1KM_20251002.zip"
+    },
     "ibge_malhas/sp_malha_municipios.geojson": {
       "feature_count": 645,
-      "fetched_at": "2026-11-27T16:29:31.463236Z",
+      "fetched_at": "2026-11-27T19:30:42.055980Z",
       "sha256": "a9296e20334db2f4c6d86e74d97dec46842ab0c849f5b93076633c5e8348668d",
       "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/35?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
     },
     "ibge_malhas/sp_municipios.json": {
       "feature_count": 645,
-      "fetched_at": "2026-11-27T16:29:31.463597Z",
+      "fetched_at": "2026-11-27T19:30:42.320621Z",
       "sha256": "c06b7327c3bf7475d0c63c90c5f8c9122464fd0ed84bc98709a2a7f82649d14b",
       "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios"
+    },
+    "ibge_pib/sp_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 645,
+      "fetched_at": "2026-11-27T19:30:44.602402Z",
+      "sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2035/v/37,513,517,6575,525/p/2021"
     }
   }
 }
