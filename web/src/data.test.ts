@@ -13,6 +13,7 @@ import {
   type PositionalLensData,
   type UfGridDataset,
 } from "./data";
+import { computeMinimapViewportRect } from "./renderer";
 import { buildTooltipHtml, renderLegend, renderYieldsBar } from "./ui";
 
 const SAMPLE_GRID: UfGridDataset = {
@@ -96,7 +97,61 @@ describe("data parsers and formatting", () => {
 
   it("finds municipalities without accents", () => {
     const matches = searchMunicipalities(SAMPLE_GRID, "sao jose");
-    expect(matches).toEqual([{ nome: "São José dos Campos", hexIndex: 1 }]);
+    expect(matches).toEqual([{ nome: "São José dos Campos", hexIndex: 1, x: 780, y: 420 }]);
+  });
+
+  it("picks representative hub or centroid hex instead of first edge fragment", () => {
+    const multiHexGrid: UfGridDataset = {
+      ...SAMPLE_GRID,
+      hex_count: 6,
+      mun_count: 2,
+      hubs: [
+        { cd_mun: "3550308", nome: "São Paulo", x: 700, y: 460, pop: 11451999, pib_mil: 828980747 },
+      ],
+      municipios: ["Iguape", "São Paulo"],
+      h3: [
+        "85a80003fffffff",
+        "85a80007fffffff",
+        "85a8000bfffffff",
+        "85a8000ffffffff",
+        "85a80013fffffff",
+        "85a80017fffffff",
+      ],
+      cx: [500, 600, 700, 620, 702, 780],
+      cy: [500, 500, 500, 420, 458, 520],
+      area_km2: [200, 200, 200, 200, 200, 200],
+      mun_idx: [[0], [0], [0], [1], [1], [1]],
+    };
+
+    const spMatch = searchMunicipalities(multiHexGrid, "sao paulo");
+    expect(spMatch).toEqual([{ nome: "São Paulo", hexIndex: 4, x: 700, y: 460 }]);
+
+    const iguapeMatch = searchMunicipalities(multiHexGrid, "iguape");
+    expect(iguapeMatch).toEqual([{ nome: "Iguape", hexIndex: 1, x: 600, y: 500 }]);
+  });
+});
+
+describe("minimap viewport clipping", () => {
+  it("clips viewport rectangle accurately against minimap bounds", () => {
+    expect(computeMinimapViewportRect(-200, -100, 800, 600, 180, 126)).toEqual({
+      x: 0,
+      y: 0,
+      w: 144,
+      h: 108,
+    });
+    expect(computeMinimapViewportRect(500, 350, 1400, 1000, 180, 126)).toEqual({
+      x: 90,
+      y: 63,
+      w: 90,
+      h: 63,
+    });
+    expect(computeMinimapViewportRect(-500, -500, 1500, 1200, 180, 126)).toEqual({
+      x: 0,
+      y: 0,
+      w: 180,
+      h: 126,
+    });
+    expect(computeMinimapViewportRect(1100, 100, 1500, 400, 180, 126)).toBeNull();
   });
 });
 
