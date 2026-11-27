@@ -10,7 +10,7 @@ endif
 
 setup:
 	@if [ ! -f uv.lock ]; then uv lock; fi
-	uv sync --dev
+	uv sync --dev --locked
 	@if [ ! -f web/package-lock.json ]; then npm --prefix web install; else npm --prefix web ci; fi
 
 lint:
