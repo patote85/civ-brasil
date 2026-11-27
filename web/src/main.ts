@@ -276,8 +276,8 @@ async function bootstrap(): Promise<void> {
       li.append(nameSpan, h3Span);
       const selectMatch = (): void => {
         selectedIndex = match.hexIndex;
-        camera.x = grid.cx[match.hexIndex] ?? 500;
-        camera.y = grid.cy[match.hexIndex] ?? 350;
+        camera.x = match.x;
+        camera.y = match.y;
         camera.zoom = 2.8;
         searchModal.classList.add("hidden");
         redraw();

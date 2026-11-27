@@ -13,6 +13,6 @@
 ## Afirmação 3 — Orçamento de payload web e eliminação de `unpkg.com`
 - **Condição:** Bundle JS `≤ 150 KB`, `grid.json ≤ 220 KB`, cada lente posicional `≤ 40 KB`, zero ocorrências de `unpkg.com` em `web/dist/`.
 - **Baseline (`8f0d478`):** JS = `1.062.470 B` (`303,14 kB` gzip) com 2 referências a `https://unpkg.com/@loaders.gl`; `sp_hex.json` = `326.859 B`.
-- **Treatment:** `make web-build` + `make verify` → JS = `19.044 B` (`7,22 kB` gzip, redução de **55,8×**), `0` ocorrências de `unpkg.com`, `grid.json` = `65.715 B`, lentes posicionais de `8.766 B` a `10.489 B` (`105 KB` totais sem compressão).
+- **Treatment:** `make web-build` + `make verify` → JS = `19.615 B` (`7,48 kB` gzip, redução de **54,2×**), `0` ocorrências de `unpkg.com`, `grid.json` = `65.715 B`, lentes posicionais de `8.766 B` a `10.489 B` (`105 KB` totais sem compressão).
 
 VERIFIED

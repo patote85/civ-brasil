@@ -26,6 +26,33 @@ export interface RenderOptions {
   readonly filterBucket: number | null;
 }
 
+export interface MinimapRect {
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+}
+
+export function computeMinimapViewportRect(
+  wx0: number,
+  wy0: number,
+  wx1: number,
+  wy1: number,
+  mw: number,
+  mh: number,
+): MinimapRect | null {
+  const sx = mw / 1000;
+  const sy = mh / 700;
+  const x0 = Math.max(0, Math.min(mw, wx0 * sx));
+  const y0 = Math.max(0, Math.min(mh, wy0 * sy));
+  const x1 = Math.max(0, Math.min(mw, wx1 * sx));
+  const y1 = Math.max(0, Math.min(mh, wy1 * sy));
+  const w = x1 - x0;
+  const h = y1 - y0;
+  if (w <= 0 || h <= 0) return null;
+  return { x: x0, y: y0, w, h };
+}
+
 export class HexMapRenderer {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
@@ -276,13 +303,11 @@ export class HexMapRenderer {
 
     const [wx0, wy0] = this.screenToWorld(0, 0, camera);
     const [wx1, wy1] = this.screenToWorld(this.canvas.clientWidth, this.canvas.clientHeight, camera);
-    mctx.strokeStyle = "#facc15";
-    mctx.lineWidth = 1.4;
-    mctx.strokeRect(
-      Math.max(0, wx0 * sx),
-      Math.max(0, wy0 * sy),
-      Math.min(mw, (wx1 - wx0) * sx),
-      Math.min(mh, (wy1 - wy0) * sy),
-    );
+    const rect = computeMinimapViewportRect(wx0, wy0, wx1, wy1, mw, mh);
+    if (rect) {
+      mctx.strokeStyle = "#facc15";
+      mctx.lineWidth = 1.4;
+      mctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
+    }
   }
 }
