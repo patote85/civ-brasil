@@ -11,12 +11,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@deck.gl/core": "9.4.2",
-    "@deck.gl/geo-layers": "9.4.2",
-    "@deck.gl/layers": "9.4.2",
-    "h3-js": "4.5.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "9.39.5",
     "eslint": "9.39.5",

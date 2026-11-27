@@ -1,83 +1,333 @@
 import "./styles.css";
 
-import { Deck, type PickingInfo } from "@deck.gl/core";
-import { H3HexagonLayer } from "@deck.gl/geo-layers";
-
 import {
-  colorForMunicipioCount,
-  initialViewStateForWidth,
-  parseSpHexDataset,
-  type HexDatum,
+  parseLensIndex,
+  parsePositionalLens,
+  parseUfGridDataset,
+  searchMunicipalities,
+  type LensIndex,
+  type LensMetadata,
+  type PositionalLensData,
+  type UfGridDataset,
+  type VisualMode,
 } from "./data";
-import { buildTooltipHtml, renderLegend, renderStatus } from "./ui";
+import { HexMapRenderer, type CameraState } from "./renderer";
+import {
+  buildTooltipHtml,
+  renderLegend,
+  renderLensButtons,
+  renderStatus,
+  renderYieldsBar,
+} from "./ui";
 
-const DATA_URL = "/data/sp_hex.json";
+const GRID_URL = "/data/sp/grid.json";
+const LENS_INDEX_URL = "/data/sp/lentes/index.json";
+
+async function fetchJson(url: string): Promise<unknown> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} ao carregar ${url}`);
+  }
+  return (await response.json()) as unknown;
+}
+
+function readInitialLensId(index: LensIndex): string {
+  const params = new URLSearchParams(window.location.search);
+  const requested = params.get("lente");
+  if (requested && index.lenses.some((l) => l.id === requested)) {
+    return requested;
+  }
+  return index.lenses[0]?.id ?? "ouro";
+}
+
+function updateUrlLens(lensId: string): void {
+  const url = new URL(window.location.href);
+  url.searchParams.set("lente", lensId);
+  window.history.replaceState(null, "", url.toString());
+}
 
 async function bootstrap(): Promise<void> {
-  const mapContainer = document.getElementById("map-container");
-  const legendContainer = document.getElementById("legend");
-  const statusContainer = document.getElementById("status");
+  const canvas = document.getElementById("map-canvas");
+  const minimap = document.getElementById("minimap-canvas");
+  const yieldsBar = document.getElementById("yields-bar");
+  const lensButtons = document.getElementById("lens-buttons");
+  const legend = document.getElementById("legend");
+  const status = document.getElementById("status");
+  const tooltip = document.getElementById("tooltip");
+  const btnMode = document.getElementById("btn-mode");
+  const btnBanners = document.getElementById("btn-banners");
+  const btnPng = document.getElementById("btn-png");
+  const btnReset = document.getElementById("btn-reset");
+  const btnSearch = document.getElementById("btn-search");
+  const btnCloseSearch = document.getElementById("btn-close-search");
+  const searchModal = document.getElementById("search-modal");
+  const searchInput = document.getElementById("search-input");
+  const searchResults = document.getElementById("search-results");
 
-  if (!(mapContainer instanceof HTMLDivElement) || !legendContainer || !statusContainer) {
+  if (
+    !(canvas instanceof HTMLCanvasElement) ||
+    !(minimap instanceof HTMLCanvasElement) ||
+    !yieldsBar ||
+    !lensButtons ||
+    !legend ||
+    !status ||
+    !tooltip ||
+    !btnMode ||
+    !btnBanners ||
+    !btnPng ||
+    !btnReset ||
+    !btnSearch ||
+    !btnCloseSearch ||
+    !searchModal ||
+    !(searchInput instanceof HTMLInputElement) ||
+    !searchResults
+  ) {
     throw new Error("Elementos raiz da aplicação não encontrados");
   }
 
-  renderLegend(legendContainer);
+  const renderer = new HexMapRenderer(canvas, minimap);
+  const lensCache = new Map<string, PositionalLensData>();
+
+  let grid: UfGridDataset;
+  let lensIndex: LensIndex;
+  let activeLensMeta: LensMetadata;
+  let activeLensData: PositionalLensData;
+  let mode: VisualMode = "atlas";
+  let showBanners = true;
+  let hoverIndex: number | null = null;
+  let selectedIndex: number | null = null;
+  let filterBucket: number | null = null;
+  let dragging = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  const camera: CameraState = { x: 500, y: 350, zoom: 1.0 };
+
+  const redraw = (): void => {
+    const ms = renderer.render({
+      grid,
+      lensMeta: activeLensMeta,
+      lensData: activeLensData,
+      mode,
+      showBanners,
+      camera,
+      hoverIndex,
+      selectedIndex,
+      filterBucket,
+    });
+    renderStatus(
+      status,
+      `${grid.hex_count} hexes · ${activeLensMeta.source_label} (${activeLensMeta.ano_ref}) · ${ms.toFixed(1)} ms`,
+    );
+  };
+
+  const syncLegend = (): void => {
+    renderLegend(legend, activeLensMeta, activeLensData, mode, filterBucket, (bucketIdx) => {
+      filterBucket = bucketIdx;
+      redraw();
+    });
+  };
+
+  const loadLens = async (lensId: string): Promise<void> => {
+    const meta = lensIndex.lenses.find((item) => item.id === lensId);
+    if (!meta) return;
+    let data = lensCache.get(lensId);
+    if (!data) {
+      const raw = await fetchJson(`/data/sp/lentes/${lensId}.json`);
+      data = parsePositionalLens(raw, grid.hex_count);
+      lensCache.set(lensId, data);
+    }
+    activeLensMeta = meta;
+    activeLensData = data;
+    filterBucket = null;
+    updateUrlLens(lensId);
+    renderLensButtons(lensButtons, lensIndex.lenses, lensId, (nextId) => {
+      void loadLens(nextId);
+    });
+    syncLegend();
+    redraw();
+  };
 
   try {
-    const response = await fetch(DATA_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} ao carregar ${DATA_URL}`);
-    }
-    const raw: unknown = await response.json();
-    const dataset = parseSpHexDataset(raw);
-
-    const layer = new H3HexagonLayer<HexDatum>({
-      id: "sp-h3-res5",
-      data: [...dataset.hexes],
-      pickable: true,
-      wireframe: false,
-      filled: true,
-      stroked: true,
-      extruded: false,
-      highPrecision: true,
-      getHexagon: (d) => d.h3,
-      getFillColor: (d) => colorForMunicipioCount(d.municipio_count),
-      getLineColor: [18, 28, 40, 200],
-      lineWidthMinPixels: 1,
-    });
-
-    new Deck({
-      parent: mapContainer,
-      initialViewState: initialViewStateForWidth(window.innerWidth),
-      controller: true,
-      layers: [layer],
-      getTooltip: (info: PickingInfo<HexDatum>) => {
-        if (!info.object) {
-          return null;
-        }
-        return {
-          html: buildTooltipHtml(info.object),
-          style: {
-            backgroundColor: "#131f2e",
-            border: "1px solid #2d435e",
-            borderRadius: "6px",
-            color: "#edf2f7",
-            padding: "8px 10px",
-          },
-        };
-      },
-    });
-
-    const areaFormatted = Math.round(dataset.total_area_km2).toLocaleString("pt-BR");
-    renderStatus(
-      statusContainer,
-      `${dataset.hex_count} hexágonos · ${areaFormatted} km² · Fonte: IBGE`,
-    );
+    const [rawGrid, rawIndex] = await Promise.all([
+      fetchJson(GRID_URL),
+      fetchJson(LENS_INDEX_URL),
+    ]);
+    grid = parseUfGridDataset(rawGrid);
+    lensIndex = parseLensIndex(rawIndex);
+    renderYieldsBar(yieldsBar, grid);
+    renderer.resize();
+    await loadLens(readInitialLensId(lensIndex));
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    renderStatus(statusContainer, `Falha ao carregar dados: ${message}`, true);
+    renderStatus(status, `Falha ao carregar dados: ${message}`, true);
+    return;
   }
+
+  canvas.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    if (dragging) {
+      const [, , scale] = renderer.worldToScreen(0, 0, camera);
+      camera.x -= (e.clientX - lastX) / scale;
+      camera.y -= (e.clientY - lastY) / scale;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      redraw();
+      return;
+    }
+    const picked = renderer.pickHex(sx, sy, grid, camera);
+    if (picked !== hoverIndex) {
+      hoverIndex = picked;
+      redraw();
+    }
+    if (picked !== null) {
+      tooltip.classList.remove("hidden");
+      tooltip.style.left = `${Math.min(window.innerWidth - 280, e.clientX + 14)}px`;
+      tooltip.style.top = `${Math.min(window.innerHeight - 110, e.clientY + 14)}px`;
+      tooltip.innerHTML = buildTooltipHtml(grid, picked, activeLensMeta, activeLensData);
+    } else {
+      tooltip.classList.add("hidden");
+    }
+  });
+
+  canvas.addEventListener("pointerup", () => {
+    dragging = false;
+  });
+
+  canvas.addEventListener("pointerleave", () => {
+    dragging = false;
+    hoverIndex = null;
+    tooltip.classList.add("hidden");
+    redraw();
+  });
+
+  canvas.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.18 : 1 / 1.18;
+      camera.zoom = Math.max(0.75, Math.min(7.0, camera.zoom * factor));
+      redraw();
+    },
+    { passive: false },
+  );
+
+  minimap.addEventListener("click", (e) => {
+    const rect = minimap.getBoundingClientRect();
+    camera.x = ((e.clientX - rect.left) / minimap.width) * 1000;
+    camera.y = ((e.clientY - rect.top) / minimap.height) * 700;
+    redraw();
+  });
+
+  const toggleMode = (): void => {
+    mode = mode === "atlas" ? "civ" : "atlas";
+    btnMode.textContent = mode === "atlas" ? "Modo: Atlas" : "Modo: Civ";
+    syncLegend();
+    redraw();
+  };
+
+  btnMode.addEventListener("click", toggleMode);
+  btnBanners.addEventListener("click", () => {
+    showBanners = !showBanners;
+    btnBanners.textContent = showBanners ? "Cidades: ON" : "Cidades: OFF";
+    redraw();
+  });
+  btnReset.addEventListener("click", () => {
+    camera.x = 500;
+    camera.y = 350;
+    camera.zoom = 1.0;
+    selectedIndex = null;
+    redraw();
+  });
+  btnPng.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.download = `civ-brasil-${grid.uf.toLowerCase()}-${activeLensMeta.id}.png`;
+    link.href = renderer.exportPngDataUrl(activeLensMeta, grid);
+    link.click();
+  });
+
+  const renderSearchList = (query: string): void => {
+    const matches = searchMunicipalities(grid, query, 25);
+    searchResults.replaceChildren();
+    if (matches.length === 0) {
+      const empty = document.createElement("li");
+      empty.className = "search-result-item";
+      empty.textContent = "Nenhum município encontrado.";
+      searchResults.appendChild(empty);
+      return;
+    }
+    for (const match of matches) {
+      const li = document.createElement("li");
+      li.className = "search-result-item";
+      li.tabIndex = 0;
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = match.nome;
+      const h3Span = document.createElement("span");
+      h3Span.textContent = grid.h3[match.hexIndex] ?? "";
+      li.append(nameSpan, h3Span);
+      const selectMatch = (): void => {
+        selectedIndex = match.hexIndex;
+        camera.x = grid.cx[match.hexIndex] ?? 500;
+        camera.y = grid.cy[match.hexIndex] ?? 350;
+        camera.zoom = 2.8;
+        searchModal.classList.add("hidden");
+        redraw();
+      };
+      li.addEventListener("click", selectMatch);
+      li.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") selectMatch();
+      });
+      searchResults.appendChild(li);
+    }
+  };
+
+  const openSearch = (): void => {
+    searchModal.classList.remove("hidden");
+    searchInput.value = "";
+    renderSearchList("");
+    searchInput.focus();
+  };
+
+  btnSearch.addEventListener("click", openSearch);
+  btnCloseSearch.addEventListener("click", () => searchModal.classList.add("hidden"));
+  searchModal.addEventListener("click", (e) => {
+    if (e.target === searchModal) searchModal.classList.add("hidden");
+  });
+  searchInput.addEventListener("input", () => renderSearchList(searchInput.value));
+
+  window.addEventListener("keydown", (e) => {
+    if (document.activeElement === searchInput) {
+      if (e.key === "Escape") searchModal.classList.add("hidden");
+      return;
+    }
+    if (e.key === "/" || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) {
+      e.preventDefault();
+      openSearch();
+    } else if (e.key.toLowerCase() === "m") {
+      toggleMode();
+    } else if (e.key.toLowerCase() === "l") {
+      const idx = lensIndex.lenses.findIndex((l) => l.id === activeLensMeta.id);
+      const step = e.shiftKey ? -1 : 1;
+      const next = lensIndex.lenses[(idx + step + lensIndex.lenses.length) % lensIndex.lenses.length];
+      if (next) void loadLens(next.id);
+    } else if (e.key === "Escape") {
+      searchModal.classList.add("hidden");
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    renderer.resize();
+    redraw();
+  });
 }
 
 void bootstrap();

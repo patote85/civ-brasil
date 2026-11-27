@@ -3,24 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>civ-brasil — Grade H3 de São Paulo</title>
+    <title>civ-brasil — São Paulo em linguagem de Civilization</title>
   </head>
   <body>
     <div id="app">
       <header class="topbar">
         <div class="brand">
           <h1>civ-brasil</h1>
-          <span class="subtitle">São Paulo · Grade H3 resolução 5</span>
+          <span class="subtitle">São Paulo · H3 res 5</span>
         </div>
-        <div id="status" class="status" role="status" aria-live="polite">
-          Carregando grade hexagonal…
+        <div id="yields-bar" class="yields-bar" aria-label="Totais estaduais"></div>
+        <div class="top-actions">
+          <button id="btn-search" class="action-btn" type="button" title="Buscar município (/)">
+            Buscar <kbd>/</kbd>
+          </button>
+          <button id="btn-mode" class="action-btn" type="button" title="Alternar modo visual (M)">
+            Modo: Atlas
+          </button>
+          <button id="btn-banners" class="action-btn" type="button" title="Mostrar ou ocultar cidades">
+            Cidades: ON
+          </button>
+          <button id="btn-png" class="action-btn" type="button" title="Baixar captura 1600×900">
+            PNG
+          </button>
         </div>
       </header>
+
+      <nav class="lensbar" aria-label="Seletor de lentes">
+        <div id="lens-buttons" class="lens-buttons" role="tablist"></div>
+        <div class="lensbar-right">
+          <div id="status" class="status" role="status" aria-live="polite">
+            Carregando base de São Paulo…
+          </div>
+          <button id="btn-reset" class="action-btn" type="button">Resetar</button>
+        </div>
+      </nav>
+
       <main class="map-stage">
-        <div id="map-container" class="map-container" aria-label="Mapa hexagonal de São Paulo"></div>
-        <aside id="legend" class="legend" aria-label="Legenda de municípios por hexágono"></aside>
+        <div id="map-container" class="map-container">
+          <canvas id="map-canvas" aria-label="Mapa hexagonal de São Paulo"></canvas>
+        </div>
+        <div id="tooltip" class="tooltip hidden" role="tooltip"></div>
+        <aside id="legend" class="legend" aria-label="Legenda da lente ativa"></aside>
+        <div id="minimap-box" class="minimap-box">
+          <canvas id="minimap-canvas" width="150" height="105" aria-label="Minimapa de São Paulo"></canvas>
+        </div>
       </main>
     </div>
+
+    <div id="search-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Buscar município">
+      <div class="modal-card">
+        <div class="modal-header">
+          <input
+            id="search-input"
+            type="search"
+            autocomplete="off"
+            placeholder="Buscar entre os 645 municípios de SP (ex.: São José dos Campos)…"
+          />
+          <button id="btn-close-search" class="action-btn" type="button">Esc</button>
+        </div>
+        <ul id="search-results" class="search-results"></ul>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

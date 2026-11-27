@@ -1,0 +1,37 @@
+{
+  "stage_1_raw": {
+    "censo_sha256": "c9c20a3aa61ea3e19ca9d38d13c2fd4a8fb49caba0b19ccac2ff0094c2f7abb9",
+    "grade_sha256": "944579f28d7dab3184b400d6badca808de98517ef11af160314696159616870a",
+    "no_download_ratio": "4/4",
+    "pib_sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897"
+  },
+  "stage_2_municipal": {
+    "municipios": 645,
+    "pib_total_mil": 2719751233.0,
+    "pop_total": 44411238,
+    "vab_agro_total_mil": 46193516.0,
+    "vab_ind_total_mil": 518292544.0
+  },
+  "stage_3_dasymetric": {
+    "area_fallback_count": 0,
+    "area_fallback_muns": [],
+    "grade_cells_bbox": 203983,
+    "weight_rows": 3688
+  },
+  "stage_4_hex_base": {
+    "hex_count": 1091,
+    "pib_total_mil": 2719751233.0,
+    "pop_total": 44411238.0,
+    "vab_agro_total_mil": 46193516.0,
+    "vab_ind_total_mil": 518292544.0
+  },
+  "stage_5_web_json": {
+    "grid.json": 65715,
+    "lentes/cidadaos.json": 8766,
+    "lentes/comida.json": 9294,
+    "lentes/index.json": 1374,
+    "lentes/ouro.json": 10489,
+    "lentes/producao.json": 9561
+  },
+  "uf": "SP"
+}
