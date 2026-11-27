@@ -89,6 +89,22 @@ const PALETTES: Record<string, { atlas: readonly string[]; civ: readonly string[
     atlas: ["#172536", "#1e4a6d", "#2076a8", "#38bdf8", "#a5f3fc"],
     civ: ["#1f2e3d", "#254d6e", "#2b7aa8", "#48b5e0", "#9ee7ff"],
   },
+  districts: {
+    atlas: ["#1c1e2e", "#433163", "#7042a3", "#a855f7", "#e9d5ff"],
+    civ: ["#262436", "#503978", "#7d4eb5", "#b26af7", "#edd9ff"],
+  },
+  science: {
+    atlas: ["#142436", "#1d4e89", "#2563eb", "#60a5fa", "#dbeafe"],
+    civ: ["#1d2c3f", "#235391", "#2e6ee6", "#6cb0ff", "#e0efff"],
+  },
+  health: {
+    atlas: ["#231820", "#5b1f32", "#9f2241", "#e11d48", "#fda4af"],
+    civ: ["#2d2028", "#6b263c", "#b02b4c", "#eb365c", "#ffb3be"],
+  },
+  infra: {
+    atlas: ["#1e2524", "#334d47", "#0f766e", "#14b8a6", "#99f6e4"],
+    civ: ["#28302e", "#3d5e57", "#188a80", "#22c7b4", "#a8faf0"],
+  },
 };
 
 export function getPaletteColors(palette: string, mode: VisualMode): readonly string[] {
@@ -139,6 +155,15 @@ export function formatPtBrCompact(value: number, unit: string): string {
       return `R$ ${(reais / 1e6).toFixed(1).replace(".", ",")} mi`;
     }
     return `R$ ${Math.round(reais).toLocaleString("pt-BR")}`;
+  }
+  if (unit === "QL") {
+    return `${value.toFixed(1).replace(".", ",")}x QL`;
+  }
+  if (unit === "MW") {
+    if (value >= 1e3) {
+      return `${(value / 1e3).toFixed(2).replace(".", ",")} GW`;
+    }
+    return `${value.toFixed(1).replace(".", ",")} MW`;
   }
   if (value >= 1e6) {
     return `${(value / 1e6).toFixed(2).replace(".", ",")}M`;
@@ -422,3 +447,185 @@ export function parsePositionalLens(raw: unknown, expectedHexCount: number): Pos
     values,
   };
 }
+
+export interface PointFeature {
+  readonly name: string;
+  readonly cat: string;
+  readonly val: number;
+  readonly unit: string;
+  readonly x: number;
+  readonly y: number;
+  readonly hex_idx: number;
+}
+
+export interface PointsDataset {
+  readonly uf: string;
+  readonly rejected_count: number;
+  readonly usinas: readonly PointFeature[];
+  readonly portos: readonly PointFeature[];
+  readonly hospitais: readonly PointFeature[];
+}
+
+function parsePointList(raw: unknown, label: string): PointFeature[] {
+  if (!Array.isArray(raw)) {
+    throw new Error(`Lista '${label}' inválida em pontos.json`);
+  }
+  return raw.map((item) => {
+    if (!isRecord(item) || typeof item.name !== "string") {
+      throw new Error(`Ponto inválido em '${label}'`);
+    }
+    return {
+      name: item.name,
+      cat: String(item.cat ?? ""),
+      val: Number(item.val ?? 0),
+      unit: String(item.unit ?? ""),
+      x: Number(item.x ?? 0),
+      y: Number(item.y ?? 0),
+      hex_idx: Number(item.hex_idx ?? -1),
+    };
+  });
+}
+
+export function parsePointsDataset(raw: unknown): PointsDataset {
+  if (!isRecord(raw) || typeof raw.uf !== "string") {
+    throw new Error("pontos.json inválido");
+  }
+  return {
+    uf: raw.uf,
+    rejected_count: Number(raw.rejected_count ?? 0),
+    usinas: parsePointList(raw.usinas, "usinas"),
+    portos: parsePointList(raw.portos, "portos"),
+    hospitais: parsePointList(raw.hospitais, "hospitais"),
+  };
+}
+
+export interface CityDistrict {
+  readonly div: string;
+  readonly name: string;
+  readonly ql: number;
+  readonly vinculos: number;
+}
+
+export interface CityCitizenSector {
+  readonly sector: string;
+  readonly vinculos: number;
+  readonly pct: number;
+}
+
+export interface CityEducation {
+  readonly escolas: number;
+  readonly matriculas_basica: number;
+  readonly ies: number;
+  readonly matriculas_superior: number;
+  readonly ideb_ai: number | null;
+  readonly ideb_af: number | null;
+  readonly ideb_em: number | null;
+  readonly ideb_medio: number | null;
+}
+
+export interface CityHealth {
+  readonly estabelecimentos: number;
+  readonly hospitais: number;
+  readonly leitos: number;
+}
+
+export interface CityInfra {
+  readonly usinas: number;
+  readonly potencia_mw: number;
+  readonly portos: number;
+}
+
+export interface CityProfile {
+  readonly cd_mun: string;
+  readonly nome: string;
+  readonly pop: number;
+  readonly pib_mil: number;
+  readonly vinculos: number;
+  readonly estabelecimentos_rais: number;
+  readonly x: number;
+  readonly y: number;
+  readonly hex_idx: number;
+  readonly districts: readonly CityDistrict[];
+  readonly citizens: readonly CityCitizenSector[];
+  readonly education: CityEducation;
+  readonly health: CityHealth;
+  readonly infra: CityInfra;
+}
+
+export interface CitiesDataset {
+  readonly uf: string;
+  readonly cities: readonly CityProfile[];
+}
+
+function nullableNumber(val: unknown): number | null {
+  return typeof val === "number" && Number.isFinite(val) ? val : null;
+}
+
+export function parseCitiesDataset(raw: unknown): CitiesDataset {
+  if (!isRecord(raw) || typeof raw.uf !== "string" || !Array.isArray(raw.cities)) {
+    throw new Error("cities.json inválido");
+  }
+  const cities: CityProfile[] = raw.cities.map((entry) => {
+    if (!isRecord(entry) || typeof entry.cd_mun !== "string" || typeof entry.nome !== "string") {
+      throw new Error("Perfil de cidade inválido em cities.json");
+    }
+    const rawDistricts = Array.isArray(entry.districts) ? entry.districts : [];
+    const districts: CityDistrict[] = rawDistricts
+      .filter((d): d is Record<string, unknown> => isRecord(d))
+      .map((d) => ({
+        div: String(d.div ?? ""),
+        name: String(d.name ?? ""),
+        ql: Number(d.ql ?? 0),
+        vinculos: Number(d.vinculos ?? 0),
+      }));
+
+    const rawCitizens = Array.isArray(entry.citizens) ? entry.citizens : [];
+    const citizens: CityCitizenSector[] = rawCitizens
+      .filter((c): c is Record<string, unknown> => isRecord(c))
+      .map((c) => ({
+        sector: String(c.sector ?? ""),
+        vinculos: Number(c.vinculos ?? 0),
+        pct: Number(c.pct ?? 0),
+      }));
+
+    const ed = isRecord(entry.education) ? entry.education : {};
+    const hl = isRecord(entry.health) ? entry.health : {};
+    const inf = isRecord(entry.infra) ? entry.infra : {};
+
+    return {
+      cd_mun: entry.cd_mun,
+      nome: entry.nome,
+      pop: Number(entry.pop ?? 0),
+      pib_mil: Number(entry.pib_mil ?? 0),
+      vinculos: Number(entry.vinculos ?? 0),
+      estabelecimentos_rais: Number(entry.estabelecimentos_rais ?? 0),
+      x: Number(entry.x ?? 500),
+      y: Number(entry.y ?? 350),
+      hex_idx: Number(entry.hex_idx ?? -1),
+      districts,
+      citizens,
+      education: {
+        escolas: Number(ed.escolas ?? 0),
+        matriculas_basica: Number(ed.matriculas_basica ?? 0),
+        ies: Number(ed.ies ?? 0),
+        matriculas_superior: Number(ed.matriculas_superior ?? 0),
+        ideb_ai: nullableNumber(ed.ideb_ai),
+        ideb_af: nullableNumber(ed.ideb_af),
+        ideb_em: nullableNumber(ed.ideb_em),
+        ideb_medio: nullableNumber(ed.ideb_medio),
+      },
+      health: {
+        estabelecimentos: Number(hl.estabelecimentos ?? 0),
+        hospitais: Number(hl.hospitais ?? 0),
+        leitos: Number(hl.leitos ?? 0),
+      },
+      infra: {
+        usinas: Number(inf.usinas ?? 0),
+        potencia_mw: Number(inf.potencia_mw ?? 0),
+        portos: Number(inf.portos ?? 0),
+      },
+    };
+  });
+  return { uf: raw.uf, cities };
+}
+

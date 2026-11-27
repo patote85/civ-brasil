@@ -2,7 +2,9 @@ import {
   bucketIndexForValue,
   colorForValue,
   formatPtBrCompact,
+  type CityHub,
   type LensMetadata,
+  type PointsDataset,
   type PositionalLensData,
   type UfGridDataset,
   type VisualMode,
@@ -20,6 +22,8 @@ export interface RenderOptions {
   readonly lensData: PositionalLensData;
   readonly mode: VisualMode;
   readonly showBanners: boolean;
+  readonly showPoints: boolean;
+  readonly points: PointsDataset | null;
   readonly camera: CameraState;
   readonly hoverIndex: number | null;
   readonly selectedIndex: number | null;
@@ -114,12 +118,57 @@ export class HexMapRenderer {
     return bestIdx;
   }
 
+  public pickHubAtScreen(
+    sx: number,
+    sy: number,
+    grid: UfGridDataset,
+    camera: CameraState,
+  ): CityHub | null {
+    const { ctx } = this;
+    ctx.save();
+    ctx.font = "600 11px system-ui, -apple-system, sans-serif";
+    for (let i = grid.hubs.length - 1; i >= 0; i--) {
+      const hub = grid.hubs[i];
+      if (!hub) continue;
+      const [bx, by] = this.worldToScreen(hub.x, hub.y, camera);
+      const popLabel = formatPtBrCompact(hub.pop, "habitantes");
+      const popW = ctx.measureText(popLabel).width + 10;
+      const nameW = ctx.measureText(hub.nome).width + 12;
+      const totalW = popW + nameW;
+      const rx = bx - totalW / 2;
+      const ry = by - 24;
+      const rh = 18;
+      if (sx >= rx && sx <= rx + totalW && sy >= ry && sy <= ry + rh) {
+        ctx.restore();
+        return hub;
+      }
+      if (Math.hypot(sx - bx, sy - by) <= 8) {
+        ctx.restore();
+        return hub;
+      }
+    }
+    ctx.restore();
+    return null;
+  }
+
   public render(opts: RenderOptions): number {
     const t0 = performance.now();
     const { ctx } = this;
     const w = this.canvas.clientWidth || 1;
     const h = this.canvas.clientHeight || 1;
-    const { grid, lensMeta, lensData, mode, showBanners, camera, hoverIndex, selectedIndex, filterBucket } = opts;
+    const {
+      grid,
+      lensMeta,
+      lensData,
+      mode,
+      showBanners,
+      showPoints,
+      points,
+      camera,
+      hoverIndex,
+      selectedIndex,
+      filterBucket,
+    } = opts;
 
     if (mode === "civ") {
       const grad = ctx.createRadialGradient(w * 0.55, h * 0.5, 40, w * 0.5, h * 0.5, Math.max(w, h) * 0.78);
@@ -184,6 +233,10 @@ export class HexMapRenderer {
     }
     ctx.globalAlpha = 1;
 
+    if (showPoints && points) {
+      this.drawPoints(ctx, points, lensMeta.id, camera, w, h);
+    }
+
     if (showBanners && grid.hubs.length > 0) {
       this.drawHubs(ctx, grid, camera, mode, w, h);
     }
@@ -232,6 +285,70 @@ export class HexMapRenderer {
       else ctx.lineTo(vx, vy);
     }
     ctx.closePath();
+  }
+
+  private drawPoints(
+    ctx: CanvasRenderingContext2D,
+    points: PointsDataset,
+    lensId: string,
+    camera: CameraState,
+    w: number,
+    h: number,
+  ): void {
+    ctx.save();
+    const showHosp = lensId === "saude";
+    const showEnergyAndPorts = lensId !== "saude";
+
+    if (showEnergyAndPorts) {
+      ctx.fillStyle = "#facc15";
+      ctx.strokeStyle = "#0a1019";
+      ctx.lineWidth = 1;
+      for (const u of points.usinas) {
+        const [sx, sy] = this.worldToScreen(u.x, u.y, camera);
+        if (sx < -16 || sx > w + 16 || sy < -16 || sy > h + 16) continue;
+        const r = Math.max(2.6, Math.min(7.5, 2.2 + Math.log10(Math.max(1, u.val)) * 1.4));
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - r);
+        ctx.lineTo(sx + r * 0.9, sy + r * 0.8);
+        ctx.lineTo(sx - r * 0.9, sy + r * 0.8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#22d3ee";
+      ctx.strokeStyle = "#0a1019";
+      ctx.lineWidth = 1.2;
+      for (const p of points.portos) {
+        const [sx, sy] = this.worldToScreen(p.x, p.y, camera);
+        if (sx < -16 || sx > w + 16 || sy < -16 || sy > h + 16) continue;
+        const r = 5.5;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - r);
+        ctx.lineTo(sx + r, sy);
+        ctx.lineTo(sx, sy + r);
+        ctx.lineTo(sx - r, sy);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+
+    if (showHosp) {
+      ctx.fillStyle = "#fb7185";
+      ctx.strokeStyle = "#0a1019";
+      ctx.lineWidth = 0.9;
+      for (const hosp of points.hospitais) {
+        const [sx, sy] = this.worldToScreen(hosp.x, hosp.y, camera);
+        if (sx < -12 || sx > w + 12 || sy < -12 || sy > h + 12) continue;
+        const r = Math.max(2.2, Math.min(6.0, 2.0 + Math.log10(Math.max(1, hosp.val)) * 1.2));
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
   }
 
   private drawHubs(

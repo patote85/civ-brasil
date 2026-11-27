@@ -1,5 +1,41 @@
 {
   "sources": {
+    "aneel_siga/epe_aneel_usinas_operacao.json": {
+      "ano_ref": 2026,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:05:08.081517Z",
+      "licenca": "Dados Abertos Gov.br",
+      "orgao": "ANEEL / EPE (WebMap MME)",
+      "sha256": "9f295b39ba6d237f96cced5b2dbc254296d86826e198b1a0369fbd91f1ff5278",
+      "url": "https://gisepeprd2.epe.gov.br/arcgis/rest/services/WMS_Webmap_EPE_Data/MapServer/14..21"
+    },
+    "antaq/Instalacoes_portuarias_2026.zip": {
+      "ano_ref": 2026,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:05:09.080202Z",
+      "licenca": "Dados Abertos Gov.br",
+      "orgao": "InfraSA / ONTL / ANTAQ",
+      "sha256": "587f14c4a779a3ee041076737eb7f438e253c51043d79e6174c20582e7e2d9e5",
+      "url": "https://geoportal.infrasa.gov.br/wp-content/uploads/2026/10/Instalacoes_portuarias-1.zip"
+    },
+    "cnes/cnes_estabelecimentos_csv.zip": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:04:59.093522Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos SUS",
+      "orgao": "Ministério da Saúde / DATASUS (OpenDataSUS)",
+      "sha256": "a5785e1693029f3dbaa95d3ad2292bd119c66a9b7dde35fa7cec3a4530cb677c",
+      "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CNES/cnes_estabelecimentos_csv.zip"
+    },
+    "cnes/cnes_leitos_cadastrados_2025_csv.zip": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:05:00.662759Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos SUS",
+      "orgao": "Ministério da Saúde / DATASUS (OpenDataSUS)",
+      "sha256": "20dd062fb0391f229a518c2f204b4d586ba9aa7028f65b19851aa80fe553b41a",
+      "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/saes/drac/CNES_Leito/csv/cnes_leitos_cadastrados_2025_csv.zip"
+    },
     "ibge_censo/sp_pop_2022.json": {
       "ano_ref": 2022,
       "feature_count": 645,
@@ -32,6 +68,60 @@
       "fetched_at": "2026-11-27T19:30:44.602402Z",
       "sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897",
       "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2035/v/37,513,517,6575,525/p/2021"
+    },
+    "inep_escolar/microdados_censo_escolar_2024.zip": {
+      "ano_ref": 2024,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T22:57:56.395985Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos INEP",
+      "orgao": "INEP / MEC",
+      "sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+      "url": "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip"
+    },
+    "inep_ideb/ideb_af_municipios_2025.zip": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:04:42.910552Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos INEP",
+      "orgao": "INEP / MEC",
+      "sha256": "5f81ae18d33567608f10551d4f563a6879afc0182ff28cfd81e913958a30a6b3",
+      "url": "https://download.inep.gov.br/ideb/resultados/divulgacao_anos_finais_municipios_2025.zip"
+    },
+    "inep_ideb/ideb_ai_municipios_2025.zip": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:03:47.825774Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos INEP",
+      "orgao": "INEP / MEC",
+      "sha256": "89100286327ab07a4b1318ba51974d62da90af334f663bedf6374cb67298a3e7",
+      "url": "https://download.inep.gov.br/ideb/resultados/divulgacao_anos_iniciais_municipios_2025.zip"
+    },
+    "inep_ideb/ideb_em_municipios_2025.zip": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:04:53.918196Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos INEP",
+      "orgao": "INEP / MEC",
+      "sha256": "f6ab7d7a5ebd28734f7f4a0e4494f93110ef864574dab1f09214a43cdff50c9e",
+      "url": "https://download.inep.gov.br/ideb/resultados/divulgacao_ensino_medio_municipios_2025.zip"
+    },
+    "inep_superior/microdados_censo_educacao_superior_2025.zip": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T23:03:17.004456Z",
+      "licenca": "CC BY-ND 3.0 / Dados Abertos INEP",
+      "orgao": "INEP / MEC",
+      "sha256": "c362533104a56eb80a1e2843207d774d39feb07a0c27c5f3e6d8c265bac5191c",
+      "url": "https://download.inep.gov.br/microdados/microdados_censo_educacao_superior_2025.zip"
+    },
+    "rais/RAIS_ESTAB_PUB_2025.7z": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-27T22:57:12.814396Z",
+      "licenca": "Dados Abertos Gov.br",
+      "orgao": "MTE / PDET",
+      "sha256": "6844c2fbd7b9e74354f616a18180001f5d5e4cc73425128a9008a217a49f4457",
+      "url": "ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2025/RAIS_ESTAB_PUB.7z"
     }
   }
 }

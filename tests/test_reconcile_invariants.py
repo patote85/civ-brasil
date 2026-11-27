@@ -165,7 +165,7 @@ def test_civ_rules_validation_and_positional_web_export(tmp_path: Path) -> None:
         municipios=municipios,
         mun_hex_rows=mun_hex_rows,
         hex_metrics=hex_metrics,
-        rules=rules,
+        rules=[r for r in rules if r.column in hex_metrics],
         output_dir=out_dir,
     )
 

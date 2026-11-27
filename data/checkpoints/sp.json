@@ -1,16 +1,37 @@
 {
+  "rais_stats": {
+    "estabelecimentos_sp": 3212529,
+    "missing_cnae": 0,
+    "rows_skipped": 0,
+    "rows_sp": 3212529,
+    "vinculos_sp": 16158390
+  },
   "stage_1_raw": {
+    "aneel_siga_sha256": "9f295b39ba6d237f96cced5b2dbc254296d86826e198b1a0369fbd91f1ff5278",
+    "antaq_sha256": "587f14c4a779a3ee041076737eb7f438e253c51043d79e6174c20582e7e2d9e5",
     "censo_sha256": "c9c20a3aa61ea3e19ca9d38d13c2fd4a8fb49caba0b19ccac2ff0094c2f7abb9",
+    "cnes_estab_sha256": "a5785e1693029f3dbaa95d3ad2292bd119c66a9b7dde35fa7cec3a4530cb677c",
+    "cnes_leitos_sha256": "20dd062fb0391f229a518c2f204b4d586ba9aa7028f65b19851aa80fe553b41a",
     "grade_sha256": "944579f28d7dab3184b400d6badca808de98517ef11af160314696159616870a",
-    "no_download_ratio": "4/4",
-    "pib_sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897"
+    "inep_escolar_sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+    "inep_superior_sha256": "c362533104a56eb80a1e2843207d774d39feb07a0c27c5f3e6d8c265bac5191c",
+    "no_download_ratio": "11/11",
+    "pib_sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897",
+    "rais_sha256": "6844c2fbd7b9e74354f616a18180001f5d5e4cc73425128a9008a217a49f4457"
   },
   "stage_2_municipal": {
+    "cnes_estabelecimentos_total": 155367,
+    "cnes_leitos_total": 115512,
+    "escolas_total": 30746,
+    "matriculas_basica_total": 9998443,
+    "matriculas_superior_total": 1312418,
     "municipios": 645,
     "pib_total_mil": 2719751233.0,
     "pop_total": 44411238,
+    "rais_cnae_divisions": 87,
     "vab_agro_total_mil": 46193516.0,
-    "vab_ind_total_mil": 518292544.0
+    "vab_ind_total_mil": 518292544.0,
+    "vinculos_total": 16158390
   },
   "stage_3_dasymetric": {
     "area_fallback_count": 0,
@@ -20,18 +41,32 @@
   },
   "stage_4_hex_base": {
     "hex_count": 1091,
+    "leitos_total": 115512.0,
+    "matriculas_superior_total": 1312418.0,
     "pib_total_mil": 2719751233.0,
+    "points_accepted": {
+      "hospitais": 1713,
+      "portos": 10,
+      "usinas": 261
+    },
+    "points_rejected": 174,
     "pop_total": 44411238.0,
-    "vab_agro_total_mil": 46193516.0,
-    "vab_ind_total_mil": 518292544.0
+    "potencia_mw_total": 22628.46,
+    "vinculos_total": 16158390.0
   },
   "stage_5_web_json": {
+    "cities.json": 81562,
     "grid.json": 65715,
     "lentes/cidadaos.json": 8766,
+    "lentes/ciencia_educacao.json": 5848,
     "lentes/comida.json": 9294,
-    "lentes/index.json": 1374,
+    "lentes/distritos.json": 6190,
+    "lentes/index.json": 3014,
+    "lentes/infra.json": 4710,
     "lentes/ouro.json": 10489,
-    "lentes/producao.json": 9561
+    "lentes/producao.json": 9561,
+    "lentes/saude.json": 5945,
+    "pontos.json": 60345
   },
   "uf": "SP"
 }
