@@ -194,50 +194,52 @@ def _verify_pr2_reconciliation_and_web(
     mun_base_path = sp_processed_dir / "mun_base.parquet"
     hex_base_path = sp_processed_dir / "hex_base.parquet"
 
-    if not (weights_path.is_file() and mun_base_path.is_file() and hex_base_path.is_file()):
-        return
-
-    w_table = pq.read_table(weights_path)
-    w_by_mun: dict[str, float] = defaultdict(float)
-    for cd, w in zip(
-        w_table.column("cd_mun").to_pylist(),
-        w_table.column("weight").to_pylist(),
-        strict=True,
-    ):
-        wf = float(w)
-        if wf < 0.0:
-            errors.append(f"Peso dasimétrico negativo para {cd}: {wf}")
-        w_by_mun[str(cd)] += wf
-    if len(w_by_mun) != EXPECTED_SP_MUNICIPIOS:
-        errors.append(f"dasymetric_weights tem {len(w_by_mun)} municípios")
-    for cd, total_w in w_by_mun.items():
-        if not math.isclose(total_w, 1.0, abs_tol=1e-9):
-            errors.append(f"Soma de w inválida para {cd}: {total_w}")
-
-    mun_table = pq.read_table(mun_base_path)
-    hex_table = pq.read_table(hex_base_path)
-    if mun_table.num_rows != EXPECTED_SP_MUNICIPIOS:
-        errors.append(f"mun_base.parquet tem {mun_table.num_rows} linhas")
-    if hex_table.num_rows != expected_hex_count:
-        errors.append(f"hex_base.parquet tem {hex_table.num_rows} linhas")
+    missing_parquets = [p for p in (weights_path, mun_base_path, hex_base_path) if not p.is_file()]
+    for path in missing_parquets:
+        errors.append(f"Parquet PR 2 ausente: {path}")
 
     mun_totals: dict[str, float] = {}
-    for col in ("pop", "pib", "vab_agro", "vab_ind", "vab_serv", "vab_adm"):
-        m_vals = [float(v) for v in mun_table.column(col).to_pylist()]
-        h_vals = [float(v) for v in hex_table.column(col).to_pylist()]
-        if any(v < 0.0 for v in m_vals) or any(v < 0.0 for v in h_vals):
-            errors.append(f"Valor negativo encontrado na coluna {col}")
-        m_sum = sum(m_vals)
-        h_sum = sum(h_vals)
-        mun_totals[col] = m_sum
-        if not math.isclose(h_sum, m_sum, rel_tol=1e-6):
-            errors.append(f"Conservação quebrada em {col}: hex={h_sum} vs mun={m_sum}")
+    if not missing_parquets:
+        w_table = pq.read_table(weights_path)
+        w_by_mun: dict[str, float] = defaultdict(float)
+        for cd, w in zip(
+            w_table.column("cd_mun").to_pylist(),
+            w_table.column("weight").to_pylist(),
+            strict=True,
+        ):
+            wf = float(w)
+            if wf < 0.0:
+                errors.append(f"Peso dasimétrico negativo para {cd}: {wf}")
+            w_by_mun[str(cd)] += wf
+        if len(w_by_mun) != EXPECTED_SP_MUNICIPIOS:
+            errors.append(f"dasymetric_weights tem {len(w_by_mun)} municípios")
+        for cd, total_w in w_by_mun.items():
+            if not math.isclose(total_w, 1.0, abs_tol=1e-9):
+                errors.append(f"Soma de w inválida para {cd}: {total_w}")
 
-    pop_rel = abs(mun_totals["pop"] - EXPECTED_SP_POP_2022) / EXPECTED_SP_POP_2022
-    if pop_rel > 0.001:
-        errors.append(
-            f"População SP ({mun_totals['pop']:.0f}) fora de ±0,1% de {EXPECTED_SP_POP_2022}"
-        )
+        mun_table = pq.read_table(mun_base_path)
+        hex_table = pq.read_table(hex_base_path)
+        if mun_table.num_rows != EXPECTED_SP_MUNICIPIOS:
+            errors.append(f"mun_base.parquet tem {mun_table.num_rows} linhas")
+        if hex_table.num_rows != expected_hex_count:
+            errors.append(f"hex_base.parquet tem {hex_table.num_rows} linhas")
+
+        for col in ("pop", "pib", "vab_agro", "vab_ind", "vab_serv", "vab_adm"):
+            m_vals = [float(v) for v in mun_table.column(col).to_pylist()]
+            h_vals = [float(v) for v in hex_table.column(col).to_pylist()]
+            if any(v < 0.0 for v in m_vals) or any(v < 0.0 for v in h_vals):
+                errors.append(f"Valor negativo encontrado na coluna {col}")
+            m_sum = sum(m_vals)
+            h_sum = sum(h_vals)
+            mun_totals[col] = m_sum
+            if not math.isclose(h_sum, m_sum, rel_tol=1e-6):
+                errors.append(f"Conservação quebrada em {col}: hex={h_sum} vs mun={m_sum}")
+
+        pop_rel = abs(mun_totals["pop"] - EXPECTED_SP_POP_2022) / EXPECTED_SP_POP_2022
+        if pop_rel > 0.001:
+            errors.append(
+                f"População SP ({mun_totals['pop']:.0f}) fora de ±0,1% de {EXPECTED_SP_POP_2022}"
+            )
 
     grid_public = sp_public_dir / "grid.json"
     grid_dist = dist_dir / "data" / "sp" / "grid.json"
@@ -246,14 +248,21 @@ def _verify_pr2_reconciliation_and_web(
     for candidate in (grid_public, grid_dist, index_public, index_dist):
         if not candidate.is_file():
             errors.append(f"Artefato web PR 2 ausente: {candidate}")
-    if not (grid_public.is_file() and grid_dist.is_file() and index_public.is_file()):
+
+    if grid_public.is_file():
+        if grid_dist.is_file() and grid_public.read_bytes() != grid_dist.read_bytes():
+            errors.append("web/dist/data/sp/grid.json diverge de web/public/data/sp/grid.json")
+        if grid_public.stat().st_size > MAX_SP_GRID_JSON_BYTES:
+            errors.append(
+                f"grid.json ({grid_public.stat().st_size} B) excede {MAX_SP_GRID_JSON_BYTES} B"
+            )
+
+    if not index_public.is_file():
         return
 
-    if grid_public.read_bytes() != grid_dist.read_bytes():
-        errors.append("web/dist/data/sp/grid.json diverge de web/public/data/sp/grid.json")
-    if grid_public.stat().st_size > MAX_SP_GRID_JSON_BYTES:
+    if index_dist.is_file() and index_public.read_bytes() != index_dist.read_bytes():
         errors.append(
-            f"grid.json ({grid_public.stat().st_size} B) excede {MAX_SP_GRID_JSON_BYTES} B"
+            "web/dist/data/sp/lentes/index.json diverge de web/public/data/sp/lentes/index.json"
         )
 
     index_data = json.loads(index_public.read_text(encoding="utf-8"))

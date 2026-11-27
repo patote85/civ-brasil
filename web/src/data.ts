@@ -172,6 +172,8 @@ export function normalizeSearchText(text: string): string {
 export interface MunicipalityMatch {
   readonly nome: string;
   readonly hexIndex: number;
+  readonly x: number;
+  readonly y: number;
 }
 
 export function searchMunicipalities(
@@ -180,16 +182,57 @@ export function searchMunicipalities(
   limit = 20,
 ): MunicipalityMatch[] {
   const needle = normalizeSearchText(query);
+  const hubByName = new Map(grid.hubs.map((hub) => [normalizeSearchText(hub.nome), hub]));
   const matches: MunicipalityMatch[] = [];
   for (let mIdx = 0; mIdx < grid.municipios.length; mIdx++) {
     const nome = grid.municipios[mIdx];
     if (!nome) continue;
-    if (needle && !normalizeSearchText(nome).includes(needle)) continue;
-    const hexIndex = grid.mun_idx.findIndex((ids) => ids.includes(mIdx));
-    if (hexIndex >= 0) {
-      matches.push({ nome, hexIndex });
-      if (matches.length >= limit) break;
+    const normalizedName = normalizeSearchText(nome);
+    if (needle && !normalizedName.includes(needle)) continue;
+
+    const hexIndices: number[] = [];
+    for (let hIdx = 0; hIdx < grid.mun_idx.length; hIdx++) {
+      const ids = grid.mun_idx[hIdx];
+      if (ids?.includes(mIdx)) {
+        hexIndices.push(hIdx);
+      }
     }
+    if (hexIndices.length === 0) continue;
+
+    const hub = hubByName.get(normalizedName);
+    let targetX = 0;
+    let targetY = 0;
+    if (hub) {
+      targetX = hub.x;
+      targetY = hub.y;
+    } else {
+      for (const hIdx of hexIndices) {
+        targetX += grid.cx[hIdx] ?? 0;
+        targetY += grid.cy[hIdx] ?? 0;
+      }
+      targetX /= hexIndices.length;
+      targetY /= hexIndices.length;
+    }
+
+    let bestHex = hexIndices[0] ?? 0;
+    let bestDistSq = Number.POSITIVE_INFINITY;
+    for (const hIdx of hexIndices) {
+      const dx = (grid.cx[hIdx] ?? 0) - targetX;
+      const dy = (grid.cy[hIdx] ?? 0) - targetY;
+      const distSq = dx * dx + dy * dy;
+      if (distSq < bestDistSq) {
+        bestDistSq = distSq;
+        bestHex = hIdx;
+      }
+    }
+
+    matches.push({
+      nome,
+      hexIndex: bestHex,
+      x: hub ? hub.x : (grid.cx[bestHex] ?? 500),
+      y: hub ? hub.y : (grid.cy[bestHex] ?? 350),
+    });
+    if (matches.length >= limit) break;
   }
   return matches;
 }
