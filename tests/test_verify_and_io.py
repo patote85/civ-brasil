@@ -88,3 +88,48 @@ def test_verify_artifacts_rejects_missing_build_and_bad_hex_count(tmp_path: Path
         parquet_path=tmp_path / "none.parquet",
     )
     assert any("Contagem de hexes fora do invariante" in err for err in errors)
+
+
+def test_verify_artifacts_checks_pr2_web_even_when_parquets_missing(tmp_path: Path) -> None:
+    dist_dir = tmp_path / "dist"
+    (dist_dir / "assets").mkdir(parents=True)
+    (dist_dir / "data").mkdir(parents=True)
+    (dist_dir / "index.html").write_text("<html></html>", encoding="utf-8")
+    (dist_dir / "assets" / "index.js").write_text("console.log(1);", encoding="utf-8")
+
+    payload = json.dumps(
+        {
+            "resolution": 5,
+            "state": "SP",
+            "hex_count": 1,
+            "total_area_km2": 100.0,
+            "hexes": [
+                {
+                    "h3": "85a81003fffffff",
+                    "municipios": ["Adamantina"],
+                    "cd_muns": ["3500105"],
+                    "municipio_count": 1,
+                    "area_km2": 100.0,
+                }
+            ],
+        }
+    )
+    public_json = tmp_path / "sp_hex.json"
+    public_json.write_text(payload, encoding="utf-8")
+    (dist_dir / "data" / "sp_hex.json").write_text(payload, encoding="utf-8")
+
+    sp_public_dir = tmp_path / "public_sp"
+    (sp_public_dir / "lentes").mkdir(parents=True)
+    (sp_public_dir / "grid.json").write_text('{"hex_count": 1}', encoding="utf-8")
+    (sp_public_dir / "lentes" / "index.json").write_text('{"lenses": []}', encoding="utf-8")
+
+    errors = verify_artifacts(
+        dist_dir=dist_dir,
+        public_json=public_json,
+        parquet_path=tmp_path / "none.parquet",
+        sp_processed_dir=tmp_path / "missing_parquets",
+        sp_public_dir=sp_public_dir,
+    )
+    assert any("Parquet PR 2 ausente" in err for err in errors)
+    assert any("Artefato web PR 2 ausente" in err for err in errors)
+
