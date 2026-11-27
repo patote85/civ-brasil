@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+node_modules/
+web/dist/
+.env
+.env.*
+.vercel/
+agy-*.log
+*-stream.jsonl
