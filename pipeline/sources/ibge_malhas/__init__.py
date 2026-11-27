@@ -1,0 +1,33 @@
+from pipeline.sources.ibge_malhas.loader import (
+    DEFAULT_RAW_ROOT,
+    MALHA_FILENAME,
+    MUNICIPIOS_FILENAME,
+    SP_MALHA_URL,
+    SP_MUNICIPIOS_URL,
+    Fetcher,
+    FetchError,
+    IntegrityError,
+    ManifestCorruptedError,
+    Municipio,
+    SyncResult,
+    ensure_sp_raw_files,
+    get_raw_root,
+    load_municipios_from_files,
+)
+
+__all__ = [
+    "DEFAULT_RAW_ROOT",
+    "MALHA_FILENAME",
+    "MUNICIPIOS_FILENAME",
+    "SP_MALHA_URL",
+    "SP_MUNICIPIOS_URL",
+    "Fetcher",
+    "FetchError",
+    "IntegrityError",
+    "ManifestCorruptedError",
+    "Municipio",
+    "SyncResult",
+    "ensure_sp_raw_files",
+    "get_raw_root",
+    "load_municipios_from_files",
+]

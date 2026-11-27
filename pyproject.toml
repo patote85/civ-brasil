@@ -1,0 +1,60 @@
+[project]
+name = "civ-brasil"
+version = "0.1.0"
+description = "Brasil em linguagem de Civilization com dados públicos reconciliados em grade hexagonal H3"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "h3==4.5.1",
+    "pyarrow==26.0.1",
+    "pyproj==3.8.0",
+    "shapely==2.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "import-linter==2.17",
+    "mypy==2.4.1",
+    "pytest==9.2.0",
+    "ruff==0.17.6",
+    "types-shapely==2.2.0.20261122",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "W"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["pipeline", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["h3", "h3.*", "pyarrow", "pyarrow.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.importlinter]
+root_packages = ["pipeline"]
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Sources não importam grid nem reconcile"
+type = "forbidden"
+source_modules = ["pipeline.sources"]
+forbidden_modules = ["pipeline.grid", "pipeline.reconcile"]
+
+[[tool.importlinter.contracts]]
+name = "Pipeline não importa web"
+type = "forbidden"
+source_modules = ["pipeline"]
+forbidden_modules = ["web"]

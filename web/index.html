@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>civ-brasil — Grade H3 de São Paulo</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <h1>civ-brasil</h1>
+          <span class="subtitle">São Paulo · Grade H3 resolução 5</span>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite">
+          Carregando grade hexagonal…
+        </div>
+      </header>
+      <main class="map-stage">
+        <div id="map-container" class="map-container" aria-label="Mapa hexagonal de São Paulo"></div>
+        <aside id="legend" class="legend" aria-label="Legenda de municípios por hexágono"></aside>
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
