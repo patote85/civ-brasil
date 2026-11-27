@@ -1,0 +1,30 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"ID_UNICO": "G1", "TOTAL": 22000},
+      "geometry": {"type": "Polygon", "coordinates": [[[-51.11, -21.70], [-51.05, -21.70], [-51.05, -21.64], [-51.11, -21.64], [-51.11, -21.70]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"ID_UNICO": "G2", "TOTAL": 12000},
+      "geometry": {"type": "Polygon", "coordinates": [[[-51.05, -21.55], [-50.94, -21.55], [-50.94, -21.46], [-51.05, -21.46], [-51.05, -21.55]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"ID_UNICO": "G3", "TOTAL": 4300},
+      "geometry": {"type": "Polygon", "coordinates": [[[-49.68, -21.31], [-49.62, -21.31], [-49.62, -21.25], [-49.68, -21.25], [-49.68, -21.31]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"ID_UNICO": "G4", "TOTAL": 25000},
+      "geometry": {"type": "Polygon", "coordinates": [[[-47.02, -22.07], [-46.94, -22.07], [-46.94, -22.01], [-47.02, -22.01], [-47.02, -22.07]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"ID_UNICO": "G5", "TOTAL": 7000},
+      "geometry": {"type": "Polygon", "coordinates": [[[-47.18, -22.06], [-47.10, -22.06], [-47.10, -22.00], [-47.18, -22.00], [-47.18, -22.06]]]}
+    }
+  ]
+}

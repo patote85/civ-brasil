@@ -1,0 +1,23 @@
+[
+  {"NC":"Nível Territorial (Código)","NN":"Nível Territorial","MC":"Unidade de Medida (Código)","MN":"Unidade de Medida","V":"Valor","D1C":"Município (Código)","D1N":"Município","D2C":"Variável (Código)","D2N":"Variável","D3C":"Ano (Código)","D3N":"Ano"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"1350000","D1C":"3500105","D1N":"Adamantina (SP)","D2C":"37","D2N":"PIB","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"120000","D1C":"3500105","D1N":"Adamantina (SP)","D2C":"513","D2N":"VAB agro","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"210000","D1C":"3500105","D1N":"Adamantina (SP)","D2C":"517","D2N":"VAB ind","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"720000","D1C":"3500105","D1N":"Adamantina (SP)","D2C":"6575","D2N":"VAB serv","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"180000","D1C":"3500105","D1N":"Adamantina (SP)","D2C":"525","D2N":"VAB adm","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"195000","D1C":"3500204","D1N":"Adolfo (SP)","D2C":"37","D2N":"PIB","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"55000","D1C":"3500204","D1N":"Adolfo (SP)","D2C":"513","D2N":"VAB agro","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"30000","D1C":"3500204","D1N":"Adolfo (SP)","D2C":"517","D2N":"VAB ind","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"70000","D1C":"3500204","D1N":"Adolfo (SP)","D2C":"6575","D2N":"VAB serv","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"28000","D1C":"3500204","D1N":"Adolfo (SP)","D2C":"525","D2N":"VAB adm","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"1120000","D1C":"3500303","D1N":"Aguaí (SP)","D2C":"37","D2N":"PIB","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"210000","D1C":"3500303","D1N":"Aguaí (SP)","D2C":"513","D2N":"VAB agro","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"290000","D1C":"3500303","D1N":"Aguaí (SP)","D2C":"517","D2N":"VAB ind","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"430000","D1C":"3500303","D1N":"Aguaí (SP)","D2C":"6575","D2N":"VAB serv","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"115000","D1C":"3500303","D1N":"Aguaí (SP)","D2C":"525","D2N":"VAB adm","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"260000","D1C":"3500402","D1N":"Águas da Prata (SP)","D2C":"37","D2N":"PIB","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"42000","D1C":"3500402","D1N":"Águas da Prata (SP)","D2C":"513","D2N":"VAB agro","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"58000","D1C":"3500402","D1N":"Águas da Prata (SP)","D2C":"517","D2N":"VAB ind","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"105000","D1C":"3500402","D1N":"Águas da Prata (SP)","D2C":"6575","D2N":"VAB serv","D3C":"2021","D3N":"2021"},
+  {"NC":"6","NN":"Município","MC":"40","MN":"Mil Reais","V":"39000","D1C":"3500402","D1N":"Águas da Prata (SP)","D2C":"525","D2N":"VAB adm","D3C":"2021","D3N":"2021"}
+]
