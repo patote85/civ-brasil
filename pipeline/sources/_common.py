@@ -21,7 +21,8 @@ from pipeline.types import CdMun
 
 DEFAULT_RAW_ROOT = Path("data/raw")
 MANIFEST_PATH = Path("data/manifest.json")
-RNP_INTERMEDIATE_CERT_URL = "http://secure.globalsign.com/cacert/rnpicpedugr46ovtlsca2025.crt"
+RNP_INTERMEDIATE_CERT_URL = "https://secure.globalsign.com/cacert/rnpicpedugr46ovtlsca2025.crt"
+RNP_INTERMEDIATE_CERT_SHA256 = "e10747d4da7bab09cba9952f019d3534cb9fba070bf13d8791b1699cd2ff59dd"
 
 Fetcher = Callable[[str], bytes]
 StreamDownloader = Callable[[str, Path], None]
@@ -108,8 +109,21 @@ def build_inep_ssl_context(raw_root: Path | None = None) -> ssl.SSLContext:
     cert_path = resolved_root / "_certs" / "rnpicpedugr46ovtlsca2025.crt"
     if not cert_path.is_file():
         der = default_fetcher(RNP_INTERMEDIATE_CERT_URL)
+        digest = sha256_bytes(der)
+        if digest != RNP_INTERMEDIATE_CERT_SHA256:
+            raise IntegrityError(
+                f"SHA-256 inesperado para certificado RNP: {digest} != "
+                f"{RNP_INTERMEDIATE_CERT_SHA256}"
+            )
         atomic_write_bytes(cert_path, der)
-    pem = ssl.DER_cert_to_PEM_cert(cert_path.read_bytes())
+    der_bytes = cert_path.read_bytes()
+    cached_digest = sha256_bytes(der_bytes)
+    if cached_digest != RNP_INTERMEDIATE_CERT_SHA256:
+        raise IntegrityError(
+            f"SHA-256 inválido no cache do certificado RNP: {cached_digest} != "
+            f"{RNP_INTERMEDIATE_CERT_SHA256}"
+        )
+    pem = ssl.DER_cert_to_PEM_cert(der_bytes)
     ctx = ssl.create_default_context()
     ctx.load_verify_locations(cadata=pem)
     return ctx

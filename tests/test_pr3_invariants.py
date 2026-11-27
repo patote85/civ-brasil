@@ -6,6 +6,7 @@ import zipfile
 from pathlib import Path
 
 import openpyxl
+import pytest
 
 from pipeline.civ.districts import compute_location_quotients
 from pipeline.civ.rules import load_civ_rules
@@ -281,3 +282,39 @@ def test_civ_rules_contains_all_pr3_lenses() -> None:
         "infra",
     }
     assert expected.issubset(ids)
+
+
+def test_cnes_partial_id_match_preserves_full_municipal_beds(tmp_path: Path) -> None:
+    estab_csv = tmp_path / "estab.csv"
+    estab_csv.write_text(
+        "CO_CNES;NO_FANTASIA;CO_IBGE;TP_UNIDADE;NU_LATITUDE;NU_LONGITUDE\n"
+        "1000001;Hospital A;350010;05;-21.68;-51.07\n",
+        encoding="latin-1",
+    )
+    leitos_csv = tmp_path / "leitos.csv"
+    leitos_csv.write_text(
+        "COMPETENCIA;IBGE;CNES;QTDE_EXISTENTE\n"
+        "202512;350010;1000001;80\n"
+        "202512;350010;9999999;45\n",
+        encoding="latin-1",
+    )
+    cnes_mun, _, _ = load_cnes_from_files(
+        estab_csv, leitos_csv, uf="SP", valid_cd_muns={CdMun("3500105")}
+    )
+    assert cnes_mun[CdMun("3500105")].leitos == 125
+
+
+def test_inep_ssl_context_rejects_tampered_cached_cert(tmp_path: Path) -> None:
+    from pipeline.sources._common import (
+        RNP_INTERMEDIATE_CERT_URL,
+        IntegrityError,
+        build_inep_ssl_context,
+    )
+
+    assert RNP_INTERMEDIATE_CERT_URL.startswith("https://")
+    cert_dir = tmp_path / "_certs"
+    cert_dir.mkdir(parents=True)
+    (cert_dir / "rnpicpedugr46ovtlsca2025.crt").write_bytes(b"forged-cert-bytes")
+    with pytest.raises(IntegrityError):
+        build_inep_ssl_context(raw_root=tmp_path)
+

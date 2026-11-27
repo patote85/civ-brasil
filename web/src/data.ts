@@ -629,3 +629,13 @@ export function parseCitiesDataset(raw: unknown): CitiesDataset {
   return { uf: raw.uf, cities };
 }
 
+export function tryParseOptional<T>(raw: unknown, parser: (value: unknown) => T): T | null {
+  if (raw === null || raw === undefined) return null;
+  try {
+    return parser(raw);
+  } catch {
+    return null;
+  }
+}
+
+
