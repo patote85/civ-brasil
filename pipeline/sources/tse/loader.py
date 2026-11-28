@@ -23,7 +23,7 @@ TSE_2024_URL = (
     "detalhe_votacao_munzona/detalhe_votacao_munzona_2024.zip"
 )
 
-# Official spelling divergences between TSE 2024 and IBGE municipal names in SP.
+# Official spelling divergences between TSE 2024 and IBGE municipal names across Brazil.
 TSE_NAME_ALIASES: dict[str, str] = {
     "moji mirim": "mogi mirim",
     "moji guacu": "mogi guacu",
@@ -31,7 +31,25 @@ TSE_NAME_ALIASES: dict[str, str] = {
     "biritiba mirim": "biritiba mirim",
     "embu": "embu das artes",
     "florinia": "florinea",
+    "camaca": "camacan",
+    "governador edison lobao": "ribeiraozinho do maranhao",
+    "barao de monte alto": "barao do monte alto",
+    "dona eusebia": "dona euzebia",
+    "sao thome das letras": "sao tome das letras",
+    "santo antonio do leverger": "santo antonio de leverger",
+    "eldorado dos carajas": "eldorado do carajas",
+    "munhoz de mello": "munhoz de melo",
+    "boa saude": "januario cicco",
+    "alvorada do oeste": "alvorada d oeste",
+    "espigao do oeste": "espigao d oeste",
+    "sao luiz": "sao luiz do anaua",
+    "amparo de sao francisco": "amparo do sao francisco",
 }
+
+TSE_POST_CENSO_2022_NAMES: frozenset[str] = frozenset({"boa esperanca do norte"})
+TSE_NO_MUNICIPAL_ELECTION_CODES: frozenset[CdMun] = frozenset(
+    {CdMun("2605459"), CdMun("5300108")}
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,7 +95,8 @@ def _resolve_mun(raw_name: str, lookup: Mapping[str, CdMun]) -> CdMun | None:
     if alias and alias in lookup:
         return lookup[alias]
     # Also match apostrophe/hyphen spacing differences (e.g., D'OESTE vs D OESTE).
-    compact = "".join(ch for ch in norm if ch.isalnum())
+    target = alias or norm
+    compact = "".join(ch for ch in target if ch.isalnum())
     for candidate_key, cd in lookup.items():
         if "".join(ch for ch in candidate_key if ch.isalnum()) == compact:
             return cd
@@ -140,6 +159,8 @@ def _parse_tse_stream(
         raw_mun = row[mun_idx].strip().strip('"')
         cd = _resolve_mun(raw_mun, lookup)
         if cd is None:
+            if normalize_pt_name(raw_mun) in TSE_POST_CENSO_2022_NAMES:
+                continue
             unmatched.add(raw_mun)
             continue
 
@@ -176,13 +197,14 @@ def _parse_tse_stream(
             f"Municípios TSE sem correspondência IBGE ({len(unmatched)}): {sorted(unmatched)[:10]}"
         )
 
-    missing = set(mun_names_by_cd.keys()) - set(agg.keys())
+    expected_cds = set(mun_names_by_cd.keys()) - TSE_NO_MUNICIPAL_ELECTION_CODES
+    missing = expected_cds - set(agg.keys())
     if missing:
         missing_names = [mun_names_by_cd[c] for c in sorted(missing)[:10]]
         raise ValueError(f"Municípios IBGE ausentes no TSE ({len(missing)}): {missing_names}")
 
     records: dict[CdMun, TseMunRecord] = {}
-    for cd in sorted(mun_names_by_cd.keys()):
+    for cd in sorted(expected_cds):
         aptos, comp, abst, validos, brancos, nulos, sub_jud = agg[cd]
         pct = round(100.0 * comp / aptos, 2) if aptos > 0 else 0.0
         records[cd] = TseMunRecord(

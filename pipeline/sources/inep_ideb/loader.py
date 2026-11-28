@@ -59,7 +59,7 @@ def _parse_ideb_value(raw: object) -> float | None:
 
 def _read_ideb_stage_xlsx(
     path: Path,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> dict[CdMun, float | None]:
     if path.suffix.lower() == ".zip":
@@ -87,7 +87,7 @@ def _read_ideb_stage_xlsx(
         val_idx = -1
         header_found = False
 
-        uf_prefix = UF_IBGE_CODES[uf]
+        uf_prefix = UF_IBGE_CODES[uf] if uf is not None else ""
         scores: dict[CdMun, float | None] = {}
 
         for row in ws.iter_rows(values_only=True):
@@ -113,7 +113,7 @@ def _read_ideb_stage_xlsx(
             if raw_mun is None:
                 continue
             mun_str = "".join(ch for ch in str(raw_mun).split(".")[0] if ch.isdigit())
-            if not mun_str.startswith(uf_prefix):
+            if uf_prefix and not mun_str.startswith(uf_prefix):
                 continue
             cd = CdMun(mun_str)
             if cd not in valid_cd_muns:
@@ -134,7 +134,7 @@ def load_inep_ideb_from_files(
     ai_path: Path,
     af_path: Path,
     em_path: Path,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> dict[CdMun, IdebRecord]:
     ai = _read_ideb_stage_xlsx(ai_path, uf=uf, valid_cd_muns=valid_cd_muns)

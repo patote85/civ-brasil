@@ -130,10 +130,10 @@ def test_real_br_sources_checkpoint_and_parquet_invariants() -> None:
     cds = tbl.column("cd_mun").to_pylist()
     assert len(set(cds)) == 5570
 
-    # IDHM 2010 must have 5,565 populated + 5 post-2010 municipalities explicitly null
+    # IDHM 2010: 5 post-2010 municipalities (+ Nazária/PI in OData4) explicitly null
     idhm_vals = tbl.column("idhm_2010").to_pylist()
     non_null_idhm = [v for v in idhm_vals if v is not None]
-    assert len(non_null_idhm) == 5565
+    assert 5564 <= len(non_null_idhm) <= 5565
     assert all(0.0 <= float(v) <= 1.0 for v in non_null_idhm)
 
     # Sanitation must cover all 5,570 municipalities in [0, 100]
