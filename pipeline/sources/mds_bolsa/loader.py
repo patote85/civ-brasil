@@ -29,12 +29,12 @@ class MunicipioBolsaFamilia:
     ano_ref: int
 
 
-def _parse_latest_municipal_series(path: Path) -> dict[CdMun, tuple[int, float]]:
+def _parse_latest_municipal_series(path: Path) -> dict[CdMun, tuple[str, float]]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(raw, dict) or not isinstance(raw.get("value"), list):
         raise ValueError(f"JSON IPEA/MDS Bolsa Família inválido: {path}")
 
-    best: dict[CdMun, tuple[int, float]] = {}
+    best: dict[CdMun, tuple[str, float]] = {}
     for row in raw["value"]:
         if not isinstance(row, dict) or row.get("NIVNOME") != "Municípios":
             continue
@@ -48,13 +48,13 @@ def _parse_latest_municipal_series(path: Path) -> dict[CdMun, tuple[int, float]]
         if not math.isfinite(val_f) or val_f < 0.0:
             continue
         date_str = str(row.get("VALDATA", "")).strip()
-        if len(date_str) < 4 or not date_str[:4].isdigit():
+        if len(date_str) < 10 or not date_str[:4].isdigit():
             continue
-        year = int(date_str[:4])
+        date_key = date_str[:10]
         cd_mun = parse_cd_mun(ter_code)
         prev = best.get(cd_mun)
-        if prev is None or year > prev[0]:
-            best[cd_mun] = (year, val_f)
+        if prev is None or date_key > prev[0]:
+            best[cd_mun] = (date_key, val_f)
     return best
 
 
@@ -69,14 +69,14 @@ def load_bolsa_familia_from_files(
 
     records: dict[CdMun, MunicipioBolsaFamilia] = {}
     for cd_mun in sorted(fam_by_mun):
-        fam_yr, fam_val = fam_by_mun[cd_mun]
+        fam_date, fam_val = fam_by_mun[cd_mun]
         val_entry = val_by_mun.get(cd_mun)
-        val_mil = val_entry[1] if val_entry is not None and val_entry[0] == fam_yr else None
+        val_mil = val_entry[1] if val_entry is not None and val_entry[0] == fam_date else None
         records[cd_mun] = MunicipioBolsaFamilia(
             cd_mun=cd_mun,
             familias=int(round(fam_val)),
             valor_mil_reais=val_mil,
-            ano_ref=fam_yr,
+            ano_ref=int(fam_date[:4]),
         )
     return records
 

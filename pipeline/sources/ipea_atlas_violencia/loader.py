@@ -33,7 +33,7 @@ def load_atlas_violencia_from_file(path: Path) -> dict[CdMun, MunicipioAtlasViol
     if not isinstance(raw, dict) or not isinstance(raw.get("value"), list):
         raise ValueError(f"JSON IPEA Atlas da Violência inválido: {path}")
 
-    best_by_mun: dict[CdMun, tuple[int, float]] = {}
+    best_by_mun: dict[CdMun, tuple[str, float]] = {}
     for row in raw["value"]:
         if not isinstance(row, dict):
             continue
@@ -49,20 +49,20 @@ def load_atlas_violencia_from_file(path: Path) -> dict[CdMun, MunicipioAtlasViol
         if not math.isfinite(val_f) or val_f < 0.0:
             continue
         date_str = str(row.get("VALDATA", "")).strip()
-        if len(date_str) < 4 or not date_str[:4].isdigit():
+        if len(date_str) < 10 or not date_str[:4].isdigit():
             continue
-        year = int(date_str[:4])
+        date_key = date_str[:10]
         cd_mun = parse_cd_mun(ter_code)
         prev = best_by_mun.get(cd_mun)
-        if prev is None or year > prev[0]:
-            best_by_mun[cd_mun] = (year, val_f)
+        if prev is None or date_key > prev[0]:
+            best_by_mun[cd_mun] = (date_key, val_f)
 
     if not best_by_mun:
         raise ValueError(f"Nenhum registro municipal lido de {path}")
 
     return {
-        cd: MunicipioAtlasViolencia(cd_mun=cd, taxa_homic_100k=val, ano_ref=yr)
-        for cd, (yr, val) in sorted(best_by_mun.items())
+        cd: MunicipioAtlasViolencia(cd_mun=cd, taxa_homic_100k=val, ano_ref=int(date_key[:4]))
+        for cd, (date_key, val) in sorted(best_by_mun.items())
     }
 
 
