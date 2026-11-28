@@ -612,6 +612,15 @@ def run_uf_pipeline(
         city_profiles=city_profiles,
         explorer_rows=explorer_rows,
     )
+    from pipeline.civ.almanac import write_sources_catalog
+    from pipeline.sources._common import MANIFEST_PATH
+
+    web_bytes["sources.json"] = write_sources_catalog(
+        manifest_path=manifest_path if manifest_path is not None else MANIFEST_PATH,
+        rules_path=rules_path,
+        uf=uf,
+        output_path=Path("web/public/data") / uf_slug / "sources.json",
+    )
 
     write_stage_checkpoint(
         Path("data/checkpoints") / f"{uf_slug}.json",

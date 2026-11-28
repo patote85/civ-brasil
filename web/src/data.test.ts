@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { parseSourcesCatalog, renderAlmanac } from "./almanac/almanac";
 import { renderCityView } from "./city-view/cityView";
 import {
   bucketIndexForValue,
@@ -22,6 +23,7 @@ import {
 import { mountExplorer, safeLog10 } from "./explorer/explorer";
 import { computeMinimapViewportRect } from "./renderer";
 import { buildTooltipHtml, renderLegend, renderYieldsBar } from "./ui";
+import { parseUrlState, serializeUrlState } from "./url-state/urlState";
 
 const SAMPLE_GRID: UfGridDataset = {
   uf: "SP",
@@ -332,5 +334,63 @@ describe("PR 4 Explorer and sensitive lens formatting", () => {
     expect(pickedName).toBe("São José dos Campos");
   });
 });
+
+describe("PR 5 URL state and Almanac", () => {
+  it("serializes, parses, and clamps URL state safely", () => {
+    const href = serializeUrlState("https://civ-brasil.vercel.app/", {
+      lensId: "distritos",
+      mode: "civ",
+      pointsMode: "on",
+      cityCd: "3549904",
+      camX: 780.2,
+      camY: 420.5,
+      camZ: 2.8,
+    });
+    const parsed = parseUrlState(new URL(href).search);
+    expect(parsed).toEqual({
+      lensId: "distritos",
+      mode: "civ",
+      pointsMode: "on",
+      cityCd: "3549904",
+      camX: 780.2,
+      camY: 420.5,
+      camZ: 2.8,
+    });
+
+    const clamped = parseUrlState("?x=9999&y=-50&z=99&cidade=invalid&modo=other");
+    expect(clamped.camX).toBe(1000);
+    expect(clamped.camY).toBe(0);
+    expect(clamped.camZ).toBe(7.0);
+    expect(clamped.cityCd).toBeNull();
+    expect(clamped.mode).toBeNull();
+  });
+
+  it("parses sources.json and renders Almanac with UF yields and sources table", () => {
+    const catalog = parseSourcesCatalog({
+      uf: "SP",
+      source_count: 1,
+      lens_count: 11,
+      sources: [
+        {
+          key: "tse/detalhe_votacao_munzona_2024.zip",
+          orgao: "TSE",
+          licenca: "Dados Abertos TSE",
+          url: "https://cdn.tse.jus.br/test.zip",
+          ano_ref: 2024,
+          cobertura: "BR",
+          fetched_at: "2026-11-28T00:00:00Z",
+          sha256: "abcdef1234567890",
+        },
+      ],
+    });
+    const host = document.createElement("div");
+    renderAlmanac(host, SAMPLE_GRID, catalog, () => {});
+    expect(host.textContent).toContain("Almanaque & Fontes");
+    expect(host.textContent).toContain("TSE");
+    expect(host.textContent).toContain("Dados Abertos TSE");
+    expect(host.querySelectorAll('[data-testid="almanac-source-row"]')).toHaveLength(1);
+  });
+});
+
 
 
