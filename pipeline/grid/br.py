@@ -268,6 +268,10 @@ def export_br_res3_web_bundle(
             "pop": total_pop,
             "pib_mil": total_pib_mil,
             "pib_pc": round((total_pib_mil * 1000.0) / total_pop, 1) if total_pop > 0 else 0.0,
+            "vab_agro_mil": round(sum(h.pib_agro_mil for h in hexes), 1),
+            "vab_ind_mil": round(sum(h.pib_ind_mil for h in hexes), 1),
+            "vab_serv_mil": round(sum(h.pib_serv_mil for h in hexes), 1),
+            "vab_adm_mil": round(sum(h.pib_adm_mil for h in hexes), 1),
         },
         "hubs": hubs,
         "municipios": uf_labels,
@@ -313,6 +317,7 @@ def export_uf_compact_grid_and_base_lenses(
     pop_by_mun: Mapping[CdMun, float],
     pib_by_mun: Mapping[CdMun, float],
     out_dir: Path,
+    vab_totals: Mapping[str, float] | None = None,
 ) -> dict[str, Path]:
     grouped_rows: dict[str, list[MunicipioHexRow]] = defaultdict(list)
     for row in mun_hex_rows:
@@ -361,6 +366,7 @@ def export_uf_compact_grid_and_base_lenses(
     total_pop = int(round(sum(pop_by_hex.get(c, 0.0) for c in ordered_cells)))
     total_pib_mil = round(sum(pib_by_hex.get(c, 0.0) for c in ordered_cells), 1)
     total_area_km2 = round(sum(area_exact), 2)
+    vab = vab_totals or {}
 
     uf_slug = uf.lower()
     grid_path = out_dir / f"{uf_slug}_grid.json"
@@ -377,6 +383,10 @@ def export_uf_compact_grid_and_base_lenses(
                 "pop": total_pop,
                 "pib_mil": total_pib_mil,
                 "pib_pc": round((total_pib_mil * 1000.0) / total_pop, 1) if total_pop > 0 else 0.0,
+                "vab_agro_mil": round(float(vab.get("vab_agro_mil", 0.0)), 1),
+                "vab_ind_mil": round(float(vab.get("vab_ind_mil", 0.0)), 1),
+                "vab_serv_mil": round(float(vab.get("vab_serv_mil", 0.0)), 1),
+                "vab_adm_mil": round(float(vab.get("vab_adm_mil", 0.0)), 1),
             },
             "hubs": hubs,
             "municipios": unique_muns,

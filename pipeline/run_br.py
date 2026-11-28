@@ -179,6 +179,12 @@ def run_br_pipeline(
             pop_by_mun=pop_by_mun,
             pib_by_mun=pib_by_mun,
             out_dir=web_br_dir,
+            vab_totals={
+                "vab_agro_mil": sum(hex_agro.values()),
+                "vab_ind_mil": sum(hex_ind.values()),
+                "vab_serv_mil": sum(hex_serv.values()),
+                "vab_adm_mil": sum(hex_adm.values()),
+            },
         )
 
         ordered_hexes = sorted(area_by_hex.keys())
