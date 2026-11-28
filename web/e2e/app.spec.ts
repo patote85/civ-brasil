@@ -124,3 +124,36 @@ test("restores shareable URL state (lens, Civ mode, and City View)", async ({ pa
   await expect(page.locator("#btn-share")).toHaveText("Compartilhar", { timeout: 3000 });
   expect(consoleErrors).toEqual([]);
 });
+
+test("loads Brazil H3 res 3 overview and drills down on-demand into AM, PE, and SP", async ({
+  page,
+}) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (msg) => {
+    if (msg.type() === "error") consoleErrors.push(msg.text());
+  });
+  page.on("pageerror", (err) => consoleErrors.push(err.message));
+
+  await page.goto("/?uf=BR");
+  await expect(page.locator("#brand-subtitle")).toContainText("Brasil");
+  await expect(page.locator("#status")).toContainText("hexes");
+
+  // Load Amazonas (largest UF) on demand
+  await page.goto("/?uf=AM");
+  await expect(page.locator("#brand-subtitle")).toContainText("Amazonas");
+  await expect(page.locator("#status")).toContainText("6256 hexes");
+
+  // Load Pernambuco (includes Fernando de Noronha) on demand
+  await page.goto("/?uf=PE");
+  await expect(page.locator("#brand-subtitle")).toContainText("Pernambuco");
+  await expect(page.locator("#status")).toContainText("415 hexes");
+
+  // Return to Brasil via topbar button and then back to SP pilot
+  await page.locator("#btn-scope-br").click();
+  await expect(page.locator("#brand-subtitle")).toContainText("Brasil");
+  await page.locator("#btn-scope-br").click();
+  await expect(page.locator("#brand-subtitle")).toContainText("São Paulo");
+  await expect(page.locator("#status")).toContainText("1091 hexes");
+
+  expect(consoleErrors).toEqual([]);
+});

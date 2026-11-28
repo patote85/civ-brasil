@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { parseSourcesCatalog, renderAlmanac } from "./almanac/almanac";
+import { BR_BASE_LENSES, parseBrOverview, parseCompactBrLens } from "./br/brData";
 import { renderCityView } from "./city-view/cityView";
 import {
   bucketIndexForValue,
@@ -348,6 +349,7 @@ describe("PR 5 URL state and Almanac", () => {
     });
     const parsed = parseUrlState(new URL(href).search);
     expect(parsed).toEqual({
+      uf: null,
       lensId: "distritos",
       mode: "civ",
       pointsMode: "on",
@@ -389,6 +391,67 @@ describe("PR 5 URL state and Almanac", () => {
     expect(host.textContent).toContain("TSE");
     expect(host.textContent).toContain("Dados Abertos TSE");
     expect(host.querySelectorAll('[data-testid="almanac-source-row"]')).toHaveLength(1);
+  });
+});
+
+describe("PR 6 Brazil res 3 overview and UF scope URL state", () => {
+  it("roundtrips ?uf=BR and ?uf=AM while omitting default SP", () => {
+    const brUrl = serializeUrlState("https://civ-brasil.vercel.app/", {
+      uf: "BR",
+      lensId: "ouro",
+      mode: "atlas",
+      pointsMode: "auto",
+      cityCd: null,
+      camX: 500,
+      camY: 350,
+      camZ: 1,
+    });
+    expect(brUrl).toContain("uf=BR");
+    expect(parseUrlState(new URL(brUrl).search).uf).toBe("BR");
+
+    const spUrl = serializeUrlState(brUrl, {
+      uf: "SP",
+      lensId: "ouro",
+      mode: "atlas",
+      pointsMode: "auto",
+      cityCd: null,
+      camX: 500,
+      camY: 350,
+      camZ: 1,
+    });
+    expect(spUrl).not.toContain("uf=");
+  });
+
+  it("parses br_res3.json overview and compact UF lenses", () => {
+    const parsed = parseBrOverview({
+      ...SAMPLE_GRID,
+      uf: "BR",
+      resolution: 3,
+      uf_dom: ["SP", "AM"],
+      ufs: [
+        { uf: "AM", nome: "Amazonas", mun_count: 62, hex_count: 6256, pop: 3941613, pib_mil: 131531000, area_km2: 1559262.9, cx: 260, cy: 190 },
+        { uf: "SP", nome: "São Paulo", mun_count: 645, hex_count: 1091, pop: 44411238, pib_mil: 2719751231, area_km2: 248200.4, cx: 610, cy: 520 },
+      ],
+      lenses: {
+        ouro: { id: "ouro", values: [60000, 33000], breaks: [33000, 45000, 55000, 60000] },
+      },
+    });
+    expect(parsed.grid.uf).toBe("BR");
+    expect(parsed.ufDom).toEqual(["SP", "AM"]);
+    expect(parsed.ufs).toHaveLength(2);
+    expect(parsed.lenses.ouro?.max).toBe(60000);
+
+    const popMeta = BR_BASE_LENSES[1];
+    expect(popMeta).toBeDefined();
+    if (!popMeta) return;
+    const compact = parseCompactBrLens(
+      { id: "populacao", values: [100, 250], breaks: [100, 150, 200, 250] },
+      popMeta,
+      2,
+    );
+    expect(compact.total).toBe(350);
+    expect(compact.min).toBe(100);
+    expect(compact.max).toBe(250);
   });
 });
 

@@ -70,7 +70,7 @@ def load_pib_from_file(path: Path) -> dict[CdMun, MunicipioPib]:
             raise ValueError(
                 f"Valor ausente no SIDRA PIB ({field}) para {cd_mun}: {row.get('V')!r}"
             )
-        if val < 0.0:
+        if field == "pib" and val < 0.0:
             raise ValueError(f"Valor negativo no SIDRA PIB ({field}) para {cd_mun}: {val}")
         ano_raw = str(row.get("D3C", "")).strip()
         if not ano_raw.isdigit():

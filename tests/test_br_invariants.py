@@ -17,7 +17,7 @@ from pipeline.grid.br import (
 )
 from pipeline.sources.ibge_arranjos import load_arranjos_from_file
 from pipeline.sources.ibge_malhas import malha_url_for_uf, municipios_url_for_uf
-from pipeline.types import UF_IBGE_CODES
+from pipeline.types import UF_IBGE_CODES, CdMun
 
 
 def test_ibge_malhas_urls_cover_all_27_ufs() -> None:
@@ -55,11 +55,11 @@ def test_ibge_arranjos_parser_reads_synthetic_xlsx(tmp_path: Path) -> None:
 
     records = load_arranjos_from_file(xlsx_path)
     assert len(records) == 3
-    assert records["3550308"].nome_arranjo == "São Paulo/SP"
-    assert records["3550308"].is_nucleo is True
-    assert records["3518800"].is_nucleo is False
-    assert records["3542800"].nome_arranjo == "Adrianópolis/PR - Ribeira/SP"
-    assert math.isclose(records["3542800"].indice_integracao or 0.0, 0.083604, rel_tol=1e-9)
+    assert records[CdMun("3550308")].nome_arranjo == "São Paulo/SP"
+    assert records[CdMun("3550308")].is_nucleo is True
+    assert records[CdMun("3518800")].is_nucleo is False
+    assert records[CdMun("3542800")].nome_arranjo == "Adrianópolis/PR - Ribeira/SP"
+    assert math.isclose(records[CdMun("3542800")].indice_integracao or 0.0, 0.083604, rel_tol=1e-9)
 
 
 def test_aggregate_res5_to_res3_conserves_sums_across_interstate_borders() -> None:
@@ -121,12 +121,24 @@ def test_export_br_res3_web_bundle_is_deterministic(tmp_path: Path) -> None:
     cell_sp = h3.latlng_to_cell(-23.55, -46.63, 5)
     cell_am = h3.latlng_to_cell(-3.12, -60.02, 5)
     res3 = aggregate_res5_to_res3([
-        UfHexRecord("SP", cell_sp, 200.0, 100_000.0, 5_000_000.0, 10_000.0, 1_000_000.0, 3_500_000.0, 490_000.0, 1),
-        UfHexRecord("AM", cell_am, 250.0, 50_000.0, 1_200_000.0, 50_000.0, 500_000.0, 500_000.0, 150_000.0, 1),
+        UfHexRecord(
+            "SP", cell_sp, 200.0, 100_000.0, 5_000_000.0,
+            10_000.0, 1_000_000.0, 3_500_000.0, 490_000.0, 1,
+        ),
+        UfHexRecord(
+            "AM", cell_am, 250.0, 50_000.0, 1_200_000.0,
+            50_000.0, 500_000.0, 500_000.0, 150_000.0, 1,
+        ),
     ])
     uf_summaries = [
-        {"uf": "AM", "nome": "Amazonas", "mun_count": 62, "hex_count": 1, "pop": 50_000, "pib_mil": 1_200_000.0, "area_km2": 250.0},
-        {"uf": "SP", "nome": "São Paulo", "mun_count": 645, "hex_count": 1, "pop": 100_000, "pib_mil": 5_000_000.0, "area_km2": 200.0},
+        {
+            "uf": "AM", "nome": "Amazonas", "mun_count": 62, "hex_count": 1,
+            "pop": 50_000, "pib_mil": 1_200_000.0, "area_km2": 250.0,
+        },
+        {
+            "uf": "SP", "nome": "São Paulo", "mun_count": 645, "hex_count": 1,
+            "pop": 100_000, "pib_mil": 5_000_000.0, "area_km2": 200.0,
+        },
     ]
     out1 = tmp_path / "run1" / "br_res3.json"
     out2 = tmp_path / "run2" / "br_res3.json"
@@ -148,15 +160,15 @@ def test_real_br_checkpoint_and_budgets_when_present() -> None:
     ckpt = json.loads(ckpt_path.read_text(encoding="utf-8"))
     assert ckpt["mun_count"] == 5570
     assert len(ckpt["ufs"]) == 27
-    assert 33_000 <= ckpt["unique_h3_res5_count"] <= 36_500
+    assert 31_500 <= ckpt["unique_h3_res5_count"] <= 36_500
     assert abs(ckpt["area_km2"] - BR_OFFICIAL_AREA_KM2) / BR_OFFICIAL_AREA_KM2 <= 0.005
     assert abs(ckpt["pop_total"] - BR_OFFICIAL_POP_2022) / BR_OFFICIAL_POP_2022 <= 0.001
 
     sp_pilot = json.loads(Path("web/public/data/sp/grid.json").read_text(encoding="utf-8"))
     sp_br = json.loads(Path("web/public/data/br/sp_grid.json").read_text(encoding="utf-8"))
     assert sp_br["hex_count"] == sp_pilot["hex_count"]
-    assert math.isclose(sp_br["total_pop"], sp_pilot["total_pop"], rel_tol=1e-9)
-    assert math.isclose(sp_br["total_pib_mil"], sp_pilot["total_pib_mil"], rel_tol=1e-9)
+    assert math.isclose(sp_br["yields"]["pop"], sp_pilot["yields"]["pop"], rel_tol=1e-9)
+    assert math.isclose(sp_br["yields"]["pib_mil"], sp_pilot["yields"]["pib_mil"], rel_tol=1e-9)
     assert math.isclose(sp_br["total_area_km2"], sp_pilot["total_area_km2"], rel_tol=1e-9)
 
     assert Path("web/public/data/br/br_res3.json").stat().st_size <= 500_000

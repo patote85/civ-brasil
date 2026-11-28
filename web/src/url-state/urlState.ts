@@ -3,6 +3,7 @@ import type { VisualMode } from "../data";
 export type PointsMode = "auto" | "on" | "off";
 
 export interface UrlAppState {
+  readonly uf?: string | null;
   readonly lensId: string | null;
   readonly mode: VisualMode | null;
   readonly pointsMode: PointsMode | null;
@@ -21,6 +22,8 @@ function parseClampedFloat(raw: string | null, min: number, max: number): number
 
 export function parseUrlState(search: string): UrlAppState {
   const params = new URLSearchParams(search);
+  const rawUf = params.get("uf")?.trim().toUpperCase() || null;
+  const uf = rawUf && /^[A-Z]{2}$/.test(rawUf) ? rawUf : null;
   const rawLens = params.get("lente")?.trim() || null;
   const rawMode = params.get("modo");
   const mode: VisualMode | null = rawMode === "civ" || rawMode === "atlas" ? rawMode : null;
@@ -31,6 +34,7 @@ export function parseUrlState(search: string): UrlAppState {
   const cityCd = rawCity && /^\d{7}$/.test(rawCity) ? rawCity : null;
 
   return {
+    uf,
     lensId: rawLens,
     mode,
     pointsMode,
@@ -43,6 +47,9 @@ export function parseUrlState(search: string): UrlAppState {
 
 export function serializeUrlState(baseHref: string, state: UrlAppState): string {
   const url = new URL(baseHref);
+  if (state.uf && state.uf !== "SP") url.searchParams.set("uf", state.uf);
+  else url.searchParams.delete("uf");
+
   if (state.lensId) url.searchParams.set("lente", state.lensId);
   else url.searchParams.delete("lente");
 

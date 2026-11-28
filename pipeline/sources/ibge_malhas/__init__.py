@@ -11,8 +11,13 @@ from pipeline.sources.ibge_malhas.loader import (
     Municipio,
     SyncResult,
     ensure_sp_raw_files,
+    ensure_uf_raw_files,
     get_raw_root,
     load_municipios_from_files,
+    malha_filename_for_uf,
+    malha_url_for_uf,
+    municipios_filename_for_uf,
+    municipios_url_for_uf,
 )
 
 __all__ = [
@@ -28,6 +33,11 @@ __all__ = [
     "Municipio",
     "SyncResult",
     "ensure_sp_raw_files",
+    "ensure_uf_raw_files",
     "get_raw_root",
     "load_municipios_from_files",
+    "malha_filename_for_uf",
+    "malha_url_for_uf",
+    "municipios_filename_for_uf",
+    "municipios_url_for_uf",
 ]
