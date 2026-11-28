@@ -36,6 +36,188 @@
       "sha256": "20dd062fb0391f229a518c2f204b4d586ba9aa7028f65b19851aa80fe553b41a",
       "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/saes/drac/CNES_Leito/csv/cnes_leitos_cadastrados_2025_csv.zip"
     },
+    "ibge_arranjos/tab01.xlsx": {
+      "ano_ref": 2015,
+      "feature_count": 953,
+      "fetched_at": "2026-11-28T09:36:48.237844Z",
+      "sha256": "fcb65d94220814643536e00bc775e3fea69d9da9bbb56acd576f4abfb058da77",
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/tipologias_do_territorio/arranjos_populacionais/tabelas_xls_2ed/tab01.xlsx"
+    },
+    "ibge_censo/ac_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 22,
+      "fetched_at": "2026-11-28T09:36:49.484707Z",
+      "sha256": "1a099d103ccd87766e094f1eeaa7793d1c7e0ab8632750201829ace9c86835b1",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2012/v/93/p/2022"
+    },
+    "ibge_censo/al_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 102,
+      "fetched_at": "2026-11-28T09:37:34.476127Z",
+      "sha256": "6b808ccfac684951b57d6d1774d5ab35e2314ca03823eb4fd112270f9ecd6c47",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2027/v/93/p/2022"
+    },
+    "ibge_censo/am_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 62,
+      "fetched_at": "2026-11-28T09:38:13.694010Z",
+      "sha256": "bc6e0055b63a23f380668f1e387f3c26579aa334c7c5cce9bc1945044eeecb63",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2013/v/93/p/2022"
+    },
+    "ibge_censo/ap_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 16,
+      "fetched_at": "2026-11-28T09:38:39.382461Z",
+      "sha256": "bbe1b5d638b110f16f93e42f404e7d5a42579903e9f42282bd8bdda34bfa2467",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2016/v/93/p/2022"
+    },
+    "ibge_censo/ba_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 417,
+      "fetched_at": "2026-11-28T09:38:50.584551Z",
+      "sha256": "259fcc20a857aae65914586f03de317e93dcc17b82595152dd2cc410e6070b1c",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2029/v/93/p/2022"
+    },
+    "ibge_censo/ce_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 184,
+      "fetched_at": "2026-11-28T09:39:18.611571Z",
+      "sha256": "5660144852ee85f380e7740c42af8964122eee73c5f967c1311ac5ffbe7905bb",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2023/v/93/p/2022"
+    },
+    "ibge_censo/df_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 1,
+      "fetched_at": "2026-11-28T09:39:33.879888Z",
+      "sha256": "31c57316b9a32ad0257d878ba75ebb213ed309646d2a1f6d0895d8f27de5c9d0",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2053/v/93/p/2022"
+    },
+    "ibge_censo/es_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 78,
+      "fetched_at": "2026-11-28T09:39:39.360513Z",
+      "sha256": "05fe7fb5efb0a4c6dbf0cc512cf715af63ccf9aa946b20b2b89f3c0410a8ee71",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2032/v/93/p/2022"
+    },
+    "ibge_censo/go_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 246,
+      "fetched_at": "2026-11-28T09:39:48.053922Z",
+      "sha256": "922a1f32fcf3099a39b1d17856176df01b9e78342b6199d5e7c60c2017d3b68e",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2052/v/93/p/2022"
+    },
+    "ibge_censo/ma_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 217,
+      "fetched_at": "2026-11-28T09:42:05.726156Z",
+      "sha256": "927ce2c5cee5d393a9451d2a4d4919ce77a8a231c258b7576cb2c5a8d0f0ca5c",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2021/v/93/p/2022"
+    },
+    "ibge_censo/mg_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 853,
+      "fetched_at": "2026-11-28T09:42:27.484279Z",
+      "sha256": "e93a3f276b6e614d1b5da221ac08e0a3ed7580479dd87d76e9555ad45a52aa13",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2031/v/93/p/2022"
+    },
+    "ibge_censo/ms_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 79,
+      "fetched_at": "2026-11-28T09:43:04.682191Z",
+      "sha256": "29a817ff68e539ebaf22dc7bcf16b825d680f36852e0daa41e0b1c6996713559",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2050/v/93/p/2022"
+    },
+    "ibge_censo/mt_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 141,
+      "fetched_at": "2026-11-28T09:46:49.940642Z",
+      "sha256": "f8c54ff3ec3e6445499872ce5fefe21209ed7f764d376e4045f33805972adfb7",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2051/v/93/p/2022"
+    },
+    "ibge_censo/pa_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 144,
+      "fetched_at": "2026-11-28T09:47:11.024985Z",
+      "sha256": "5d9df40e10f2e55e8b515cd76957a8a2a8e8082992bf44e7e84f69733df54171",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2015/v/93/p/2022"
+    },
+    "ibge_censo/pb_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 223,
+      "fetched_at": "2026-11-28T09:47:41.445990Z",
+      "sha256": "2f5b2c3e9c0767fdd6ceb952649266057d9aee237f1fe0127687a267a6985875",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2025/v/93/p/2022"
+    },
+    "ibge_censo/pe_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 185,
+      "fetched_at": "2026-11-28T09:47:52.755181Z",
+      "sha256": "bfce2f6037488002aedeef24014183c94bf298940e916572951035c31e04f47e",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2026/v/93/p/2022"
+    },
+    "ibge_censo/pi_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 224,
+      "fetched_at": "2026-11-28T09:48:10.027770Z",
+      "sha256": "7d5807a7fc5d7783f82852bc955d82b60430bfb751e1579254990641957eab42",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2022/v/93/p/2022"
+    },
+    "ibge_censo/pr_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 399,
+      "fetched_at": "2026-11-28T09:48:27.949435Z",
+      "sha256": "aa2110f7a96eb52c7bea5b4d80ebddd77ba2af15d0411d1ec6383b531fd36903",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2041/v/93/p/2022"
+    },
+    "ibge_censo/rj_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 92,
+      "fetched_at": "2026-11-28T09:48:44.442567Z",
+      "sha256": "2e12a003210a1bca5a4291ba3bbd3ec02fc981d987f27ba77dba089f067b9aa6",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2033/v/93/p/2022"
+    },
+    "ibge_censo/rn_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 167,
+      "fetched_at": "2026-11-28T09:48:53.176528Z",
+      "sha256": "74e0ca5db2ba29c2d85299ee3803c7ced500d83a83e7f7319cdf39bae86a3b91",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2024/v/93/p/2022"
+    },
+    "ibge_censo/ro_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 52,
+      "fetched_at": "2026-11-28T09:49:03.487948Z",
+      "sha256": "7e4c47a81a0e168768238f47a4165cf7895b9fd006454a85c2f4eb244fa1e1b3",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2011/v/93/p/2022"
+    },
+    "ibge_censo/rr_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 15,
+      "fetched_at": "2026-11-28T09:49:15.436406Z",
+      "sha256": "2f305b67bb0edeea657a1fcf20b6e354bcc7ffe55fb39755cc96114e22e656d9",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2014/v/93/p/2022"
+    },
+    "ibge_censo/rs_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 497,
+      "fetched_at": "2026-11-28T09:49:26.298866Z",
+      "sha256": "30bb49793776364dc1041409eeb555dda28ed01eecee5f0b777376037577ce9c",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2043/v/93/p/2022"
+    },
+    "ibge_censo/sc_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 295,
+      "fetched_at": "2026-11-28T09:49:43.854742Z",
+      "sha256": "a787bbd3a5606ed4d96021da584db994ac145c05b9ac2b14078064e1683e1ed8",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2042/v/93/p/2022"
+    },
+    "ibge_censo/se_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 75,
+      "fetched_at": "2026-11-28T09:49:56.182420Z",
+      "sha256": "0be5d34bf80b3482bb1c0519b2b31134b61c6cbb71888d931370c8471291600d",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2028/v/93/p/2022"
+    },
     "ibge_censo/sp_pop_2022.json": {
       "ano_ref": 2022,
       "feature_count": 645,
@@ -43,12 +225,319 @@
       "sha256": "c9c20a3aa61ea3e19ca9d38d13c2fd4a8fb49caba0b19ccac2ff0094c2f7abb9",
       "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2035/v/93/p/2022"
     },
+    "ibge_censo/to_pop_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 139,
+      "fetched_at": "2026-11-28T09:50:22.544370Z",
+      "sha256": "478d0e9a497835631758ea4189d5b58901926f9c0291d47f08e0db9268c0499d",
+      "url": "https://apisidra.ibge.gov.br/values/t/4714/n6/in%20n3%2017/v/93/p/2022"
+    },
     "ibge_grade/BR1KM_20251002.zip": {
       "ano_ref": 2022,
       "fetched_at": "2026-11-27T19:30:46.012661Z",
       "resolution": "1km",
       "sha256": "944579f28d7dab3184b400d6badca808de98517ef11af160314696159616870a",
       "url": "https://geoftp.ibge.gov.br/recortes_para_fins_estatisticos/grade_estatistica/censo_2022/grade_1km/BR1KM_20251002.zip"
+    },
+    "ibge_malhas/ac_malha_municipios.geojson": {
+      "feature_count": 22,
+      "fetched_at": "2026-11-28T09:36:48.829735Z",
+      "sha256": "270afebd3ffbca1750592cadb20ec65f65b88e3c91b4ab4c11871872a0679772",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/12?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ac_municipios.json": {
+      "feature_count": 22,
+      "fetched_at": "2026-11-28T09:36:49.031256Z",
+      "sha256": "4e44c564eabe3af70d05a7c1a30fdd5f5e592c6277f49951a0c7520689c253fe",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/12/municipios"
+    },
+    "ibge_malhas/al_malha_municipios.geojson": {
+      "feature_count": 102,
+      "fetched_at": "2026-11-28T09:37:33.711861Z",
+      "sha256": "ab1b1e740bb633ccc58906c3bdd43965d9556336bda73152a5312134cd4f3fee",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/27?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/al_municipios.json": {
+      "feature_count": 102,
+      "fetched_at": "2026-11-28T09:37:33.935415Z",
+      "sha256": "4c4094f73f09798411a739b7f60320c0f2ac587c8b113ed4f345c1928b1c0248",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/27/municipios"
+    },
+    "ibge_malhas/am_malha_municipios.geojson": {
+      "feature_count": 62,
+      "fetched_at": "2026-11-28T09:38:13.214019Z",
+      "sha256": "2496481609f0c34d0189ce076e4970b75185cf38775fe0b46cedee23c4f730b4",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/13?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/am_municipios.json": {
+      "feature_count": 62,
+      "fetched_at": "2026-11-28T09:38:13.214201Z",
+      "sha256": "97efca2259e996ef9cd83762cc9b975b7f27a6e5de22eb6f57dbc68d6c6b9177",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/13/municipios"
+    },
+    "ibge_malhas/ap_malha_municipios.geojson": {
+      "feature_count": 16,
+      "fetched_at": "2026-11-28T09:38:38.930933Z",
+      "sha256": "c9253f81329301e2984c94d4cb3f08d0dd72b383d37c5a3677f7afa8c3f33f38",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/16?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ap_municipios.json": {
+      "feature_count": 16,
+      "fetched_at": "2026-11-28T09:38:39.142769Z",
+      "sha256": "7ef9ce84249c6d70845276f7f2fc8ff8131e1ea24245c6703ef6863959e2e39c",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/16/municipios"
+    },
+    "ibge_malhas/ba_malha_municipios.geojson": {
+      "feature_count": 417,
+      "fetched_at": "2026-11-28T09:38:49.252835Z",
+      "sha256": "909017a4f91e7950cea123d2601a53b64c70acdb2b256548be25ca9e703cc572",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/29?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ba_municipios.json": {
+      "feature_count": 417,
+      "fetched_at": "2026-11-28T09:38:49.495806Z",
+      "sha256": "ee2524f732a80d234f129b2e26a90f9bc080a52844a01e5359e789c613d7ee4f",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/29/municipios"
+    },
+    "ibge_malhas/ce_malha_municipios.geojson": {
+      "feature_count": 184,
+      "fetched_at": "2026-11-28T09:39:17.970866Z",
+      "sha256": "f292f3fc5fd5aba049cb153800055e9e07767af55b1afe1c15977613f9662d85",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/23?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ce_municipios.json": {
+      "feature_count": 184,
+      "fetched_at": "2026-11-28T09:39:18.183180Z",
+      "sha256": "a7863c875329fc7ad47a4379310a6564a47da0114f100667046a1ff981ea213f",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/23/municipios"
+    },
+    "ibge_malhas/df_malha_municipios.geojson": {
+      "feature_count": 1,
+      "fetched_at": "2026-11-28T09:39:32.937284Z",
+      "sha256": "b6a1159a1029a4534f183ed96a14360b3b2dc602501dc3ddfd2b71952cb97c2b",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/53?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/df_municipios.json": {
+      "feature_count": 1,
+      "fetched_at": "2026-11-28T09:39:33.135835Z",
+      "sha256": "2fe679ffa023400bbcfabdb4c2611cc736a23a3bc8a99ca7671ad13af91153e8",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/53/municipios"
+    },
+    "ibge_malhas/es_malha_municipios.geojson": {
+      "feature_count": 78,
+      "fetched_at": "2026-11-28T09:39:38.860666Z",
+      "sha256": "b65b4ce5d7c72504e99e363068c35206398ce5d380ec4d1e4065e17cd7669e19",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/32?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/es_municipios.json": {
+      "feature_count": 78,
+      "fetched_at": "2026-11-28T09:39:39.056672Z",
+      "sha256": "1d410301e1c206850408842db20be3b112b96da551971b5f38dd862e63581a00",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/32/municipios"
+    },
+    "ibge_malhas/go_malha_municipios.geojson": {
+      "feature_count": 246,
+      "fetched_at": "2026-11-28T09:39:46.556899Z",
+      "sha256": "b047558c4a611c3b52da514486b2b4898f56c4b38d69ed765cd74b41ebec48fe",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/52?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/go_municipios.json": {
+      "feature_count": 246,
+      "fetched_at": "2026-11-28T09:39:47.317899Z",
+      "sha256": "17c352909a6238a25d5ec15fd5b9eec0a2584d1e819c0407c53424e2327ff528",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/52/municipios"
+    },
+    "ibge_malhas/ma_malha_municipios.geojson": {
+      "feature_count": 217,
+      "fetched_at": "2026-11-28T09:42:04.850465Z",
+      "sha256": "74e94df4a853440b185d791650fde2938c10c39a4468045c58c0673db22e453b",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/21?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ma_municipios.json": {
+      "feature_count": 217,
+      "fetched_at": "2026-11-28T09:42:05.091727Z",
+      "sha256": "55eeed355c3099bf4e4d70127ecdb38a0ccc52efd73a3dcd8f2490b0e25616df",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/21/municipios"
+    },
+    "ibge_malhas/mg_malha_municipios.geojson": {
+      "feature_count": 853,
+      "fetched_at": "2026-11-28T09:42:26.291500Z",
+      "sha256": "6700b0db2c39a9238a47c553fa12020b0bcb0b66fce3416cafa8d3aab4e93ec6",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/31?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/mg_municipios.json": {
+      "feature_count": 853,
+      "fetched_at": "2026-11-28T09:42:26.536491Z",
+      "sha256": "2547984d1767a3687fcf31b21f60422af8cc1bb9dc5e18748916519976b4721d",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/31/municipios"
+    },
+    "ibge_malhas/ms_malha_municipios.geojson": {
+      "feature_count": 79,
+      "fetched_at": "2026-11-28T09:43:03.878603Z",
+      "sha256": "2390b70e792ca4f24c54e8e26afbd1457f1e019b295fa852f56602a26524223f",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/50?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ms_municipios.json": {
+      "feature_count": 79,
+      "fetched_at": "2026-11-28T09:43:04.088835Z",
+      "sha256": "1aead922ddf0eac00ded02c8af67fb76406994c4ef38d8afc63fe5986e8a8fd2",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/50/municipios"
+    },
+    "ibge_malhas/mt_malha_municipios.geojson": {
+      "feature_count": 141,
+      "fetched_at": "2026-11-28T09:46:49.541174Z",
+      "sha256": "ec3845b293909a7a2f65a30855b243621c9230aec16058ec175167a7413f381a",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/51?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/mt_municipios.json": {
+      "feature_count": 141,
+      "fetched_at": "2026-11-28T09:46:49.541631Z",
+      "sha256": "6a5506b41f96b2aa1dbab29a85c235d8550dfef95a484d37605db23a9645a9e4",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/51/municipios"
+    },
+    "ibge_malhas/pa_malha_municipios.geojson": {
+      "feature_count": 144,
+      "fetched_at": "2026-11-28T09:47:10.372004Z",
+      "sha256": "88ec5a369b5e29c86bf6c9a71d1f77e9176f52d94e99f0b155dab851bed9a163",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/15?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/pa_municipios.json": {
+      "feature_count": 144,
+      "fetched_at": "2026-11-28T09:47:10.580621Z",
+      "sha256": "734d69f1c4e123d6fa37df6074c361cc5379c57e6f570627b0804ecf63314b9d",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/15/municipios"
+    },
+    "ibge_malhas/pb_malha_municipios.geojson": {
+      "feature_count": 223,
+      "fetched_at": "2026-11-28T09:47:40.763397Z",
+      "sha256": "16f6cb8495460d850a7d58dd607c787fd405610721555e8dfc25ed931c3190ad",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/25?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/pb_municipios.json": {
+      "feature_count": 223,
+      "fetched_at": "2026-11-28T09:47:41.028831Z",
+      "sha256": "c87b860e7e08fb934e225e578a4f5fd5ec68e1050ab0f11c9c59e5e0bf61a51c",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/25/municipios"
+    },
+    "ibge_malhas/pe_malha_municipios.geojson": {
+      "feature_count": 185,
+      "fetched_at": "2026-11-28T09:47:52.166427Z",
+      "sha256": "148078d58bbc3cd164385492e519c02f12a7d57b898eb038742b01432b20d67f",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/26?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/pe_municipios.json": {
+      "feature_count": 185,
+      "fetched_at": "2026-11-28T09:47:52.382073Z",
+      "sha256": "61bcc46787c910cc212be75f5e91bfd5f1880f9f8869d20051802c54d0926cb5",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/26/municipios"
+    },
+    "ibge_malhas/pi_malha_municipios.geojson": {
+      "feature_count": 224,
+      "fetched_at": "2026-11-28T09:48:09.372513Z",
+      "sha256": "67639849b3f900062ab35204bfbcd746d0aa891a6abfb185c4b5dd5ec2a87fb1",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/22?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/pi_municipios.json": {
+      "feature_count": 224,
+      "fetched_at": "2026-11-28T09:48:09.596761Z",
+      "sha256": "f485605d2fd236462fb59f1c61dceed09aa105dc6b0c9224a60745277a3db8bb",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/22/municipios"
+    },
+    "ibge_malhas/pr_malha_municipios.geojson": {
+      "feature_count": 399,
+      "fetched_at": "2026-11-28T09:48:26.646520Z",
+      "sha256": "e9e25db0578e6ee9d10b4658af18cba2b9b3b72fd18a973f2806a6073770a859",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/41?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/pr_municipios.json": {
+      "feature_count": 399,
+      "fetched_at": "2026-11-28T09:48:26.976423Z",
+      "sha256": "aa5f984155444aece8f3647bd480b11fcb41a409c669b2c58bd4410db7ae7c23",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/41/municipios"
+    },
+    "ibge_malhas/rj_malha_municipios.geojson": {
+      "feature_count": 92,
+      "fetched_at": "2026-11-28T09:48:43.740555Z",
+      "sha256": "e3db2bf8a62083e3244397484c743871035141b1b53c4b2b41f662e55b794c6c",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/33?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/rj_municipios.json": {
+      "feature_count": 92,
+      "fetched_at": "2026-11-28T09:48:43.945637Z",
+      "sha256": "9259126c654f7825fe7228a8070bb1775b4a5f6f283ea2b33738c588c6991c12",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/33/municipios"
+    },
+    "ibge_malhas/rn_malha_municipios.geojson": {
+      "feature_count": 167,
+      "fetched_at": "2026-11-28T09:48:52.084505Z",
+      "sha256": "68fd860f10672e0e4ec0006bbd417a93b2692ee99201a5d9db2978ff2fd6946e",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/24?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/rn_municipios.json": {
+      "feature_count": 167,
+      "fetched_at": "2026-11-28T09:48:52.298516Z",
+      "sha256": "8744e81fe79c5931ae444f5f0c84b2dcdbc5066047c47679e51b8487f5ce85f4",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/24/municipios"
+    },
+    "ibge_malhas/ro_malha_municipios.geojson": {
+      "feature_count": 52,
+      "fetched_at": "2026-11-28T09:49:02.461722Z",
+      "sha256": "080c2a101d64d8ff8eaa084c3eb2f972ad552c31beb2bcc5e4f50cb41e2f99fe",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/11?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/ro_municipios.json": {
+      "feature_count": 52,
+      "fetched_at": "2026-11-28T09:49:03.091682Z",
+      "sha256": "e13fccee96be6e7fa914532ec8f7710a7812b6edb04683c44e1c51a94418af3f",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/11/municipios"
+    },
+    "ibge_malhas/rr_malha_municipios.geojson": {
+      "feature_count": 15,
+      "fetched_at": "2026-11-28T09:49:14.982516Z",
+      "sha256": "4b69972f864220f2f56b1734b0e8dba5cbd2c88f909bbe09180da0b607f71d21",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/14?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/rr_municipios.json": {
+      "feature_count": 15,
+      "fetched_at": "2026-11-28T09:49:15.180849Z",
+      "sha256": "529fef73b91ba1562ede1a1c338017183fb015237fb9b5fd1c4b3ff4c8d02555",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/14/municipios"
+    },
+    "ibge_malhas/rs_malha_municipios.geojson": {
+      "feature_count": 497,
+      "fetched_at": "2026-11-28T09:49:25.557835Z",
+      "sha256": "18b8734d915aba772757c73cf9b68e9b0ca71499a6a5856b4424f6a41a431c82",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/43?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/rs_municipios.json": {
+      "feature_count": 497,
+      "fetched_at": "2026-11-28T09:49:25.800573Z",
+      "sha256": "0bb9694c5b2eaf295fb53df186d3573bf7a82e8e9d196d383518d240dde90e86",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/43/municipios"
+    },
+    "ibge_malhas/sc_malha_municipios.geojson": {
+      "feature_count": 295,
+      "fetched_at": "2026-11-28T09:49:43.142864Z",
+      "sha256": "2e97966746dab34a05e3a02f4a79e2b85550fce5afa5baac5e47e8f5141be5da",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/42?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/sc_municipios.json": {
+      "feature_count": 295,
+      "fetched_at": "2026-11-28T09:49:43.361309Z",
+      "sha256": "7b3217951569720255938a93677747616a80605612354d5fa69f4614d3beb8f9",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/42/municipios"
+    },
+    "ibge_malhas/se_malha_municipios.geojson": {
+      "feature_count": 75,
+      "fetched_at": "2026-11-28T09:49:55.698190Z",
+      "sha256": "ed4ec46239674003552c2a99e016968696ef8b6979dda3cf6042a749475ef2c5",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/28?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/se_municipios.json": {
+      "feature_count": 75,
+      "fetched_at": "2026-11-28T09:49:55.911836Z",
+      "sha256": "2678c3b209f60db7337e410458f8ce43ea76abae4f0f45a960de33117f5801c5",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/28/municipios"
     },
     "ibge_malhas/sp_malha_municipios.geojson": {
       "feature_count": 645,
@@ -62,12 +551,206 @@
       "sha256": "c06b7327c3bf7475d0c63c90c5f8c9122464fd0ed84bc98709a2a7f82649d14b",
       "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios"
     },
+    "ibge_malhas/to_malha_municipios.geojson": {
+      "feature_count": 139,
+      "fetched_at": "2026-11-28T09:50:22.003115Z",
+      "sha256": "6d1776c4626279723ff49d0a8f9f8f24f93f87d767a6a3060f0daebb2b1eb611",
+      "url": "https://servicodados.ibge.gov.br/api/v3/malhas/estados/17?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    },
+    "ibge_malhas/to_municipios.json": {
+      "feature_count": 139,
+      "fetched_at": "2026-11-28T09:50:22.211031Z",
+      "sha256": "8fb779e1469f7c278e046f0b39c90491ec0840fdbbfe017871d2c2288b68cb14",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/17/municipios"
+    },
+    "ibge_pib/ac_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 22,
+      "fetched_at": "2026-11-28T09:36:49.825039Z",
+      "sha256": "56da2205f32c4c81a851f0f19557c5fdf241df7af4ea6bb46d3851d7136d381f",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2012/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/al_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 102,
+      "fetched_at": "2026-11-28T09:37:34.770437Z",
+      "sha256": "f271463c700d80e951734e5b0466a530f0f611e78246de1ed5802160ead59e0e",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2027/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/am_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 62,
+      "fetched_at": "2026-11-28T09:38:14.577664Z",
+      "sha256": "ccae807e2045947bdf9c80e2ac1926ca9d69ecf592fc6dcd29c69aae61cecad0",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2013/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/ap_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 16,
+      "fetched_at": "2026-11-28T09:38:39.718613Z",
+      "sha256": "2a69cf6b47a1071447da781091c62292b436c0a6fc3a08b557243383788d75a4",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2016/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/ba_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 417,
+      "fetched_at": "2026-11-28T09:38:51.516388Z",
+      "sha256": "1985a82243776b8cd9cf158d3f794488d86871173d32e07960c32782a69be2b1",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2029/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/ce_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 184,
+      "fetched_at": "2026-11-28T09:39:19.349364Z",
+      "sha256": "8978e1c9e45b30eed353e78231597073bc8f33861be90c0992577fe3d383743b",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2023/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/df_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 1,
+      "fetched_at": "2026-11-28T09:39:34.354738Z",
+      "sha256": "e872c045606b8368ff202866ddea9e401bc1489d55abe761d626f6f151f54ecb",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2053/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/es_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 78,
+      "fetched_at": "2026-11-28T09:39:39.661779Z",
+      "sha256": "cf2b7984e3ce9eda298e2abb92ce9490e2a0221cc4a43367f82a0ad09c9a6b5b",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2032/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/go_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 246,
+      "fetched_at": "2026-11-28T09:41:47.499322Z",
+      "sha256": "57911d7455ac0dc5ec79e92f668d150a4b4d4c9997b966f0d019cc9ae03238ec",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2052/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/ma_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 217,
+      "fetched_at": "2026-11-28T09:42:07.897743Z",
+      "sha256": "4cbdd7b23a726367b4d486d79a1c45a817e3b3c6da172d056b3b92292387eb1b",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2021/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/mg_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 853,
+      "fetched_at": "2026-11-28T09:42:28.514880Z",
+      "sha256": "8c1cfbbdef557ae6ddf95fa33cd8a3fbf732f5348993607d6ac48c6a8bf41264",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2031/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/ms_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 79,
+      "fetched_at": "2026-11-28T09:43:05.218795Z",
+      "sha256": "02e6e1a8bc8adb6d8da8d106b3ba235d9dac7d4d84a29ac047aa87f2b0052886",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2050/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/mt_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 141,
+      "fetched_at": "2026-11-28T09:46:50.615860Z",
+      "sha256": "105a1a1a2b2668fdf8730eb623bfa7c2351f8bb996e92edb2b553687b71123c9",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2051/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/pa_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 144,
+      "fetched_at": "2026-11-28T09:47:12.805778Z",
+      "sha256": "1ff9da98c71f5d1594bf2bcf578e79505a92a45e175b6a5ece83326b080834bf",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2015/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/pb_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 223,
+      "fetched_at": "2026-11-28T09:47:42.163752Z",
+      "sha256": "29996f0bb6eb37a96e0a2dfcacaf792b964e482abeb473cb755ab7e38e4e1f70",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2025/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/pe_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 185,
+      "fetched_at": "2026-11-28T09:47:53.623003Z",
+      "sha256": "f0f660f688984c7fb0c5d30dd83ab4e7398e240084e3a61c460a235a69a49412",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2026/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/pi_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 224,
+      "fetched_at": "2026-11-28T09:48:10.988532Z",
+      "sha256": "011124873ff3a663dfaf30af8895026eabbc8c058072a3f12a1190905316bbbc",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2022/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/pr_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 399,
+      "fetched_at": "2026-11-28T09:48:29.467198Z",
+      "sha256": "7edab287637f430178710afcafc6543901700c5fe889ec2833d188ad30473352",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2041/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/rj_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 92,
+      "fetched_at": "2026-11-28T09:48:45.441406Z",
+      "sha256": "547d6abf14970731ba4706947d08090df4d2879c6748a9dca1533204b5da417e",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2033/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/rn_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 167,
+      "fetched_at": "2026-11-28T09:48:53.886268Z",
+      "sha256": "7e473f75534d4f3afb6929a20ff855f326da8101e82e98051b3ce844756c9ea3",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2024/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/ro_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 52,
+      "fetched_at": "2026-11-28T09:49:04.060642Z",
+      "sha256": "db5d7041779c5a741ecf26f0b3c518bebdfc3e6b7307a497c4f4b1f4ad432506",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2011/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/rr_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 15,
+      "fetched_at": "2026-11-28T09:49:15.771937Z",
+      "sha256": "3cb361a62d4fb129a9ccee150443801e3e75d6a7fe738aa5e93843c8ef2de3d8",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2014/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/rs_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 497,
+      "fetched_at": "2026-11-28T09:49:26.992955Z",
+      "sha256": "39a642770270d76c61968a076f5fa5b9d4b91e393ab92be2c77e713883e4ecc6",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2043/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/sc_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 295,
+      "fetched_at": "2026-11-28T09:49:45.037958Z",
+      "sha256": "a62edda61606f53c4b2b71ceb9c7b5be7c87bf6fea07c89f583f2db06b0c39a1",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2042/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/se_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 75,
+      "fetched_at": "2026-11-28T09:49:56.741715Z",
+      "sha256": "cb49840ad73b3e1ad00157613a58864e4605c01af103ebc24e8e6620fd4b823c",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2028/v/37,513,517,6575,525/p/2021"
+    },
     "ibge_pib/sp_pib_2021.json": {
       "ano_ref": 2021,
       "feature_count": 645,
       "fetched_at": "2026-11-27T19:30:44.602402Z",
       "sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897",
       "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2035/v/37,513,517,6575,525/p/2021"
+    },
+    "ibge_pib/to_pib_2021.json": {
+      "ano_ref": 2021,
+      "feature_count": 139,
+      "fetched_at": "2026-11-28T09:50:23.006639Z",
+      "sha256": "09c891b8d66738b6c0f04740ad803332ed48aefb7bfa7dfa10f5ef4fa9335409",
+      "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2017/v/37,513,517,6575,525/p/2021"
     },
     "inep_escolar/microdados_censo_escolar_2024.zip": {
       "ano_ref": 2024,

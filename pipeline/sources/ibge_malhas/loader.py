@@ -16,6 +16,8 @@ from shapely import make_valid
 from shapely.geometry import MultiPolygon, Polygon, shape
 from shapely.geometry.base import BaseGeometry
 
+from pipeline.types import UF_IBGE_CODES, UfCode
+
 SP_MALHA_URL = (
     "https://servicodados.ibge.gov.br/api/v3/malhas/estados/35"
     "?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
@@ -25,6 +27,29 @@ SP_MUNICIPIOS_URL = "https://servicodados.ibge.gov.br/api/v1/localidades/estados
 MALHA_FILENAME = "sp_malha_municipios.geojson"
 MUNICIPIOS_FILENAME = "sp_municipios.json"
 DEFAULT_RAW_ROOT = Path("data/raw")
+IBGE_NON_MUNICIPAL_WATER_CODES = frozenset({"4300001", "4300002"})
+IBGE_POST_CENSO_2022_CODES = frozenset({"5101837"})
+
+
+def malha_url_for_uf(uf: UfCode) -> str:
+    ibge_code = UF_IBGE_CODES[uf]
+    return (
+        f"https://servicodados.ibge.gov.br/api/v3/malhas/estados/{ibge_code}"
+        "?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=intermediaria"
+    )
+
+
+def municipios_url_for_uf(uf: UfCode) -> str:
+    ibge_code = UF_IBGE_CODES[uf]
+    return f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{ibge_code}/municipios"
+
+
+def malha_filename_for_uf(uf: UfCode) -> str:
+    return f"{uf.lower()}_malha_municipios.geojson"
+
+
+def municipios_filename_for_uf(uf: UfCode) -> str:
+    return f"{uf.lower()}_municipios.json"
 
 Fetcher = Callable[[str], bytes]
 
@@ -153,6 +178,17 @@ def _normalize_geometry(raw_geometry: object) -> BaseGeometry:
     geom = shape(raw_geometry)
     if not geom.is_valid:
         geom = make_valid(geom)
+    if geom.geom_type == "GeometryCollection":
+        polys: list[Polygon] = []
+        for part in getattr(geom, "geoms", ()):
+            if isinstance(part, Polygon) and not part.is_empty:
+                polys.append(part)
+            elif isinstance(part, MultiPolygon) and not part.is_empty:
+                polys.extend(p for p in part.geoms if not p.is_empty)
+        if len(polys) == 1:
+            geom = polys[0]
+        elif len(polys) > 1:
+            geom = MultiPolygon(polys)
     if geom.is_empty or not isinstance(geom, (Polygon, MultiPolygon)):
         raise ValueError(f"Geometria municipal deve ser Polygon ou MultiPolygon: {geom.geom_type}")
     return geom
@@ -193,9 +229,15 @@ def load_municipios_from_files(
         if not isinstance(props, dict):
             raise ValueError("Propriedades ausentes em feature GeoJSON")
         cd_mun = _validate_cd_mun(props.get("codarea"))
+        if cd_mun in IBGE_NON_MUNICIPAL_WATER_CODES and cd_mun not in nomes_por_codigo:
+            continue
         if cd_mun in geoms_por_codigo:
             raise ValueError(f"Código de município duplicado na malha: {cd_mun}")
         geoms_por_codigo[cd_mun] = _normalize_geometry(feature.get("geometry"))
+
+    for post_code in IBGE_POST_CENSO_2022_CODES:
+        if post_code in nomes_por_codigo and post_code not in geoms_por_codigo:
+            del nomes_por_codigo[post_code]
 
     if set(nomes_por_codigo) != set(geoms_por_codigo):
         missing_in_malha = sorted(set(nomes_por_codigo) - set(geoms_por_codigo))
@@ -211,7 +253,8 @@ def load_municipios_from_files(
     ]
 
 
-def ensure_sp_raw_files(
+def ensure_uf_raw_files(
+    uf: UfCode,
     raw_root: Path | None = None,
     manifest_path: Path | None = None,
     fetcher: Fetcher | None = None,
@@ -225,9 +268,11 @@ def ensure_sp_raw_files(
     checksums = _read_sha256sums(ibge_dir)
     active_fetcher = fetcher if fetcher is not None else _default_fetcher
 
+    malha_filename = malha_filename_for_uf(uf)
+    municipios_filename = municipios_filename_for_uf(uf)
     artifacts = (
-        (MALHA_FILENAME, SP_MALHA_URL),
-        (MUNICIPIOS_FILENAME, SP_MUNICIPIOS_URL),
+        (malha_filename, malha_url_for_uf(uf)),
+        (municipios_filename, municipios_url_for_uf(uf)),
     )
 
     downloaded: list[str] = []
@@ -283,8 +328,8 @@ def ensure_sp_raw_files(
             file_hashes[source_key] = actual_sha
             fetched_timestamps[source_key] = datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
-    malha_path = ibge_dir / MALHA_FILENAME
-    municipios_path = ibge_dir / MUNICIPIOS_FILENAME
+    malha_path = ibge_dir / malha_filename
+    municipios_path = ibge_dir / municipios_filename
     municipios = load_municipios_from_files(malha_path, municipios_path)
     feature_count = len(municipios)
 
@@ -311,4 +356,17 @@ def ensure_sp_raw_files(
         municipios_path=municipios_path,
         downloaded_files=tuple(downloaded),
         feature_count=feature_count,
+    )
+
+
+def ensure_sp_raw_files(
+    raw_root: Path | None = None,
+    manifest_path: Path | None = None,
+    fetcher: Fetcher | None = None,
+) -> SyncResult:
+    return ensure_uf_raw_files(
+        uf="SP",
+        raw_root=raw_root,
+        manifest_path=manifest_path,
+        fetcher=fetcher,
     )

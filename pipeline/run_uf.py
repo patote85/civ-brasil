@@ -698,10 +698,15 @@ def run_uf_pipeline(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Executa pipeline determinístico do civ-brasil por UF",
+        description="Executa pipeline determinístico do civ-brasil por UF ou Brasil (BR)",
     )
-    parser.add_argument("--uf", default="SP", help="Sigla da UF (ex.: SP)")
+    parser.add_argument("--uf", default="SP", help="Sigla da UF (ex.: SP) ou BR")
     args = parser.parse_args()
+    if str(args.uf).strip().upper() == "BR":
+        from pipeline.run_br import run_br_pipeline
+
+        run_br_pipeline()
+        return
     run_uf_pipeline(parse_uf_code(args.uf))
 
 

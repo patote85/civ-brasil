@@ -1,0 +1,256 @@
+{
+  "area_km2": 8497217.563,
+  "arranjos_mun_count": 953,
+  "downloads_count": 0,
+  "mun_count": 5570,
+  "pib_total_mil": 9012142031.0,
+  "pop_total": 203080756,
+  "res3_hex_count": 739,
+  "uf": "BR",
+  "ufs": {
+    "AC": {
+      "area_km2": 164165.05,
+      "hex_count": 667,
+      "mun_count": 22,
+      "nome": "Acre",
+      "pib_mil": 21374442.0,
+      "pop": 830018,
+      "uf": "AC"
+    },
+    "AL": {
+      "area_km2": 27827.72,
+      "hex_count": 125,
+      "mun_count": 102,
+      "nome": "Alagoas",
+      "pib_mil": 76265621.0,
+      "pop": 3127683,
+      "uf": "AL"
+    },
+    "AM": {
+      "area_km2": 1559262.87,
+      "hex_count": 6256,
+      "mun_count": 62,
+      "nome": "Amazonas",
+      "pib_mil": 131531039.0,
+      "pop": 3941613,
+      "uf": "AM"
+    },
+    "AP": {
+      "area_km2": 142466.2,
+      "hex_count": 578,
+      "mun_count": 16,
+      "nome": "Amapá",
+      "pib_mil": 20099851.0,
+      "pop": 733759,
+      "uf": "AP"
+    },
+    "BA": {
+      "area_km2": 564760.07,
+      "hex_count": 2088,
+      "mun_count": 417,
+      "nome": "Bahia",
+      "pib_mil": 352617842.0,
+      "pop": 14141626,
+      "uf": "BA"
+    },
+    "CE": {
+      "area_km2": 148896.32,
+      "hex_count": 556,
+      "mun_count": 184,
+      "nome": "Ceará",
+      "pib_mil": 194884807.0,
+      "pop": 8794957,
+      "uf": "CE"
+    },
+    "DF": {
+      "area_km2": 5762.18,
+      "hex_count": 33,
+      "mun_count": 1,
+      "nome": "Distrito Federal",
+      "pib_mil": 286943782.0,
+      "pop": 2817381,
+      "uf": "DF"
+    },
+    "ES": {
+      "area_km2": 46070.72,
+      "hex_count": 211,
+      "mun_count": 78,
+      "nome": "Espírito Santo",
+      "pib_mil": 186336507.0,
+      "pop": 3833712,
+      "uf": "ES"
+    },
+    "GO": {
+      "area_km2": 340229.89,
+      "hex_count": 1356,
+      "mun_count": 246,
+      "nome": "Goiás",
+      "pib_mil": 269627876.0,
+      "pop": 7056495,
+      "uf": "GO"
+    },
+    "MA": {
+      "area_km2": 329632.47,
+      "hex_count": 1225,
+      "mun_count": 217,
+      "nome": "Maranhão",
+      "pib_mil": 124980719.0,
+      "pop": 6776699,
+      "uf": "MA"
+    },
+    "MG": {
+      "area_km2": 586521.78,
+      "hex_count": 2292,
+      "mun_count": 853,
+      "nome": "Minas Gerais",
+      "pib_mil": 857593220.0,
+      "pop": 20539989,
+      "uf": "MG"
+    },
+    "MS": {
+      "area_km2": 357142.5,
+      "hex_count": 1536,
+      "mun_count": 79,
+      "nome": "Mato Grosso do Sul",
+      "pib_mil": 142203766.0,
+      "pop": 2757013,
+      "uf": "MS"
+    },
+    "MT": {
+      "area_km2": 903212.18,
+      "hex_count": 3555,
+      "mun_count": 141,
+      "nome": "Mato Grosso",
+      "pib_mil": 233390203.0,
+      "pop": 3658649,
+      "uf": "MT"
+    },
+    "PA": {
+      "area_km2": 1245857.14,
+      "hex_count": 4598,
+      "mun_count": 144,
+      "nome": "Pará",
+      "pib_mil": 262904981.0,
+      "pop": 8120131,
+      "uf": "PA"
+    },
+    "PB": {
+      "area_km2": 56467.73,
+      "hex_count": 249,
+      "mun_count": 223,
+      "nome": "Paraíba",
+      "pib_mil": 77470335.0,
+      "pop": 3974687,
+      "uf": "PB"
+    },
+    "PE": {
+      "area_km2": 98068.28,
+      "hex_count": 415,
+      "mun_count": 185,
+      "nome": "Pernambuco",
+      "pib_mil": 220813521.0,
+      "pop": 9058931,
+      "uf": "PE"
+    },
+    "PI": {
+      "area_km2": 251756.46,
+      "hex_count": 927,
+      "mun_count": 224,
+      "nome": "Piauí",
+      "pib_mil": 64028301.0,
+      "pop": 3271199,
+      "uf": "PI"
+    },
+    "PR": {
+      "area_km2": 199298.26,
+      "hex_count": 905,
+      "mun_count": 399,
+      "nome": "Paraná",
+      "pib_mil": 549973073.0,
+      "pop": 11444380,
+      "uf": "PR"
+    },
+    "RJ": {
+      "area_km2": 43705.46,
+      "hex_count": 221,
+      "mun_count": 92,
+      "nome": "Rio de Janeiro",
+      "pib_mil": 949300769.0,
+      "pop": 16055174,
+      "uf": "RJ"
+    },
+    "RN": {
+      "area_km2": 52816.5,
+      "hex_count": 222,
+      "mun_count": 167,
+      "nome": "Rio Grande do Norte",
+      "pib_mil": 80180733.0,
+      "pop": 3302729,
+      "uf": "RN"
+    },
+    "RO": {
+      "area_km2": 237747.4,
+      "hex_count": 1048,
+      "mun_count": 52,
+      "nome": "Rondônia",
+      "pib_mil": 58170100.0,
+      "pop": 1581196,
+      "uf": "RO"
+    },
+    "RR": {
+      "area_km2": 223651.06,
+      "hex_count": 1006,
+      "mun_count": 15,
+      "nome": "Roraima",
+      "pib_mil": 18202580.0,
+      "pop": 636707,
+      "uf": "RR"
+    },
+    "RS": {
+      "area_km2": 268594.65,
+      "hex_count": 1411,
+      "mun_count": 497,
+      "nome": "Rio Grande do Sul",
+      "pib_mil": 581283674.0,
+      "pop": 10882965,
+      "uf": "RS"
+    },
+    "SC": {
+      "area_km2": 95730.68,
+      "hex_count": 493,
+      "mun_count": 295,
+      "nome": "Santa Catarina",
+      "pib_mil": 428570897.0,
+      "pop": 7610361,
+      "uf": "SC"
+    },
+    "SE": {
+      "area_km2": 21940.04,
+      "hex_count": 103,
+      "mun_count": 75,
+      "nome": "Sergipe",
+      "pib_mil": 51861396.0,
+      "pop": 2210004,
+      "uf": "SE"
+    },
+    "SP": {
+      "area_km2": 248200.39,
+      "hex_count": 1091,
+      "mun_count": 645,
+      "nome": "São Paulo",
+      "pib_mil": 2719751233.0,
+      "pop": 44411238,
+      "uf": "SP"
+    },
+    "TO": {
+      "area_km2": 277433.55,
+      "hex_count": 1062,
+      "mun_count": 139,
+      "nome": "Tocantins",
+      "pib_mil": 51780763.0,
+      "pop": 1511460,
+      "uf": "TO"
+    }
+  },
+  "unique_h3_res5_count": 32173
+}

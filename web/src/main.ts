@@ -5,6 +5,13 @@ import {
   renderAlmanac,
   type SourcesCatalog,
 } from "./almanac/almanac";
+import {
+  BR_BASE_LENSES,
+  BR_UF_NAMES,
+  parseBrOverview,
+  parseCompactBrLens,
+  type BrOverviewDataset,
+} from "./br/brData";
 import { renderCityView } from "./city-view/cityView";
 import {
   normalizeSearchText,
@@ -42,6 +49,7 @@ const POINTS_URL = "/data/sp/pontos.json";
 const CITIES_URL = "/data/sp/cities.json";
 const EXPLORER_URL = "/data/sp/explorer.json";
 const SOURCES_URL = "/data/sp/sources.json";
+const BR_OVERVIEW_URL = "/data/br/br_res3.json";
 
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url);
@@ -54,12 +62,14 @@ async function fetchJson(url: string): Promise<unknown> {
 async function bootstrap(): Promise<void> {
   const canvas = document.getElementById("map-canvas");
   const minimap = document.getElementById("minimap-canvas");
+  const brandSubtitle = document.getElementById("brand-subtitle");
   const yieldsBar = document.getElementById("yields-bar");
   const lensButtons = document.getElementById("lens-buttons");
   const legend = document.getElementById("legend");
   const cityDrawer = document.getElementById("city-drawer");
   const status = document.getElementById("status");
   const tooltip = document.getElementById("tooltip");
+  const btnScopeBr = document.getElementById("btn-scope-br");
   const btnMode = document.getElementById("btn-mode");
   const btnBanners = document.getElementById("btn-banners");
   const btnPoints = document.getElementById("btn-points");
@@ -79,12 +89,14 @@ async function bootstrap(): Promise<void> {
   if (
     !(canvas instanceof HTMLCanvasElement) ||
     !(minimap instanceof HTMLCanvasElement) ||
+    !brandSubtitle ||
     !yieldsBar ||
     !lensButtons ||
     !legend ||
     !cityDrawer ||
     !status ||
     !tooltip ||
+    !btnScopeBr ||
     !btnMode ||
     !btnBanners ||
     !btnPoints ||
@@ -106,10 +118,18 @@ async function bootstrap(): Promise<void> {
 
   const renderer = new HexMapRenderer(canvas, minimap);
   const lensCache = new Map<string, PositionalLensData>();
+  const ufGridCache = new Map<string, UfGridDataset>();
   const initialUrlState = parseUrlState(window.location.search);
 
+  let activeScope =
+    initialUrlState.uf && (initialUrlState.uf === "BR" || initialUrlState.uf in BR_UF_NAMES)
+      ? initialUrlState.uf
+      : "SP";
   let grid: UfGridDataset;
   let lensIndex: LensIndex;
+  let spGrid: UfGridDataset | null = null;
+  let spLensIndex: LensIndex | null = null;
+  let brOverview: BrOverviewDataset | null = null;
   let activeLensMeta: LensMetadata;
   let activeLensData: PositionalLensData;
   let pointsData: PointsDataset | null = null;
@@ -144,10 +164,11 @@ async function bootstrap(): Promise<void> {
 
   const syncUrl = (): void => {
     const nextHref = serializeUrlState(window.location.href, {
+      uf: activeScope,
       lensId: activeLensMeta?.id ?? null,
       mode,
       pointsMode,
-      cityCd: activeCityCd,
+      cityCd: activeScope === "SP" ? activeCityCd : null,
       camX: camera.x,
       camY: camera.y,
       camZ: camera.zoom,
@@ -156,7 +177,7 @@ async function bootstrap(): Promise<void> {
   };
 
   const shouldRenderPoints = (): boolean => {
-    if (!pointsData) return false;
+    if (activeScope !== "SP" || !pointsData) return false;
     if (pointsMode === "on") return true;
     if (pointsMode === "off") return false;
     return activeLensMeta.id === "infra" || activeLensMeta.id === "saude";
@@ -205,11 +226,20 @@ async function bootstrap(): Promise<void> {
   const loadLens = async (lensId: string): Promise<void> => {
     const meta = lensIndex.lenses.find((item) => item.id === lensId);
     if (!meta) return;
-    let data = lensCache.get(lensId);
+    const cacheKey = `${activeScope}:${lensId}`;
+    let data = lensCache.get(cacheKey);
     if (!data) {
-      const raw = await fetchJson(`/data/sp/lentes/${lensId}.json`);
-      data = parsePositionalLens(raw, grid.hex_count);
-      lensCache.set(lensId, data);
+      if (activeScope === "BR" && brOverview) {
+        data = brOverview.lenses[lensId];
+      } else if (activeScope === "SP") {
+        const raw = await fetchJson(`/data/sp/lentes/${lensId}.json`);
+        data = parsePositionalLens(raw, grid.hex_count);
+      } else {
+        const raw = await fetchJson(`/data/br/${activeScope.toLowerCase()}_lenses/${lensId}.json`);
+        data = parseCompactBrLens(raw, meta, grid.hex_count);
+      }
+      if (!data) return;
+      lensCache.set(cacheKey, data);
     }
     activeLensMeta = meta;
     activeLensData = data;
@@ -222,7 +252,8 @@ async function bootstrap(): Promise<void> {
     redraw();
   };
 
-  try {
+  const ensureSpLoaded = async (): Promise<void> => {
+    if (spGrid && spLensIndex) return;
     const [rawGrid, rawIndex, rawPoints, rawCities, rawExplorer, rawSources] = await Promise.all([
       fetchJson(GRID_URL),
       fetchJson(LENS_INDEX_URL),
@@ -231,8 +262,9 @@ async function bootstrap(): Promise<void> {
       fetchJson(EXPLORER_URL).catch(() => null),
       fetchJson(SOURCES_URL).catch(() => null),
     ]);
-    grid = parseUfGridDataset(rawGrid);
-    lensIndex = parseLensIndex(rawIndex);
+    spGrid = parseUfGridDataset(rawGrid);
+    spLensIndex = parseLensIndex(rawIndex);
+    ufGridCache.set("SP", spGrid);
     pointsData = tryParseOptional(rawPoints, parsePointsDataset);
     const parsedCities = tryParseOptional(rawCities, parseCitiesDataset);
     if (parsedCities) {
@@ -243,16 +275,81 @@ async function bootstrap(): Promise<void> {
     }
     explorerData = tryParseOptional(rawExplorer, parseExplorerDataset);
     sourcesCatalog = tryParseOptional(rawSources, parseSourcesCatalog);
-    renderYieldsBar(yieldsBar, grid);
-    renderer.resize();
+  };
 
-    const startLens =
-      initialUrlState.lensId && lensIndex.lenses.some((l) => l.id === initialUrlState.lensId)
-        ? initialUrlState.lensId
-        : (lensIndex.lenses[0]?.id ?? "ouro");
-    await loadLens(startLens);
+  const loadScope = async (
+    targetUf: string,
+    preferredLensId: string | null = null,
+    resetCamera = true,
+  ): Promise<void> => {
+    try {
+      const normalized = targetUf.toUpperCase();
+      renderStatus(status, `Carregando ${normalized}…`);
+      selectedIndex = null;
+      hoverIndex = null;
+      filterBucket = null;
+      if (normalized !== "SP") {
+        activeCityCd = null;
+        cityDrawer.classList.add("hidden");
+      }
 
-    if (initialUrlState.cityCd) {
+      if (normalized === "BR") {
+        if (!brOverview) {
+          const rawBr = await fetchJson(BR_OVERVIEW_URL);
+          brOverview = parseBrOverview(rawBr);
+        }
+        activeScope = "BR";
+        grid = brOverview.grid;
+        lensIndex = { uf: "BR", lenses: BR_BASE_LENSES };
+        brandSubtitle.textContent = "Brasil · 27 UFs · H3 res 3";
+        btnScopeBr.textContent = "Voltar p/ SP";
+      } else if (normalized === "SP") {
+        await ensureSpLoaded();
+        if (!spGrid || !spLensIndex) return;
+        activeScope = "SP";
+        grid = spGrid;
+        lensIndex = spLensIndex;
+        brandSubtitle.textContent = "São Paulo · H3 res 5";
+        btnScopeBr.textContent = "Brasil (27 UFs)";
+      } else if (normalized in BR_UF_NAMES) {
+        let ufGrid = ufGridCache.get(normalized);
+        if (!ufGrid) {
+          const rawUf = await fetchJson(`/data/br/${normalized.toLowerCase()}_grid.json`);
+          ufGrid = parseUfGridDataset(rawUf);
+          ufGridCache.set(normalized, ufGrid);
+        }
+        activeScope = normalized;
+        grid = ufGrid;
+        lensIndex = { uf: normalized, lenses: BR_BASE_LENSES };
+        brandSubtitle.textContent = `${BR_UF_NAMES[normalized] ?? normalized} · H3 res 5`;
+        btnScopeBr.textContent = "← Brasil (Res 3)";
+      } else {
+        return;
+      }
+
+      if (resetCamera) {
+        camera.x = 500;
+        camera.y = 350;
+        camera.zoom = 1.0;
+      }
+
+      renderYieldsBar(yieldsBar, grid);
+      renderer.resize();
+
+      const nextLens =
+        preferredLensId && lensIndex.lenses.some((l) => l.id === preferredLensId)
+          ? preferredLensId
+          : (lensIndex.lenses[0]?.id ?? "ouro");
+      await loadLens(nextLens);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      renderStatus(status, `Falha ao carregar ${targetUf}: ${message}`, true);
+    }
+  };
+
+  try {
+    await loadScope(activeScope, initialUrlState.lensId, false);
+    if (activeScope === "SP" && initialUrlState.cityCd) {
       const restoredCity = cityByCd.get(initialUrlState.cityCd);
       if (restoredCity) {
         if (restoredCity.hex_idx >= 0) selectedIndex = restoredCity.hex_idx;
@@ -311,7 +408,26 @@ async function bootstrap(): Promise<void> {
     const sx = e.clientX - rect.left;
     const sy = e.clientY - rect.top;
 
-    if (showBanners) {
+    if (activeScope === "BR" && brOverview) {
+      if (showBanners) {
+        const hub = renderer.pickHubAtScreen(sx, sy, grid, camera);
+        if (hub && hub.cd_mun in BR_UF_NAMES) {
+          void loadScope(hub.cd_mun, activeLensMeta?.id ?? null);
+          return;
+        }
+      }
+      const pickedBrHex = renderer.pickHex(sx, sy, grid, camera);
+      if (pickedBrHex !== null) {
+        const ufTarget = brOverview.ufDom[pickedBrHex];
+        if (ufTarget && ufTarget in BR_UF_NAMES) {
+          void loadScope(ufTarget, activeLensMeta?.id ?? null);
+          return;
+        }
+      }
+      return;
+    }
+
+    if (showBanners && activeScope === "SP") {
       const hub = renderer.pickHubAtScreen(sx, sy, grid, camera);
       if (hub) {
         const profile = cityByCd.get(hub.cd_mun) ?? cityByNormName.get(normalizeSearchText(hub.nome));
@@ -327,18 +443,20 @@ async function bootstrap(): Promise<void> {
     const pickedHex = renderer.pickHex(sx, sy, grid, camera);
     if (pickedHex !== null) {
       selectedIndex = pickedHex;
-      const munIds = grid.mun_idx[pickedHex] ?? [];
-      let bestCity: CityProfile | null = null;
-      for (const mIdx of munIds) {
-        const mName = grid.municipios[mIdx];
-        if (!mName) continue;
-        const candidate = cityByNormName.get(normalizeSearchText(mName));
-        if (candidate && (!bestCity || candidate.pop > bestCity.pop)) {
-          bestCity = candidate;
+      if (activeScope === "SP") {
+        const munIds = grid.mun_idx[pickedHex] ?? [];
+        let bestCity: CityProfile | null = null;
+        for (const mIdx of munIds) {
+          const mName = grid.municipios[mIdx];
+          if (!mName) continue;
+          const candidate = cityByNormName.get(normalizeSearchText(mName));
+          if (candidate && (!bestCity || candidate.pop > bestCity.pop)) {
+            bestCity = candidate;
+          }
         }
-      }
-      if (bestCity) {
-        openCityView(bestCity);
+        if (bestCity) {
+          openCityView(bestCity);
+        }
       }
       redraw();
     }
@@ -377,6 +495,13 @@ async function bootstrap(): Promise<void> {
     redraw();
   };
 
+  btnScopeBr.addEventListener("click", () => {
+    if (activeScope === "BR") {
+      void loadScope("SP");
+    } else {
+      void loadScope("BR");
+    }
+  });
   btnMode.addEventListener("click", toggleMode);
   btnBanners.addEventListener("click", () => {
     showBanners = !showBanners;
