@@ -256,11 +256,6 @@ async function bootstrap(): Promise<void> {
       const restoredCity = cityByCd.get(initialUrlState.cityCd);
       if (restoredCity) {
         if (restoredCity.hex_idx >= 0) selectedIndex = restoredCity.hex_idx;
-        if (initialUrlState.camX === null) {
-          camera.x = restoredCity.x;
-          camera.y = restoredCity.y;
-          camera.zoom = 2.6;
-        }
         openCityView(restoredCity);
         redraw();
       }
@@ -403,17 +398,29 @@ async function bootstrap(): Promise<void> {
     closeCityView();
     redraw();
   });
+  const shareDefaultLabel = btnShare.textContent?.trim() || "Compartilhar";
+  let shareResetTimer: number | null = null;
+  const setShareFeedback = (label: string): void => {
+    if (shareResetTimer !== null) {
+      window.clearTimeout(shareResetTimer);
+    }
+    btnShare.textContent = label;
+    shareResetTimer = window.setTimeout(() => {
+      btnShare.textContent = shareDefaultLabel;
+      shareResetTimer = null;
+    }, 1500);
+  };
   btnShare.addEventListener("click", () => {
     syncUrl();
     const shareHref = window.location.href;
-    const prevLabel = btnShare.textContent ?? "Compartilhar";
-    if (navigator.clipboard?.writeText) {
-      void navigator.clipboard.writeText(shareHref).catch(() => {});
+    if (!navigator.clipboard?.writeText) {
+      setShareFeedback("Falha ao copiar");
+      return;
     }
-    btnShare.textContent = "Link copiado!";
-    window.setTimeout(() => {
-      btnShare.textContent = prevLabel;
-    }, 1500);
+    void navigator.clipboard.writeText(shareHref).then(
+      () => setShareFeedback("Link copiado!"),
+      () => setShareFeedback("Falha ao copiar"),
+    );
   });
   btnPng.addEventListener("click", () => {
     const link = document.createElement("a");
