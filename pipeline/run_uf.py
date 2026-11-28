@@ -46,7 +46,10 @@ from pipeline.sources.inep_superior import (
     ensure_inep_superior_raw_file,
     load_inep_superior_from_file,
 )
+from pipeline.sources.ipea_idhm import ensure_ipea_idhm_raw_files, load_ipea_idhm_from_files
 from pipeline.sources.rais import ensure_rais_raw_file, load_rais_from_file
+from pipeline.sources.ssp_sp import ensure_ssp_sp_raw_file, load_ssp_sp_from_file
+from pipeline.sources.tse import ensure_tse_raw_file, load_tse_from_file
 from pipeline.types import CdMun, H3Index, UfCode, parse_uf_code
 
 RULES_PATH = Path("pipeline/civ/civ_rules.yaml")
@@ -88,6 +91,12 @@ def run_uf_pipeline(
     )
     aneel_sync = ensure_aneel_siga_raw_file(raw_root=raw_root, manifest_path=manifest_path)
     antaq_sync = ensure_antaq_raw_file(raw_root=raw_root, manifest_path=manifest_path)
+    tse_sync = ensure_tse_raw_file(raw_root=raw_root, manifest_path=manifest_path)
+    idhm_sync, gini_sync = ensure_ipea_idhm_raw_files(
+        raw_root=raw_root,
+        manifest_path=manifest_path,
+    )
+    ssp_sync = ensure_ssp_sp_raw_file(raw_root=raw_root, manifest_path=manifest_path)
 
     sources_status = [
         ("ibge_malhas", len(malhas_sync.downloaded_files) > 0),
@@ -104,6 +113,9 @@ def run_uf_pipeline(
         ("cnes", cnes_estab_sync.downloaded or cnes_leitos_sync.downloaded),
         ("aneel_siga", aneel_sync.downloaded),
         ("antaq", antaq_sync.downloaded),
+        ("tse_2024", tse_sync.downloaded),
+        ("ipea_idhm", idhm_sync.downloaded or gini_sync.downloaded),
+        ("ssp_sp", ssp_sync.downloaded),
     ]
     no_download_count = sum(1 for _, downloaded in sources_status if not downloaded)
     print(f"Fontes {uf} sincronizadas (sem download: {no_download_count}/{len(sources_status)}).")
@@ -417,6 +429,83 @@ def run_uf_pipeline(
         if pt.cd_mun:
             portos_by_mun[CdMun(pt.cd_mun)] += 1
 
+    mun_names_cd: dict[CdMun, str] = {CdMun(k): v for k, v in nomes_por_cd.items()}
+    pop_int_by_mun: dict[CdMun, int] = {cd: censo[cd].pop for cd in ordered_muns}
+
+    tse_map = load_tse_from_file(tse_sync.path, uf=uf, mun_names_by_cd=mun_names_cd)
+    idhm_map = load_ipea_idhm_from_files(
+        idhm_sync.path, gini_sync.path, valid_cd_muns=valid_cd_muns
+    )
+    ssp_map = load_ssp_sp_from_file(
+        ssp_sync.path,
+        mun_names_by_cd=mun_names_cd,
+        pop_by_mun=pop_int_by_mun,
+    )
+
+    hex_participacao = reconcile_rate(
+        {cd: tse_map[cd].participacao_pct for cd in ordered_muns},
+        weights,
+        pop_by_mun,
+    )
+    hex_idhm = reconcile_rate(
+        {cd: idhm_map[cd].idhm for cd in ordered_muns},
+        weights,
+        pop_by_mun,
+    )
+    hex_gini = reconcile_rate(
+        {cd: idhm_map[cd].gini for cd in ordered_muns},
+        weights,
+        pop_by_mun,
+    )
+    hex_hom_100k = reconcile_rate(
+        {cd: ssp_map[cd].homicidio_100k for cd in ordered_muns},
+        weights,
+        pop_by_mun,
+    )
+    hex_roubo_100k = reconcile_rate(
+        {cd: ssp_map[cd].roubo_100k for cd in ordered_muns},
+        weights,
+        pop_by_mun,
+    )
+
+    write_parquet_atomic(
+        pa.table(
+            {
+                "cd_mun": [str(cd) for cd in ordered_muns],
+                "eleitorado": [tse_map[cd].eleitorado for cd in ordered_muns],
+                "comparecimento": [tse_map[cd].comparecimento for cd in ordered_muns],
+                "abstencoes": [tse_map[cd].abstencoes for cd in ordered_muns],
+                "votos_validos": [tse_map[cd].votos_validos for cd in ordered_muns],
+                "votos_brancos": [tse_map[cd].votos_brancos for cd in ordered_muns],
+                "votos_nulos": [tse_map[cd].votos_nulos for cd in ordered_muns],
+                "anulados_sub_judice": [tse_map[cd].anulados_sub_judice for cd in ordered_muns],
+                "participacao_pct": [tse_map[cd].participacao_pct for cd in ordered_muns],
+                "idhm": [idhm_map[cd].idhm for cd in ordered_muns],
+                "gini": [idhm_map[cd].gini for cd in ordered_muns],
+                "homicidio": [ssp_map[cd].homicidio for cd in ordered_muns],
+                "roubo": [ssp_map[cd].roubo for cd in ordered_muns],
+                "furto": [ssp_map[cd].furto for cd in ordered_muns],
+                "homicidio_100k": [ssp_map[cd].homicidio_100k for cd in ordered_muns],
+                "roubo_100k": [ssp_map[cd].roubo_100k for cd in ordered_muns],
+                "baixa_populacao": [ssp_map[cd].baixa_populacao for cd in ordered_muns],
+            }
+        ),
+        proc_dir / "mun_sensivel.parquet",
+    )
+    write_parquet_atomic(
+        pa.table(
+            {
+                "h3": [str(h) for h in ordered_hexes],
+                "participacao_pct": [hex_participacao.get(h) for h in ordered_hexes],
+                "idhm": [hex_idhm.get(h) for h in ordered_hexes],
+                "gini": [hex_gini.get(h) for h in ordered_hexes],
+                "homicidio_100k": [hex_hom_100k.get(h) for h in ordered_hexes],
+                "roubo_100k": [hex_roubo_100k.get(h) for h in ordered_hexes],
+            }
+        ),
+        proc_dir / "hex_sensivel.parquet",
+    )
+
     ranked_cities = sorted(ordered_muns, key=lambda c: (-pop_by_mun.get(c, 0.0), str(c)))[:80]
     city_profiles: list[dict[str, Any]] = []
     for cd in ranked_cities:
@@ -459,6 +548,37 @@ def run_uf_pipeline(
                     "potencia_mw": round(mw_by_mun_approx.get(cd, 0.0), 1),
                     "portos": portos_by_mun.get(cd, 0),
                 },
+                "sensitive": {
+                    "participacao_pct": tse_map[cd].participacao_pct,
+                    "idhm": idhm_map[cd].idhm,
+                    "gini": idhm_map[cd].gini,
+                    "homicidio_100k": ssp_map[cd].homicidio_100k,
+                    "roubo_100k": ssp_map[cd].roubo_100k,
+                    "baixa_populacao": ssp_map[cd].baixa_populacao,
+                },
+            }
+        )
+
+    explorer_rows: list[dict[str, Any]] = []
+    for cd in ordered_muns:
+        pop_val = max(1, censo[cd].pop)
+        pib_mil_val = round(pib[cd].pib, 1)
+        explorer_rows.append(
+            {
+                "cd_mun": str(cd),
+                "nome": nomes_por_cd[str(cd)],
+                "pop": censo[cd].pop,
+                "pib_mil": pib_mil_val,
+                "pib_pc": round(1000.0 * pib[cd].pib / pop_val, 1),
+                "vinculos": vinculos_by_mun.get(cd, 0),
+                "ideb_medio": ideb_map[cd].ideb_medio,
+                "leitos": cnes_mun[cd].leitos,
+                "idhm": idhm_map[cd].idhm,
+                "gini": idhm_map[cd].gini,
+                "participacao_pct": tse_map[cd].participacao_pct,
+                "homicidio_100k": ssp_map[cd].homicidio_100k,
+                "roubo_100k": ssp_map[cd].roubo_100k,
+                "baixa_populacao": ssp_map[cd].baixa_populacao,
             }
         )
 
@@ -474,6 +594,9 @@ def run_uf_pipeline(
         "matriculas_superior": dict(hex_mat_sup),
         "leitos": dict(hex_leitos),
         "potencia_mw": dict(hex_mw),
+        "participacao_pct": dict(hex_participacao),
+        "idhm": dict(hex_idhm),
+        "homicidio_100k": dict(hex_hom_100k),
     }
     web_bytes = export_uf_web_bundle(
         uf=uf,
@@ -487,6 +610,7 @@ def run_uf_pipeline(
         points=all_points,
         rejected_points_count=len(all_rejected),
         city_profiles=city_profiles,
+        explorer_rows=explorer_rows,
     )
 
     write_stage_checkpoint(
@@ -505,6 +629,10 @@ def run_uf_pipeline(
                 "cnes_leitos_sha256": cnes_leitos_sync.sha256,
                 "aneel_siga_sha256": aneel_sync.sha256,
                 "antaq_sha256": antaq_sync.sha256,
+                "tse_2024_sha256": tse_sync.sha256,
+                "ipea_idhm_sha256": idhm_sync.sha256,
+                "ipea_gini_sha256": gini_sync.sha256,
+                "ssp_sp_sha256": ssp_sync.sha256,
             },
             "stage_2_municipal": {
                 "municipios": len(ordered_muns),

@@ -7,6 +7,7 @@ import {
   formatPtBrCompact,
   NO_DATA_COLOR,
   parseCitiesDataset,
+  parseExplorerDataset,
   parseLensIndex,
   parsePointsDataset,
   parsePositionalLens,
@@ -18,6 +19,7 @@ import {
   type PositionalLensData,
   type UfGridDataset,
 } from "./data";
+import { mountExplorer, safeLog10 } from "./explorer/explorer";
 import { computeMinimapViewportRect } from "./renderer";
 import { buildTooltipHtml, renderLegend, renderYieldsBar } from "./ui";
 
@@ -249,4 +251,86 @@ describe("PR 3 points, cities, and City View", () => {
     expect(tryParseOptional(null, parsePointsDataset)).toBeNull();
   });
 });
+
+describe("PR 4 Explorer and sensitive lens formatting", () => {
+  it("formats %, índice, /100k and computes zero-safe log10", () => {
+    expect(formatPtBrCompact(76.42, "%")).toBe("76,4%");
+    expect(formatPtBrCompact(0.805, "índice")).toBe("0,805");
+    expect(formatPtBrCompact(5.46, "/100k")).toBe("5,5/100k");
+    expect(Number.isFinite(safeLog10(0))).toBe(true);
+    expect(Number.isFinite(safeLog10(-5))).toBe(true);
+  });
+
+  it("parses explorer.json, filters without accents, and invokes selection callback", () => {
+    const parsed = parseExplorerDataset({
+      uf: "SP",
+      municipios: [
+        {
+          cd_mun: "3549904",
+          nome: "São José dos Campos",
+          x: 780,
+          y: 420,
+          hex_idx: 1,
+          pop: 697054,
+          pib_mil: 47200000,
+          pib_pc: 67713.5,
+          vinculos: 228391,
+          ideb_medio: 5.73,
+          leitos: 1932,
+          idhm: 0.807,
+          gini: 0.52,
+          participacao_pct: 77.2,
+          homicidio_100k: 5.4,
+          roubo_100k: 210.5,
+          baixa_populacao: false,
+        },
+        {
+          cd_mun: "3507209",
+          nome: "Borá",
+          x: 320,
+          y: 350,
+          hex_idx: 0,
+          pop: 907,
+          pib_mil: 52000,
+          pib_pc: 57331.9,
+          vinculos: 310,
+          ideb_medio: 6.1,
+          leitos: 0,
+          idhm: 0.746,
+          gini: 0.41,
+          participacao_pct: 84.5,
+          homicidio_100k: 0,
+          roubo_100k: 0,
+          baixa_populacao: true,
+        },
+      ],
+    });
+    expect(parsed.municipios).toHaveLength(2);
+
+    const host = document.createElement("div");
+    let pickedName = "";
+    mountExplorer(
+      host,
+      parsed,
+      (row) => {
+        pickedName = row.nome;
+      },
+      () => {},
+    );
+    expect(host.querySelectorAll('[data-testid="explorer-row"]')).toHaveLength(2);
+    expect(host.textContent).toContain("Borá (<20k)");
+
+    const input = host.querySelector<HTMLInputElement>(".explorer-search");
+    expect(input).not.toBeNull();
+    if (input) {
+      input.value = "sao jose";
+      input.dispatchEvent(new Event("input"));
+    }
+    const filtered = host.querySelectorAll<HTMLTableRowElement>('[data-testid="explorer-row"]');
+    expect(filtered).toHaveLength(1);
+    filtered[0]?.click();
+    expect(pickedName).toBe("São José dos Campos");
+  });
+});
+
 

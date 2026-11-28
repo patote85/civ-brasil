@@ -19,8 +19,10 @@ MAX_SP_GRID_JSON_BYTES = 220_000
 MAX_SP_LENS_JSON_BYTES = 50_000
 MAX_SP_POINTS_JSON_BYTES = 200_000
 MAX_SP_CITIES_JSON_BYTES = 200_000
+MAX_SP_EXPLORER_JSON_BYTES = 350_000
+MAX_SP_TOTAL_WEB_BYTES = 1_500_000
 MAX_JS_BUNDLE_BYTES = 150_000
-MIN_PR3_LENSES = 8
+MIN_PR3_LENSES = 11
 
 
 def verify_artifacts(
@@ -189,6 +191,13 @@ def verify_artifacts(
         sp_public_dir=sp_public_dir,
         expected_hex_count=hex_count,
         seen_hexes=seen_hexes,
+    )
+    _verify_pr4_sensitive_and_explorer(
+        errors=errors,
+        dist_dir=dist_dir,
+        sp_processed_dir=sp_processed_dir,
+        sp_public_dir=sp_public_dir,
+        expected_hex_count=hex_count,
     )
 
     return errors
@@ -406,6 +415,69 @@ def _verify_pr3_economy_services_and_points(
         cities_list = cities_payload.get("cities", [])
         if len(cities_list) < 20:
             errors.append(f"cities.json tem poucas cidades: {len(cities_list)}")
+
+
+def _verify_pr4_sensitive_and_explorer(
+    errors: list[str],
+    dist_dir: Path,
+    sp_processed_dir: Path,
+    sp_public_dir: Path,
+    expected_hex_count: int,
+) -> None:
+    mun_sens_path = sp_processed_dir / "mun_sensivel.parquet"
+    hex_sens_path = sp_processed_dir / "hex_sensivel.parquet"
+    for path in (mun_sens_path, hex_sens_path):
+        if not path.is_file():
+            errors.append(f"Parquet PR 4 ausente: {path}")
+
+    if mun_sens_path.is_file() and hex_sens_path.is_file():
+        ms_tbl = pq.read_table(mun_sens_path)
+        hs_tbl = pq.read_table(hex_sens_path)
+        if ms_tbl.num_rows != EXPECTED_SP_MUNICIPIOS:
+            errors.append(f"mun_sensivel.parquet tem {ms_tbl.num_rows} linhas")
+        if hs_tbl.num_rows != expected_hex_count:
+            errors.append(f"hex_sensivel.parquet tem {hs_tbl.num_rows} linhas")
+
+        for col in ("idhm", "gini"):
+            for val in ms_tbl.column(col).to_pylist():
+                if val is not None and not (0.0 <= float(val) <= 1.0):
+                    errors.append(f"Valor {col} fora de [0,1]: {val}")
+
+        eleit = ms_tbl.column("eleitorado").to_pylist()
+        comp = ms_tbl.column("comparecimento").to_pylist()
+        for e, c in zip(eleit, comp, strict=True):
+            if int(c) > int(e):
+                errors.append(f"Comparecimento ({c}) > eleitorado ({e}) em mun_sensivel.parquet")
+
+    explorer_public = sp_public_dir / "explorer.json"
+    explorer_dist = dist_dir / "data" / "sp" / "explorer.json"
+    for candidate in (explorer_public, explorer_dist):
+        if not candidate.is_file():
+            errors.append(f"Artefato web PR 4 ausente: {candidate}")
+
+    if explorer_public.is_file():
+        if explorer_dist.is_file() and explorer_public.read_bytes() != explorer_dist.read_bytes():
+            errors.append(
+                "web/dist/data/sp/explorer.json diverge de web/public/data/sp/explorer.json"
+            )
+        if explorer_public.stat().st_size > MAX_SP_EXPLORER_JSON_BYTES:
+            errors.append(
+                f"explorer.json ({explorer_public.stat().st_size} B) excede "
+                f"{MAX_SP_EXPLORER_JSON_BYTES} B"
+            )
+        exp_payload = json.loads(explorer_public.read_text(encoding="utf-8"))
+        exp_muns = exp_payload.get("municipios", [])
+        if len(exp_muns) != EXPECTED_SP_MUNICIPIOS:
+            errors.append(
+                f"explorer.json tem {len(exp_muns)} municípios (esperado {EXPECTED_SP_MUNICIPIOS})"
+            )
+
+    if sp_public_dir.is_dir():
+        total_sp_bytes = sum(p.stat().st_size for p in sp_public_dir.rglob("*.json") if p.is_file())
+        if total_sp_bytes > MAX_SP_TOTAL_WEB_BYTES:
+            errors.append(
+                f"Total de JSONs SP ({total_sp_bytes} B) excede {MAX_SP_TOTAL_WEB_BYTES} B"
+            )
 
 
 def main() -> int:

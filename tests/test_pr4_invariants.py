@@ -19,7 +19,7 @@ FIXTURES_DIR = Path(__file__).parent / "fixtures"
 SAMPLE_MALHA = FIXTURES_DIR / "sp_sample_malha.geojson"
 SAMPLE_MUNICIPIOS = FIXTURES_DIR / "sp_sample_municipios.json"
 SAMPLE_GRADE = FIXTURES_DIR / "sp_sample_grade.geojson"
-SAMPLE_CENSO = FIXTURES_DIR / "sp_sample_censo_2022.json"
+SAMPLE_CENSO = FIXTURES_DIR / "sp_sample_censo.json"
 
 FORBIDDEN_LOYALTY_TERMS = (
     "melhor partido",
@@ -66,10 +66,7 @@ def test_tse_reconciliation_and_neutrality(tmp_path: Path) -> None:
         assert rec.comparecimento <= rec.eleitorado
         assert rec.comparecimento + rec.abstencoes == rec.eleitorado
         total_votos = (
-            rec.votos_validos
-            + rec.votos_brancos
-            + rec.votos_nulos
-            + rec.anulados_sub_judice
+            rec.votos_validos + rec.votos_brancos + rec.votos_nulos + rec.anulados_sub_judice
         )
         assert total_votos == rec.comparecimento, f"Divergência de votos em {cd}"
         assert 0.0 <= rec.participacao_pct <= 100.0

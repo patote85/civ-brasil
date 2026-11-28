@@ -1,10 +1,10 @@
-# Catálogo de QA — civ-brasil
+# Catálogo de Features Verificadas — civ-brasil
 
-Lista de drives de verificação relevantes para o projeto e cobertura atual no PR 1.
-
-| Drive | Risco endereçado | Status no PR 1 | Como é verificado |
-| --- | --- | --- | --- |
-| **Rede não-ok no fetch** | HTTP != 200, timeout ou falha de rede ao baixar brutos do IBGE deixando arquivos parciais ou erros silenciosos | **Coberto (unitário)** | Testes unitários em `tests/test_ibge_malhas.py` com cliente injetado simulando falha de rede/HTTP sem acessar rede real; erro explícito na fronteira sem gravar arquivo corrompido. |
-| **Storage corrompido no cache e manifesto** | Arquivo local alterado/truncado ou `data/manifest.json` com hash divergente/JSON inválido | **Coberto (unitário)** | Testes unitários em `tests/test_ibge_malhas.py` validando detecção de SHA-256 divergente e recusa/re-obtenção segura, além de falha explícita em manifesto inválido. |
-| **Viewport 1280 px e 375 px** | Mapa, legenda ou tooltip quebrarem ou ficarem inacessíveis em desktop (1280 px) ou mobile (375 px) | **Coberto (unitário/CSS + build)** | Testes Vitest com `jsdom` em `web/src/` validando layout responsivo, legenda e formatação de tooltip em 1280 px e 375 px, somado a `make web-build` e `make verify`. Verificação visual em browser real fica para evolução com Playwright. |
-| **I/O interrompido no meio do `data-sp`** | Escrita parcial de `sp_municipio_hex.parquet`, `sp_hex.json` ou `manifest.json` corrompendo saídas anteriores | **Coberto (escrita atômica)** | Escrita via arquivo temporário no mesmo diretório seguida de `os.replace`, testada em unidade contra falha intermediária para garantir que o arquivo final não fique corrompido. |
+| Feature | Teste E2E | Viewports |
+|---|---|---|
+| Mapa hexagonal H3 res 5 (1.091 hexes SP) | `web/e2e/app.spec.ts` | `1280×800`, `375×812` |
+| Seletor de 11 lentes + legenda com fonte/ano/notas | `web/e2e/app.spec.ts` | `1280×800`, `375×812` |
+| Busca municipal sem acento (`/`) | `web/e2e/app.spec.ts` | `1280×800`, `375×812` |
+| City View SP (Distritos QL, Cidadãos, Serviços, Sensíveis) | `web/e2e/app.spec.ts` | `1280×800`, `375×812` |
+| Explorer (645 linhas + 645 pontos scatter Canvas) | `web/e2e/app.spec.ts` | `1280×800`, `375×812` |
+| Zero requisições externas + zero erros de console | `web/e2e/app.spec.ts` | `1280×800`, `375×812` |

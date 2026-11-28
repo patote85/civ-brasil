@@ -15,3 +15,5 @@ agy-*.log
 *-stream.jsonl
 .DS_Store
 data/raw/
+web/test-results/
+web/playwright-report/

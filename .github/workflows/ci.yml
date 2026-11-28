@@ -32,3 +32,6 @@ jobs:
 
       - name: Verify
         run: make verify
+
+      - name: E2E (Playwright)
+        run: make e2e

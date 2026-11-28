@@ -77,6 +77,7 @@ def export_uf_web_bundle(
     points: Sequence[AssignedPoint] | None = None,
     rejected_points_count: int = 0,
     city_profiles: Sequence[dict[str, Any]] | None = None,
+    explorer_rows: Sequence[dict[str, Any]] | None = None,
 ) -> dict[str, int]:
     grouped_rows: dict[str, list[MunicipioHexRow]] = defaultdict(list)
     for row in mun_hex_rows:
@@ -317,5 +318,39 @@ def export_uf_web_bundle(
         ).encode("utf-8")
         atomic_write_bytes(output_dir / "cities.json", cities_bytes)
         written_bytes["cities.json"] = len(cities_bytes)
+
+    if explorer_rows is not None:
+        enriched_explorer: list[dict[str, Any]] = []
+        for exp_row in explorer_rows:
+            cd = CdMun(str(exp_row["cd_mun"]))
+            mun = mun_by_cd.get(cd)
+            if mun is None:
+                continue
+            rep = mun.geometry.representative_point()
+            ex, ey = project_xy(rep.x, rep.y)
+            m_idx = mun_to_idx.get(mun.nome, -1)
+            hex_candidates = [i for i, ids in enumerate(mun_idx_list) if m_idx in ids]
+            best_hex = (
+                min(
+                    hex_candidates,
+                    key=lambda i: (cx_list[i] - ex) ** 2 + (cy_list[i] - ey) ** 2,
+                )
+                if hex_candidates
+                else -1
+            )
+            enriched_row = dict(exp_row)
+            enriched_row["x"] = round(ex, 1)
+            enriched_row["y"] = round(ey, 1)
+            enriched_row["hex_idx"] = best_hex
+            enriched_explorer.append(enriched_row)
+
+        explorer_payload = {"uf": uf, "municipios": enriched_explorer}
+        explorer_bytes = json.dumps(
+            explorer_payload,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+        atomic_write_bytes(output_dir / "explorer.json", explorer_bytes)
+        written_bytes["explorer.json"] = len(explorer_bytes)
 
     return written_bytes
