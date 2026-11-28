@@ -111,5 +111,16 @@ test("restores shareable URL state (lens, Civ mode, and City View)", async ({ pa
   const cityDrawer = page.locator("#city-drawer");
   await expect(cityDrawer).toBeVisible();
   await expect(cityDrawer).toContainText("São José dos Campos");
+
+  // Default statewide camera must be preserved (no implicit zoom x/y/z injected)
+  await page.locator("#btn-share").click();
+  const sharedUrl = new URL(page.url());
+  expect(sharedUrl.searchParams.get("cidade")).toBe("3549904");
+  expect(sharedUrl.searchParams.get("x")).toBeNull();
+  expect(sharedUrl.searchParams.get("z")).toBeNull();
+
+  // Rapid second click must not leave the button stuck on a feedback label
+  await page.locator("#btn-share").click();
+  await expect(page.locator("#btn-share")).toHaveText("Compartilhar", { timeout: 3000 });
   expect(consoleErrors).toEqual([]);
 });
