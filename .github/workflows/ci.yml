@@ -33,5 +33,8 @@ jobs:
       - name: Verify
         run: make verify
 
+      - name: Install Playwright Chromium
+        run: npx --prefix web playwright install --with-deps chromium
+
       - name: E2E (Playwright)
         run: make e2e

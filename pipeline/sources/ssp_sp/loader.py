@@ -31,6 +31,7 @@ SSP_NAME_ALIASES: dict[str, str] = {
     "embu": "embu das artes",
     "florinia": "florinea",
     "brodosqui": "brodowski",
+    "santa rosa do viterbo": "santa rosa de viterbo",
 }
 
 
@@ -60,6 +61,7 @@ def _fetch_ssp_sp_bundle(ano: int = 2025) -> bytes:
     local_state = threading.local()
 
     def _get_json(path: str) -> dict[str, Any]:
+        last_err: Exception | None = None
         for attempt in range(3):
             conn: http.client.HTTPSConnection | None = getattr(local_state, "conn", None)
             if conn is None:
@@ -75,13 +77,15 @@ def _fetch_ssp_sp_bundle(ano: int = 2025) -> bytes:
                 body = resp.read()
                 if resp.status == 200 and body:
                     return dict(json.loads(body.decode("utf-8")))
-            except (OSError, http.client.HTTPException, json.JSONDecodeError):
+                last_err = RuntimeError(f"HTTP {resp.status} em SSP-SP {path}")
+            except (OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
+                last_err = exc
                 with contextlib.suppress(OSError):
                     conn.close()
                 local_state.conn = None
-                if attempt == 2:
-                    raise
-        return {"data": []}
+            if attempt == 2:
+                raise RuntimeError(f"Falha ao buscar SSP-SP {path}: {last_err}") from last_err
+        raise RuntimeError(f"Falha ao buscar SSP-SP {path}: {last_err}")
 
     def _fetch_one(entry: dict[str, Any]) -> dict[str, Any]:
         mun_id = int(entry["idMunicipio"])
@@ -94,9 +98,8 @@ def _fetch_ssp_sp_bundle(ano: int = 2025) -> bytes:
                 if isinstance(row, dict) and int(row.get("ano", 0)) == ano:
                     chosen = row
                     break
-            if chosen is None and rows and isinstance(rows[0], dict):
-                chosen = rows[0]
-        chosen = chosen or {}
+        if chosen is None:
+            raise ValueError(f"Ano {ano} ausente para {nome} (id={mun_id}) na SSP-SP")
         return {
             "idMunicipio": mun_id,
             "nome": nome,
@@ -147,16 +150,33 @@ def load_ssp_sp_from_file(
 
     lookup: dict[str, CdMun] = {normalize_pt_name(n): cd for cd, n in mun_names_by_cd.items()}
     by_cd: dict[CdMun, dict[str, Any]] = {}
+    unmatched: list[str] = []
     for row in rows:
         if not isinstance(row, dict):
             continue
-        cd = _resolve_cd_mun(str(row.get("nome") or ""), lookup)
-        if cd is not None:
+        raw_name = str(row.get("nome") or "").strip()
+        if not raw_name:
+            continue
+        row_ano = int(row.get("ano", ano))
+        if row_ano != ano:
+            raise ValueError(f"Ano divergente ({row_ano} != {ano}) para {raw_name} em {path}")
+        cd = _resolve_cd_mun(raw_name, lookup)
+        if cd is None:
+            unmatched.append(raw_name)
+        else:
             by_cd[cd] = row
+
+    if unmatched:
+        sample = sorted(unmatched)[:10]
+        raise ValueError(f"Municípios SSP-SP sem correspondência IBGE ({len(unmatched)}): {sample}")
+    missing = set(mun_names_by_cd.keys()) - set(by_cd.keys())
+    if missing:
+        missing_names = [mun_names_by_cd[c] for c in sorted(missing)[:10]]
+        raise ValueError(f"Municípios IBGE ausentes na SSP-SP ({len(missing)}): {missing_names}")
 
     records: dict[CdMun, SspSpRecord] = {}
     for cd in sorted(mun_names_by_cd.keys()):
-        row = by_cd.get(cd, {})
+        row = by_cd[cd]
         pop = max(1, int(pop_by_mun.get(cd, 0)))
         hom = max(0, int(row.get("homicidio", 0) or 0))
         furto = max(0, int(row.get("furto", 0) or 0))
@@ -165,7 +185,7 @@ def load_ssp_sp_from_file(
         r_veic = max(0, int(row.get("rouboVeiculo", 0) or 0))
         records[cd] = SspSpRecord(
             cd_mun=cd,
-            ano=int(row.get("ano", ano)),
+            ano=ano,
             homicidio=hom,
             furto=furto,
             roubo=roubo,

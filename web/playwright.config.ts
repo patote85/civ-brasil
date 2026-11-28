@@ -2,7 +2,8 @@ import fs from "node:fs";
 import { defineConfig } from "@playwright/test";
 
 const SYSTEM_CHROME = "/usr/bin/google-chrome";
-const launchOptions = fs.existsSync(SYSTEM_CHROME) ? { executablePath: SYSTEM_CHROME } : {};
+const launchOptions =
+  !process.env.CI && fs.existsSync(SYSTEM_CHROME) ? { executablePath: SYSTEM_CHROME } : {};
 
 export default defineConfig({
   testDir: "./e2e",

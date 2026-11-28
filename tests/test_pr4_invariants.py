@@ -157,3 +157,27 @@ def test_civ_rules_contains_all_pr4_sensitive_lenses_with_required_notes() -> No
     assert by_id["desenvolvimento"].ano_ref == 2010
     assert "2010" in by_id["desenvolvimento"].note
     assert "subnotifica" in by_id["descontentamento"].note.lower()
+
+
+def test_ssp_sp_rejects_unmatched_municipality_and_year_mismatch(tmp_path: Path) -> None:
+    import pytest
+
+    valid_muns = {CdMun("3500105"): "Adamantina"}
+    pop = {CdMun("3500105"): 35000}
+
+    bad_name_json = tmp_path / "bad_name.json"
+    bad_name_json.write_text(
+        json.dumps({"ano": 2025, "municipios": [{"nome": "Cidade Inexistente", "ano": 2025}]}),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="sem correspondência"):
+        load_ssp_sp_from_file(bad_name_json, mun_names_by_cd=valid_muns, pop_by_mun=pop)
+
+    bad_year_json = tmp_path / "bad_year.json"
+    bad_year_json.write_text(
+        json.dumps({"ano": 2025, "municipios": [{"nome": "Adamantina", "ano": 2024}]}),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Ano divergente"):
+        load_ssp_sp_from_file(bad_year_json, mun_names_by_cd=valid_muns, pop_by_mun=pop)
+
