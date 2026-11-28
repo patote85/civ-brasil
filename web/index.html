@@ -3,6 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Atlas hexagonal de São Paulo em linguagem de Civilization: 1.091 hexes H3, 645 municípios, 11 lentes e 14 fontes públicas oficiais."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="civ-brasil — São Paulo em linguagem de Civilization" />
+    <meta
+      property="og:description"
+      content="1.091 hexágonos H3 res 5, 645 municípios, 11 lentes temáticas, City View e Explorer com dados públicos oficiais."
+    />
+    <meta property="og:image" content="/og-sp.svg" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='16,2 28,9 28,23 16,30 4,23 4,9' fill='%23d4a226' stroke='%230a1019' stroke-width='2'/%3E%3C/svg%3E" />
     <title>civ-brasil — São Paulo em linguagem de Civilization</title>
   </head>
@@ -21,6 +32,9 @@
           <button id="btn-explorer" class="action-btn" type="button" title="Abrir Explorer 645 municípios (E)">
             Explorer <kbd>E</kbd>
           </button>
+          <button id="btn-almanac" class="action-btn" type="button" title="Almanaque, UF View e Fontes Oficiais">
+            Fontes
+          </button>
           <button id="btn-mode" class="action-btn" type="button" title="Alternar modo visual (M)">
             Modo: Atlas
           </button>
@@ -29,6 +43,9 @@
           </button>
           <button id="btn-points" class="action-btn" type="button" title="Camada de pontos (usinas, portos, hospitais)">
             Pontos: AUTO
+          </button>
+          <button id="btn-share" class="action-btn" type="button" title="Copiar link compartilhável do estado atual">
+            Compartilhar
           </button>
           <button id="btn-png" class="action-btn" type="button" title="Baixar captura 1600×900">
             PNG
@@ -75,6 +92,7 @@
     </div>
 
     <div id="explorer-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Explorer de municípios"></div>
+    <div id="almanac-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Almanaque e Fontes Oficiais"></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

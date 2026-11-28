@@ -84,6 +84,32 @@ test("renders SP hex map, switches all lenses with notes, opens City View and Ex
   await expect(cityDrawer).toBeVisible();
   await expect(cityDrawer).toContainText("Campinas");
 
+  // Open Almanac / Fontes modal and verify official sources
+  await page.locator("#btn-almanac").click();
+  const almanacModal = page.locator("#almanac-modal");
+  await expect(almanacModal).toBeVisible();
+  await expect(almanacModal).toContainText("IBGE");
+  await expect(almanacModal).toContainText("TSE");
+  await expect(almanacModal).toContainText("SSP-SP");
+  await page.keyboard.press("Escape");
+  await expect(almanacModal).toBeHidden();
+
   expect(externalRequests).toEqual([]);
+  expect(consoleErrors).toEqual([]);
+});
+
+test("restores shareable URL state (lens, Civ mode, and City View)", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (msg) => {
+    if (msg.type() === "error") consoleErrors.push(msg.text());
+  });
+  page.on("pageerror", (err) => consoleErrors.push(err.message));
+
+  await page.goto("/?lente=distritos&modo=civ&cidade=3549904");
+  await expect(page.locator("#btn-mode")).toHaveText("Modo: Civ");
+  await expect(page.locator("#legend")).toContainText("Distritos");
+  const cityDrawer = page.locator("#city-drawer");
+  await expect(cityDrawer).toBeVisible();
+  await expect(cityDrawer).toContainText("São José dos Campos");
   expect(consoleErrors).toEqual([]);
 });

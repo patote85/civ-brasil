@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="bg" cx="55%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#152b3c"/>
+      <stop offset="100%" stop-color="#091521"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g transform="translate(880,315)" opacity="0.9">
+    <polygon points="0,-160 138,-80 138,80 0,160 -138,80 -138,-80" fill="#d4a226" stroke="#fde047" stroke-width="5"/>
+    <polygon points="-210,-40 -120,-92 -30,-40 -30,64 -120,116 -210,64" fill="#2076a8" stroke="#38bdf8" stroke-width="3"/>
+    <polygon points="150,-110 220,-150 290,-110 290,-30 220,10 150,-30" fill="#3d7a4a" stroke="#6ca148" stroke-width="3"/>
+  </g>
+  <text x="84" y="245" fill="#fde047" font-family="system-ui, sans-serif" font-size="68" font-weight="800">civ-brasil</text>
+  <text x="84" y="315" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="34" font-weight="600">São Paulo em linguagem de Civilization</text>
+  <text x="84" y="375" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="24">1.091 hexágonos H3 · 645 municípios · 11 lentes · 14 fontes públicas oficiais</text>
+  <text x="84" y="545" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="20">IBGE · MTE RAIS · INEP · DataSUS CNES · ANEEL/EPE · InfraSA · TSE · IPEA · SSP-SP</text>
+</svg>

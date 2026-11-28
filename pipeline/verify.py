@@ -479,6 +479,31 @@ def _verify_pr4_sensitive_and_explorer(
                 f"Total de JSONs SP ({total_sp_bytes} B) excede {MAX_SP_TOTAL_WEB_BYTES} B"
             )
 
+    sources_public = sp_public_dir / "sources.json"
+    sources_dist = dist_dir / "data" / "sp" / "sources.json"
+    for candidate in (sources_public, sources_dist):
+        if not candidate.is_file():
+            errors.append(f"Artefato web PR 5 ausente: {candidate}")
+    if (
+        sources_public.is_file()
+        and sources_dist.is_file()
+        and sources_public.read_bytes() != sources_dist.read_bytes()
+    ):
+        errors.append("web/dist/data/sp/sources.json diverge de web/public/data/sp/sources.json")
+    if not (dist_dir / "404.html").is_file():
+        errors.append("web/dist/404.html ausente")
+
+    initial_parts = [
+        dist_dir / "index.html",
+        dist_dir / "data" / "sp" / "grid.json",
+        dist_dir / "data" / "sp" / "lentes" / "ouro.json",
+        *sorted((dist_dir / "assets").glob("*.js")),
+        *sorted((dist_dir / "assets").glob("*.css")),
+    ]
+    initial_bytes = sum(p.stat().st_size for p in initial_parts if p.is_file())
+    if initial_bytes > 600_000:
+        errors.append(f"Payload inicial SP ({initial_bytes} B) excede 600.000 B")
+
 
 def main() -> int:
     errors = verify_artifacts()

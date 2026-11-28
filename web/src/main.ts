@@ -1,5 +1,10 @@
 import "./styles.css";
 
+import {
+  parseSourcesCatalog,
+  renderAlmanac,
+  type SourcesCatalog,
+} from "./almanac/almanac";
 import { renderCityView } from "./city-view/cityView";
 import {
   normalizeSearchText,
@@ -29,14 +34,14 @@ import {
   renderStatus,
   renderYieldsBar,
 } from "./ui";
+import { parseUrlState, serializeUrlState, type PointsMode } from "./url-state/urlState";
 
 const GRID_URL = "/data/sp/grid.json";
 const LENS_INDEX_URL = "/data/sp/lentes/index.json";
 const POINTS_URL = "/data/sp/pontos.json";
 const CITIES_URL = "/data/sp/cities.json";
 const EXPLORER_URL = "/data/sp/explorer.json";
-
-type PointsMode = "auto" | "on" | "off";
+const SOURCES_URL = "/data/sp/sources.json";
 
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url);
@@ -44,21 +49,6 @@ async function fetchJson(url: string): Promise<unknown> {
     throw new Error(`HTTP ${response.status} ao carregar ${url}`);
   }
   return (await response.json()) as unknown;
-}
-
-function readInitialLensId(index: LensIndex): string {
-  const params = new URLSearchParams(window.location.search);
-  const requested = params.get("lente");
-  if (requested && index.lenses.some((l) => l.id === requested)) {
-    return requested;
-  }
-  return index.lenses[0]?.id ?? "ouro";
-}
-
-function updateUrlLens(lensId: string): void {
-  const url = new URL(window.location.href);
-  url.searchParams.set("lente", lensId);
-  window.history.replaceState(null, "", url.toString());
 }
 
 async function bootstrap(): Promise<void> {
@@ -74,12 +64,15 @@ async function bootstrap(): Promise<void> {
   const btnBanners = document.getElementById("btn-banners");
   const btnPoints = document.getElementById("btn-points");
   const btnExplorer = document.getElementById("btn-explorer");
+  const btnAlmanac = document.getElementById("btn-almanac");
+  const btnShare = document.getElementById("btn-share");
   const btnPng = document.getElementById("btn-png");
   const btnReset = document.getElementById("btn-reset");
   const btnSearch = document.getElementById("btn-search");
   const btnCloseSearch = document.getElementById("btn-close-search");
   const searchModal = document.getElementById("search-modal");
   const explorerModal = document.getElementById("explorer-modal");
+  const almanacModal = document.getElementById("almanac-modal");
   const searchInput = document.getElementById("search-input");
   const searchResults = document.getElementById("search-results");
 
@@ -96,12 +89,15 @@ async function bootstrap(): Promise<void> {
     !btnBanners ||
     !btnPoints ||
     !btnExplorer ||
+    !btnAlmanac ||
+    !btnShare ||
     !btnPng ||
     !btnReset ||
     !btnSearch ||
     !btnCloseSearch ||
     !searchModal ||
     !explorerModal ||
+    !almanacModal ||
     !(searchInput instanceof HTMLInputElement) ||
     !searchResults
   ) {
@@ -110,6 +106,7 @@ async function bootstrap(): Promise<void> {
 
   const renderer = new HexMapRenderer(canvas, minimap);
   const lensCache = new Map<string, PositionalLensData>();
+  const initialUrlState = parseUrlState(window.location.search);
 
   let grid: UfGridDataset;
   let lensIndex: LensIndex;
@@ -117,13 +114,15 @@ async function bootstrap(): Promise<void> {
   let activeLensData: PositionalLensData;
   let pointsData: PointsDataset | null = null;
   let explorerData: ExplorerDataset | null = null;
+  let sourcesCatalog: SourcesCatalog | null = null;
   let explorerMounted = false;
+  let activeCityCd: string | null = null;
   const cityByCd = new Map<string, CityProfile>();
   const cityByNormName = new Map<string, CityProfile>();
 
-  let mode: VisualMode = "atlas";
+  let mode: VisualMode = initialUrlState.mode ?? "atlas";
   let showBanners = true;
-  let pointsMode: PointsMode = "auto";
+  let pointsMode: PointsMode = initialUrlState.pointsMode ?? "auto";
   let hoverIndex: number | null = null;
   let selectedIndex: number | null = null;
   let filterBucket: number | null = null;
@@ -133,7 +132,28 @@ async function bootstrap(): Promise<void> {
   let lastX = 0;
   let lastY = 0;
 
-  const camera: CameraState = { x: 500, y: 350, zoom: 1.0 };
+  const camera: CameraState = {
+    x: initialUrlState.camX ?? 500,
+    y: initialUrlState.camY ?? 350,
+    zoom: initialUrlState.camZ ?? 1.0,
+  };
+
+  btnMode.textContent = mode === "atlas" ? "Modo: Atlas" : "Modo: Civ";
+  btnPoints.textContent =
+    pointsMode === "auto" ? "Pontos: AUTO" : pointsMode === "on" ? "Pontos: ON" : "Pontos: OFF";
+
+  const syncUrl = (): void => {
+    const nextHref = serializeUrlState(window.location.href, {
+      lensId: activeLensMeta?.id ?? null,
+      mode,
+      pointsMode,
+      cityCd: activeCityCd,
+      camX: camera.x,
+      camY: camera.y,
+      camZ: camera.zoom,
+    });
+    window.history.replaceState(null, "", nextHref);
+  };
 
   const shouldRenderPoints = (): boolean => {
     if (!pointsData) return false;
@@ -143,12 +163,16 @@ async function bootstrap(): Promise<void> {
   };
 
   const closeCityView = (): void => {
+    activeCityCd = null;
     cityDrawer.classList.add("hidden");
+    syncUrl();
   };
 
   const openCityView = (city: CityProfile): void => {
+    activeCityCd = city.cd_mun;
     renderCityView(cityDrawer, city, closeCityView);
     cityDrawer.classList.remove("hidden");
+    syncUrl();
   };
 
   const redraw = (): void => {
@@ -190,7 +214,7 @@ async function bootstrap(): Promise<void> {
     activeLensMeta = meta;
     activeLensData = data;
     filterBucket = null;
-    updateUrlLens(lensId);
+    syncUrl();
     renderLensButtons(lensButtons, lensIndex.lenses, lensId, (nextId) => {
       void loadLens(nextId);
     });
@@ -199,12 +223,13 @@ async function bootstrap(): Promise<void> {
   };
 
   try {
-    const [rawGrid, rawIndex, rawPoints, rawCities, rawExplorer] = await Promise.all([
+    const [rawGrid, rawIndex, rawPoints, rawCities, rawExplorer, rawSources] = await Promise.all([
       fetchJson(GRID_URL),
       fetchJson(LENS_INDEX_URL),
       fetchJson(POINTS_URL).catch(() => null),
       fetchJson(CITIES_URL).catch(() => null),
       fetchJson(EXPLORER_URL).catch(() => null),
+      fetchJson(SOURCES_URL).catch(() => null),
     ]);
     grid = parseUfGridDataset(rawGrid);
     lensIndex = parseLensIndex(rawIndex);
@@ -217,9 +242,29 @@ async function bootstrap(): Promise<void> {
       }
     }
     explorerData = tryParseOptional(rawExplorer, parseExplorerDataset);
+    sourcesCatalog = tryParseOptional(rawSources, parseSourcesCatalog);
     renderYieldsBar(yieldsBar, grid);
     renderer.resize();
-    await loadLens(readInitialLensId(lensIndex));
+
+    const startLens =
+      initialUrlState.lensId && lensIndex.lenses.some((l) => l.id === initialUrlState.lensId)
+        ? initialUrlState.lensId
+        : (lensIndex.lenses[0]?.id ?? "ouro");
+    await loadLens(startLens);
+
+    if (initialUrlState.cityCd) {
+      const restoredCity = cityByCd.get(initialUrlState.cityCd);
+      if (restoredCity) {
+        if (restoredCity.hex_idx >= 0) selectedIndex = restoredCity.hex_idx;
+        if (initialUrlState.camX === null) {
+          camera.x = restoredCity.x;
+          camera.y = restoredCity.y;
+          camera.zoom = 2.6;
+        }
+        openCityView(restoredCity);
+        redraw();
+      }
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     renderStatus(status, `Falha ao carregar dados: ${message}`, true);
@@ -332,6 +377,7 @@ async function bootstrap(): Promise<void> {
   const toggleMode = (): void => {
     mode = mode === "atlas" ? "civ" : "atlas";
     btnMode.textContent = mode === "atlas" ? "Modo: Atlas" : "Modo: Civ";
+    syncUrl();
     syncLegend();
     redraw();
   };
@@ -346,6 +392,7 @@ async function bootstrap(): Promise<void> {
     pointsMode = pointsMode === "auto" ? "on" : pointsMode === "on" ? "off" : "auto";
     btnPoints.textContent =
       pointsMode === "auto" ? "Pontos: AUTO" : pointsMode === "on" ? "Pontos: ON" : "Pontos: OFF";
+    syncUrl();
     redraw();
   });
   btnReset.addEventListener("click", () => {
@@ -355,6 +402,18 @@ async function bootstrap(): Promise<void> {
     selectedIndex = null;
     closeCityView();
     redraw();
+  });
+  btnShare.addEventListener("click", () => {
+    syncUrl();
+    const shareHref = window.location.href;
+    const prevLabel = btnShare.textContent ?? "Compartilhar";
+    if (navigator.clipboard?.writeText) {
+      void navigator.clipboard.writeText(shareHref).catch(() => {});
+    }
+    btnShare.textContent = "Link copiado!";
+    window.setTimeout(() => {
+      btnShare.textContent = prevLabel;
+    }, 1500);
   });
   btnPng.addEventListener("click", () => {
     const link = document.createElement("a");
@@ -391,6 +450,8 @@ async function bootstrap(): Promise<void> {
         const profile = cityByNormName.get(normalizeSearchText(match.nome));
         if (profile) {
           openCityView(profile);
+        } else {
+          syncUrl();
         }
         redraw();
       };
@@ -428,6 +489,8 @@ async function bootstrap(): Promise<void> {
           const profile = cityByCd.get(row.cd_mun) ?? cityByNormName.get(normalizeSearchText(row.nome));
           if (profile) {
             openCityView(profile);
+          } else {
+            syncUrl();
           }
           redraw();
         },
@@ -437,6 +500,20 @@ async function bootstrap(): Promise<void> {
     }
     explorerModal.classList.remove("hidden");
   };
+
+  const closeAlmanac = (): void => {
+    almanacModal.classList.add("hidden");
+  };
+
+  const openAlmanac = (): void => {
+    renderAlmanac(almanacModal, grid, sourcesCatalog, closeAlmanac);
+    almanacModal.classList.remove("hidden");
+  };
+
+  btnAlmanac.addEventListener("click", openAlmanac);
+  almanacModal.addEventListener("click", (e) => {
+    if (e.target === almanacModal) closeAlmanac();
+  });
 
   btnExplorer.addEventListener("click", openExplorer);
   explorerModal.addEventListener("click", (e) => {
@@ -460,6 +537,7 @@ async function bootstrap(): Promise<void> {
       if (e.key === "Escape") {
         searchModal.classList.add("hidden");
         closeExplorer();
+        closeAlmanac();
       }
       return;
     }
@@ -477,7 +555,9 @@ async function bootstrap(): Promise<void> {
       const next = lensIndex.lenses[(idx + step + lensIndex.lenses.length) % lensIndex.lenses.length];
       if (next) void loadLens(next.id);
     } else if (e.key === "Escape") {
-      if (!explorerModal.classList.contains("hidden")) {
+      if (!almanacModal.classList.contains("hidden")) {
+        closeAlmanac();
+      } else if (!explorerModal.classList.contains("hidden")) {
         closeExplorer();
       } else if (!searchModal.classList.contains("hidden")) {
         searchModal.classList.add("hidden");
