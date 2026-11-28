@@ -67,6 +67,12 @@ def test_mds_bolsa_loader_parses_families_and_values(tmp_path: Path) -> None:
                     "NIVNOME": "Municípios",
                     "TERCODIGO": "3550308",
                 },
+                {
+                    "VALDATA": "2023-12-01T00:00:00-03:00",
+                    "VALVALOR": 6850.0,
+                    "NIVNOME": "Municípios",
+                    "TERCODIGO": "3550308",
+                },
             ]
         }),
         encoding="utf-8",
@@ -80,6 +86,12 @@ def test_mds_bolsa_loader_parses_families_and_values(tmp_path: Path) -> None:
                     "NIVNOME": "Municípios",
                     "TERCODIGO": "3550308",
                 },
+                {
+                    "VALDATA": "2023-12-01T00:00:00-03:00",
+                    "VALVALOR": 4650.0,
+                    "NIVNOME": "Municípios",
+                    "TERCODIGO": "3550308",
+                },
             ]
         }),
         encoding="utf-8",
@@ -88,8 +100,8 @@ def test_mds_bolsa_loader_parses_families_and_values(tmp_path: Path) -> None:
     assert len(records) == 1
     rec = records[CdMun("3550308")]
     assert rec.ano_ref == 2023
-    assert rec.familias == 6200
-    assert math.isclose(rec.valor_mil_reais or 0.0, 4200.0, rel_tol=1e-9)
+    assert rec.familias == 6850
+    assert math.isclose(rec.valor_mil_reais or 0.0, 4650.0, rel_tol=1e-9)
 
 
 def test_ibge_saneamento_loader_parses_sidra_6805(tmp_path: Path) -> None:
