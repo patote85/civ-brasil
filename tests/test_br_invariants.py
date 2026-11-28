@@ -175,3 +175,57 @@ def test_real_br_checkpoint_and_budgets_when_present() -> None:
     assert Path("web/public/data/br/am_grid.json").stat().st_size <= 1_000_000
     for lens_file in Path("web/public/data/br/am_lenses").glob("*.json"):
         assert lens_file.stat().st_size <= 80_000
+
+    br_res3 = json.loads(Path("web/public/data/br/br_res3.json").read_text(encoding="utf-8"))
+    assert br_res3["yields"]["vab_ind_mil"] > 0.0
+    assert br_res3["yields"]["vab_agro_mil"] > 0.0
+    am_grid = json.loads(Path("web/public/data/br/am_grid.json").read_text(encoding="utf-8"))
+    assert am_grid["yields"]["vab_ind_mil"] > 0.0
+    assert am_grid["yields"]["vab_agro_mil"] > 0.0
+
+
+def test_br_27_uf_parquets_conserve_origin_coverage_and_fractions() -> None:
+    ckpt_path = Path("data/checkpoints/br.json")
+    if not ckpt_path.is_file():
+        pytest.skip("data/checkpoints/br.json não gerado neste ambiente")
+
+    from collections import defaultdict
+
+    import pyarrow.parquet as pq
+
+    ckpt = json.loads(ckpt_path.read_text(encoding="utf-8"))
+    total_muns_covered = 0
+    for uf in sorted(UF_IBGE_CODES):
+        uf_slug = uf.lower()
+        expected_muns = int(ckpt["ufs"][uf]["mun_count"])
+
+        hex_tbl = pq.read_table(Path(f"data/processed/{uf_slug}_municipio_hex.parquet"))
+        frac_by_mun: dict[str, float] = defaultdict(float)
+        for cd, frac in zip(
+            hex_tbl.column("cd_mun").to_pylist(),
+            hex_tbl.column("frac").to_pylist(),
+            strict=True,
+        ):
+            frac_by_mun[str(cd)] += float(frac)
+        assert len(frac_by_mun) == expected_muns, f"Cobertura hex divergente em {uf}"
+        for cd, total_frac in frac_by_mun.items():
+            assert math.isclose(total_frac, 1.0, abs_tol=1e-6), (
+                f"Soma de frações != 1 em {uf}/{cd}: {total_frac}"
+            )
+
+        w_tbl = pq.read_table(Path(f"data/processed/{uf_slug}_dasymetric_weights.parquet"))
+        w_by_mun: dict[str, float] = defaultdict(float)
+        for cd, weight in zip(
+            w_tbl.column("cd_mun").to_pylist(),
+            w_tbl.column("weight").to_pylist(),
+            strict=True,
+        ):
+            w_by_mun[str(cd)] += float(weight)
+        assert set(w_by_mun) == set(frac_by_mun), f"Cobertura dasimétrica divergente em {uf}"
+        for cd, total_w in w_by_mun.items():
+            assert math.isclose(total_w, 1.0, abs_tol=1e-6), (
+                f"Soma de pesos dasimétricos != 1 em {uf}/{cd}: {total_w}"
+            )
+        total_muns_covered += len(frac_by_mun)
+
+    assert total_muns_covered == 5570

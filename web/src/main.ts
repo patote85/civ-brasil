@@ -223,24 +223,32 @@ async function bootstrap(): Promise<void> {
     });
   };
 
-  const loadLens = async (lensId: string): Promise<void> => {
+  let loadSeq = 0;
+
+  const loadLens = async (lensId: string, expectedSeq?: number): Promise<void> => {
+    const mySeq = expectedSeq ?? ++loadSeq;
+    const targetScope = activeScope;
+    const targetHexCount = grid.hex_count;
     const meta = lensIndex.lenses.find((item) => item.id === lensId);
     if (!meta) return;
-    const cacheKey = `${activeScope}:${lensId}`;
+    const cacheKey = `${targetScope}:${lensId}`;
     let data = lensCache.get(cacheKey);
     if (!data) {
-      if (activeScope === "BR" && brOverview) {
+      if (targetScope === "BR" && brOverview) {
         data = brOverview.lenses[lensId];
-      } else if (activeScope === "SP") {
+      } else if (targetScope === "SP") {
         const raw = await fetchJson(`/data/sp/lentes/${lensId}.json`);
-        data = parsePositionalLens(raw, grid.hex_count);
+        if (mySeq !== loadSeq) return;
+        data = parsePositionalLens(raw, targetHexCount);
       } else {
-        const raw = await fetchJson(`/data/br/${activeScope.toLowerCase()}_lenses/${lensId}.json`);
-        data = parseCompactBrLens(raw, meta, grid.hex_count);
+        const raw = await fetchJson(`/data/br/${targetScope.toLowerCase()}_lenses/${lensId}.json`);
+        if (mySeq !== loadSeq) return;
+        data = parseCompactBrLens(raw, meta, targetHexCount);
       }
       if (!data) return;
       lensCache.set(cacheKey, data);
     }
+    if (mySeq !== loadSeq) return;
     activeLensMeta = meta;
     activeLensData = data;
     filterBucket = null;
@@ -282,9 +290,55 @@ async function bootstrap(): Promise<void> {
     preferredLensId: string | null = null,
     resetCamera = true,
   ): Promise<void> => {
+    const mySeq = ++loadSeq;
     try {
       const normalized = targetUf.toUpperCase();
       renderStatus(status, `Carregando ${normalized}…`);
+      explorerModal.classList.add("hidden");
+      searchModal.classList.add("hidden");
+
+      let nextGrid: UfGridDataset;
+      let nextLensIndex: LensIndex;
+      let nextSubtitle: string;
+      let nextScopeBtnLabel: string;
+
+      if (normalized === "BR") {
+        if (!brOverview) {
+          const rawBr = await fetchJson(BR_OVERVIEW_URL);
+          if (mySeq !== loadSeq) return;
+          brOverview = parseBrOverview(rawBr);
+        }
+        nextGrid = brOverview.grid;
+        nextLensIndex = { uf: "BR", lenses: BR_BASE_LENSES };
+        nextSubtitle = "Brasil · 27 UFs · H3 res 3";
+        nextScopeBtnLabel = "Voltar p/ SP";
+      } else if (normalized === "SP") {
+        await ensureSpLoaded();
+        if (mySeq !== loadSeq || !spGrid || !spLensIndex) return;
+        nextGrid = spGrid;
+        nextLensIndex = spLensIndex;
+        nextSubtitle = "São Paulo · H3 res 5";
+        nextScopeBtnLabel = "Brasil (27 UFs)";
+      } else if (normalized in BR_UF_NAMES) {
+        let ufGrid = ufGridCache.get(normalized);
+        if (!ufGrid) {
+          const rawUf = await fetchJson(`/data/br/${normalized.toLowerCase()}_grid.json`);
+          if (mySeq !== loadSeq) return;
+          ufGrid = parseUfGridDataset(rawUf);
+          ufGridCache.set(normalized, ufGrid);
+        }
+        nextGrid = ufGrid;
+        nextLensIndex = { uf: normalized, lenses: BR_BASE_LENSES };
+        nextSubtitle = `${BR_UF_NAMES[normalized] ?? normalized} · H3 res 5`;
+        nextScopeBtnLabel = "← Brasil (Res 3)";
+      } else {
+        return;
+      }
+
+      if (mySeq !== loadSeq) return;
+      activeScope = normalized;
+      grid = nextGrid;
+      lensIndex = nextLensIndex;
       selectedIndex = null;
       hoverIndex = null;
       filterBucket = null;
@@ -292,40 +346,9 @@ async function bootstrap(): Promise<void> {
         activeCityCd = null;
         cityDrawer.classList.add("hidden");
       }
-
-      if (normalized === "BR") {
-        if (!brOverview) {
-          const rawBr = await fetchJson(BR_OVERVIEW_URL);
-          brOverview = parseBrOverview(rawBr);
-        }
-        activeScope = "BR";
-        grid = brOverview.grid;
-        lensIndex = { uf: "BR", lenses: BR_BASE_LENSES };
-        brandSubtitle.textContent = "Brasil · 27 UFs · H3 res 3";
-        btnScopeBr.textContent = "Voltar p/ SP";
-      } else if (normalized === "SP") {
-        await ensureSpLoaded();
-        if (!spGrid || !spLensIndex) return;
-        activeScope = "SP";
-        grid = spGrid;
-        lensIndex = spLensIndex;
-        brandSubtitle.textContent = "São Paulo · H3 res 5";
-        btnScopeBr.textContent = "Brasil (27 UFs)";
-      } else if (normalized in BR_UF_NAMES) {
-        let ufGrid = ufGridCache.get(normalized);
-        if (!ufGrid) {
-          const rawUf = await fetchJson(`/data/br/${normalized.toLowerCase()}_grid.json`);
-          ufGrid = parseUfGridDataset(rawUf);
-          ufGridCache.set(normalized, ufGrid);
-        }
-        activeScope = normalized;
-        grid = ufGrid;
-        lensIndex = { uf: normalized, lenses: BR_BASE_LENSES };
-        brandSubtitle.textContent = `${BR_UF_NAMES[normalized] ?? normalized} · H3 res 5`;
-        btnScopeBr.textContent = "← Brasil (Res 3)";
-      } else {
-        return;
-      }
+      brandSubtitle.textContent = nextSubtitle;
+      btnScopeBr.textContent = nextScopeBtnLabel;
+      btnExplorer.classList.toggle("hidden", normalized !== "SP");
 
       if (resetCamera) {
         camera.x = 500;
@@ -340,8 +363,9 @@ async function bootstrap(): Promise<void> {
         preferredLensId && lensIndex.lenses.some((l) => l.id === preferredLensId)
           ? preferredLensId
           : (lensIndex.lenses[0]?.id ?? "ouro");
-      await loadLens(nextLens);
+      await loadLens(nextLens, mySeq);
     } catch (err) {
+      if (mySeq !== loadSeq) return;
       const message = err instanceof Error ? err.message : String(err);
       renderStatus(status, `Falha ao carregar ${targetUf}: ${message}`, true);
     }
@@ -579,7 +603,8 @@ async function bootstrap(): Promise<void> {
         camera.y = match.y;
         camera.zoom = 2.8;
         searchModal.classList.add("hidden");
-        const profile = cityByNormName.get(normalizeSearchText(match.nome));
+        const profile =
+          activeScope === "SP" ? cityByNormName.get(normalizeSearchText(match.nome)) : undefined;
         if (profile) {
           openCityView(profile);
         } else {
@@ -607,7 +632,7 @@ async function bootstrap(): Promise<void> {
   };
 
   const openExplorer = (): void => {
-    if (!explorerData) return;
+    if (activeScope !== "SP" || !explorerData) return;
     if (!explorerMounted) {
       mountExplorer(
         explorerModal,
