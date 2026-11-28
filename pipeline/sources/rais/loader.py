@@ -94,7 +94,7 @@ def _find_col(headers: list[str], candidates: tuple[str, ...]) -> int:
 
 def _parse_rais_stream(
     handle: TextIO,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> tuple[list[RaisDivisionRecord], dict[str, int]]:
     first_line = handle.readline()
@@ -107,7 +107,7 @@ def _parse_rais_stream(
     cnae_idx = _find_col(headers, ("cnae 2.0 classe", "cnae classe", "cnae_2", "cnae"))
     vinc_idx = _find_col(headers, ("qtd vinculos ativos", "vinculos ativos", "vinculos"))
 
-    uf_prefix = UF_IBGE_CODES[uf]
+    uf_prefix = UF_IBGE_CODES[uf] if uf is not None else ""
     mun_lookup = build_mun_prefix6_map(valid_cd_muns)
 
     agg_vinc: dict[tuple[CdMun, str], int] = defaultdict(int)
@@ -123,7 +123,7 @@ def _parse_rais_stream(
             continue
         raw_mun = row[mun_idx].strip().strip('"')
         digits_mun = "".join(ch for ch in raw_mun if ch.isdigit())
-        if not digits_mun.startswith(uf_prefix):
+        if uf_prefix and not digits_mun.startswith(uf_prefix):
             continue
         cd_mun = mun_lookup.get(digits_mun) or mun_lookup.get(digits_mun[:6])
         if cd_mun is None:
@@ -172,7 +172,7 @@ def _parse_rais_stream(
 
 def load_rais_from_file(
     path: Path,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> tuple[list[RaisDivisionRecord], dict[str, int]]:
     if path.suffix.lower() == ".7z":

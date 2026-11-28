@@ -34,7 +34,7 @@ class SuperiorRecord:
 
 def _parse_superior_stream(
     handle: TextIO,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> dict[CdMun, SuperiorRecord]:
     first_line = handle.readline()
@@ -61,7 +61,7 @@ def _parse_superior_stream(
     mat_idx = headers.index(mat_col)
     ies_idx = headers.index(ies_col) if ies_col is not None else -1
 
-    uf_prefix = UF_IBGE_CODES[uf]
+    uf_prefix = UF_IBGE_CODES[uf] if uf is not None else ""
     ies_by_mun: dict[CdMun, set[str]] = defaultdict(set)
     mat_by_mun: dict[CdMun, int] = defaultdict(int)
 
@@ -69,7 +69,7 @@ def _parse_superior_stream(
         if len(row) <= max(mun_idx, mat_idx, ies_idx):
             continue
         raw_mun = "".join(ch for ch in row[mun_idx] if ch.isdigit())
-        if not raw_mun.startswith(uf_prefix):
+        if uf_prefix and not raw_mun.startswith(uf_prefix):
             continue
         cd = CdMun(raw_mun)
         if cd not in valid_cd_muns:
@@ -97,7 +97,7 @@ def _parse_superior_stream(
 
 def load_inep_superior_from_file(
     path: Path,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> dict[CdMun, SuperiorRecord]:
     if path.suffix.lower() == ".zip":

@@ -752,6 +752,13 @@
       "sha256": "09c891b8d66738b6c0f04740ad803332ed48aefb7bfa7dfa10f5ef4fa9335409",
       "url": "https://apisidra.ibge.gov.br/values/t/5938/n6/in%20n3%2017/v/37,513,517,6575,525/p/2021"
     },
+    "ibge_saneamento/br_esgoto_adequado_2022.json": {
+      "ano_ref": 2022,
+      "feature_count": 5570,
+      "fetched_at": "2026-11-28T10:35:25.272676Z",
+      "sha256": "3955dfc85f22bae01139385885eaa28e930a8325db8db9e0136349395ca18a71",
+      "url": "https://apisidra.ibge.gov.br/values/t/6805/n6/all/v/1000381/p/2022/c11558/46290"
+    },
     "inep_escolar/microdados_censo_escolar_2024.zip": {
       "ano_ref": 2024,
       "cobertura": "BR",
@@ -797,6 +804,16 @@
       "sha256": "c362533104a56eb80a1e2843207d774d39feb07a0c27c5f3e6d8c265bac5191c",
       "url": "https://download.inep.gov.br/microdados/microdados_censo_educacao_superior_2025.zip"
     },
+    "ipea_atlas_violencia/aviol12_thomic.json": {
+      "ano_ref": 2022,
+      "cobertura": "BR",
+      "feature_count": 5570,
+      "fetched_at": "2026-11-28T10:34:52.020647Z",
+      "licenca": "Dados Abertos IPEA / FBSP",
+      "orgao": "IPEA / FBSP (Atlas da Violência)",
+      "sha256": "8d075da0f54fee7c5ecae9b27bbf9989c3fa6bac8731198d4cc90e3821073e01",
+      "url": "https://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='AVIOL12_THOMIC')"
+    },
     "ipea_idhm/adh_gini.json": {
       "ano_ref": 2010,
       "cobertura": "BR",
@@ -814,6 +831,26 @@
       "orgao": "IPEA / PNUD / FJP (Atlas Brasil)",
       "sha256": "7017ff1b09fe1fa74e46c4cb99122fe45d495e1f1f7a125a7cd3ace0888be456",
       "url": "https://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='ADH_IDHM')"
+    },
+    "mds_bolsa/fam_pbf.json": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "feature_count": 5570,
+      "fetched_at": "2026-11-28T10:35:04.020836Z",
+      "licenca": "Dados Abertos MDS / IPEA Data",
+      "orgao": "MDS / IPEA Data (Bolsa Família)",
+      "sha256": "f40bd432320842ee86c7329231089734536e3817510b2f4d5db451ce08861a99",
+      "url": "https://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='FAM_PBF')"
+    },
+    "mds_bolsa/val_pbf.json": {
+      "ano_ref": 2025,
+      "cobertura": "BR",
+      "feature_count": 5570,
+      "fetched_at": "2026-11-28T10:35:15.621815Z",
+      "licenca": "Dados Abertos MDS / IPEA Data",
+      "orgao": "MDS / IPEA Data (Bolsa Família)",
+      "sha256": "b56631f09d83faeb55fa3cdfdc2ba14f964a700d74fc2b7579adc86a544b45e0",
+      "url": "https://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='VAL_PBF')"
     },
     "rais/RAIS_ESTAB_PUB_2025.7z": {
       "ano_ref": 2025,

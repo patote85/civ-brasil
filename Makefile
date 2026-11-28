@@ -39,6 +39,9 @@ data:
 data-sp:
 	uv run python -m pipeline.run_uf --uf SP
 
+data-br-sources:
+	uv run python -m pipeline.run_br_sources
+
 web-build:
 	npm --prefix web run build
 

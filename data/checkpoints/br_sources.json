@@ -1,0 +1,38 @@
+{
+  "coverage": {
+    "cnes_leitos": 3603,
+    "ibge_saneamento_2022": 5545,
+    "inep_escolar": 5570,
+    "inep_ideb_af": 5490,
+    "inep_superior": 1193,
+    "ipea_atlas_violencia": 5570,
+    "ipea_idhm_2010": 5564,
+    "mds_bolsa_familia": 5570,
+    "rais": 5570,
+    "tse_2024": 5568
+  },
+  "descontentamento_nacional_source": "ipea_atlas_violencia",
+  "downloads_count": 0,
+  "mun_count": 5570,
+  "post_2010_missing_idhm": [
+    "1504752",
+    "2206720",
+    "4212650",
+    "4220000",
+    "4314548",
+    "5006275"
+  ],
+  "totals": {
+    "bf_familias": 18618236,
+    "leitos_cnes": 542006,
+    "mat_escolar": 47088922,
+    "mat_superior": 8873206,
+    "pop_2022": 203080756,
+    "tse_aptos": 156654236,
+    "tse_comparecimento": 122650344,
+    "usinas_count": 3001,
+    "usinas_mw": 204392.0,
+    "vinculos_rais": 59966833
+  },
+  "uf": "BR"
+}

@@ -157,10 +157,10 @@ def _load_leitos_by_cnes(
 def load_cnes_from_files(
     estab_path: Path,
     leitos_path: Path,
-    uf: UfCode,
+    uf: UfCode | None,
     valid_cd_muns: set[CdMun],
 ) -> tuple[dict[CdMun, CnesMunRecord], list[CnesPoint], list[dict[str, str]]]:
-    uf_prefix = UF_IBGE_CODES[uf]
+    uf_prefix = UF_IBGE_CODES[uf] if uf is not None else ""
     mun_lookup = build_mun_prefix6_map(valid_cd_muns)
     leitos_by_cnes, leitos_by_mun_direct = _load_leitos_by_cnes(leitos_path, uf_prefix, mun_lookup)
 
