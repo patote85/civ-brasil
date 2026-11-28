@@ -15,9 +15,13 @@
     "grade_sha256": "944579f28d7dab3184b400d6badca808de98517ef11af160314696159616870a",
     "inep_escolar_sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
     "inep_superior_sha256": "c362533104a56eb80a1e2843207d774d39feb07a0c27c5f3e6d8c265bac5191c",
-    "no_download_ratio": "11/11",
+    "ipea_gini_sha256": "4c70d7443ffb329ca9f0f80e2c1ac36729aea65828fb5fb48c5b3269144af0ed",
+    "ipea_idhm_sha256": "7017ff1b09fe1fa74e46c4cb99122fe45d495e1f1f7a125a7cd3ace0888be456",
+    "no_download_ratio": "14/14",
     "pib_sha256": "181862bc7207ca893d8922df6c53c63b15720262c816079d14537ae5a70c9897",
-    "rais_sha256": "6844c2fbd7b9e74354f616a18180001f5d5e4cc73425128a9008a217a49f4457"
+    "rais_sha256": "6844c2fbd7b9e74354f616a18180001f5d5e4cc73425128a9008a217a49f4457",
+    "ssp_sp_sha256": "18449ba942a8f06735b06a5e470e6793c9f441535899ab7379979a7533cec19a",
+    "tse_2024_sha256": "c39c4cb0907bacec1251526200641d33be226c4c4af2ac5d96bed30613608947"
   },
   "stage_2_municipal": {
     "cnes_estabelecimentos_total": 155367,
@@ -55,14 +59,18 @@
     "vinculos_total": 16158390.0
   },
   "stage_5_web_json": {
-    "cities.json": 81562,
+    "cities.json": 91895,
+    "explorer.json": 182428,
     "grid.json": 65715,
     "lentes/cidadaos.json": 8766,
     "lentes/ciencia_educacao.json": 5848,
     "lentes/comida.json": 9294,
+    "lentes/descontentamento.json": 5594,
+    "lentes/desenvolvimento.json": 5497,
     "lentes/distritos.json": 6190,
-    "lentes/index.json": 3014,
+    "lentes/index.json": 4384,
     "lentes/infra.json": 4710,
+    "lentes/lealdade.json": 6557,
     "lentes/ouro.json": 10489,
     "lentes/producao.json": 9561,
     "lentes/saude.json": 5945,

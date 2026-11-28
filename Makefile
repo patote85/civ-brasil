@@ -44,3 +44,6 @@ web-build:
 
 verify:
 	uv run python -m pipeline.verify
+
+e2e:
+	npm --prefix web run e2e

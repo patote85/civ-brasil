@@ -114,6 +114,24 @@
       "sha256": "c362533104a56eb80a1e2843207d774d39feb07a0c27c5f3e6d8c265bac5191c",
       "url": "https://download.inep.gov.br/microdados/microdados_censo_educacao_superior_2025.zip"
     },
+    "ipea_idhm/adh_gini.json": {
+      "ano_ref": 2010,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-28T00:08:33.537908Z",
+      "licenca": "Dados Abertos IPEA",
+      "orgao": "IPEA / PNUD / FJP (Atlas Brasil)",
+      "sha256": "4c70d7443ffb329ca9f0f80e2c1ac36729aea65828fb5fb48c5b3269144af0ed",
+      "url": "https://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='ADH_GINI')"
+    },
+    "ipea_idhm/adh_idhm.json": {
+      "ano_ref": 2010,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-28T00:08:33.529122Z",
+      "licenca": "Dados Abertos IPEA",
+      "orgao": "IPEA / PNUD / FJP (Atlas Brasil)",
+      "sha256": "7017ff1b09fe1fa74e46c4cb99122fe45d495e1f1f7a125a7cd3ace0888be456",
+      "url": "https://www.ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='ADH_IDHM')"
+    },
     "rais/RAIS_ESTAB_PUB_2025.7z": {
       "ano_ref": 2025,
       "cobertura": "BR",
@@ -122,6 +140,24 @@
       "orgao": "MTE / PDET",
       "sha256": "6844c2fbd7b9e74354f616a18180001f5d5e4cc73425128a9008a217a49f4457",
       "url": "ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2025/RAIS_ESTAB_PUB.7z"
+    },
+    "ssp_sp/sp_ocorrencias_anuais_2025.json": {
+      "ano_ref": 2025,
+      "cobertura": "SP",
+      "fetched_at": "2026-11-28T00:08:33.551335Z",
+      "licenca": "Dados Abertos SSP-SP",
+      "orgao": "SSP-SP",
+      "sha256": "18449ba942a8f06735b06a5e470e6793c9f441535899ab7379979a7533cec19a",
+      "url": "https://www.ssp.sp.gov.br/v1/Municipios/RecuperaMunicipios"
+    },
+    "tse/detalhe_votacao_munzona_2024.zip": {
+      "ano_ref": 2024,
+      "cobertura": "BR",
+      "fetched_at": "2026-11-28T00:08:33.513794Z",
+      "licenca": "Dados Abertos TSE",
+      "orgao": "TSE",
+      "sha256": "c39c4cb0907bacec1251526200641d33be226c4c4af2ac5d96bed30613608947",
+      "url": "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2024.zip"
     }
   }
 }

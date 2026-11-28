@@ -105,6 +105,18 @@ const PALETTES: Record<string, { atlas: readonly string[]; civ: readonly string[
     atlas: ["#1e2524", "#334d47", "#0f766e", "#14b8a6", "#99f6e4"],
     civ: ["#28302e", "#3d5e57", "#188a80", "#22c7b4", "#a8faf0"],
   },
+  loyalty: {
+    atlas: ["#1e2436", "#2c4975", "#3b82f6", "#818cf8", "#e0e7ff"],
+    civ: ["#262d42", "#35568a", "#4b8df5", "#8f99fa", "#e6ecff"],
+  },
+  development: {
+    atlas: ["#1b2928", "#215c54", "#10b981", "#6ee7b7", "#d1fae5"],
+    civ: ["#243635", "#296b62", "#17c78c", "#7aedc0", "#dcfff0"],
+  },
+  unrest: {
+    atlas: ["#1f1c26", "#5c2734", "#991b1b", "#ef4444", "#fecaca"],
+    civ: ["#292430", "#6b2e3d", "#ad2424", "#f55353", "#ffd6d6"],
+  },
 };
 
 export function getPaletteColors(palette: string, mode: VisualMode): readonly string[] {
@@ -164,6 +176,15 @@ export function formatPtBrCompact(value: number, unit: string): string {
       return `${(value / 1e3).toFixed(2).replace(".", ",")} GW`;
     }
     return `${value.toFixed(1).replace(".", ",")} MW`;
+  }
+  if (unit === "%") {
+    return `${value.toFixed(1).replace(".", ",")}%`;
+  }
+  if (unit === "índice") {
+    return value.toFixed(3).replace(".", ",");
+  }
+  if (unit === "/100k") {
+    return `${value.toFixed(1).replace(".", ",")}/100k`;
   }
   if (value >= 1e6) {
     return `${(value / 1e6).toFixed(2).replace(".", ",")}M`;
@@ -535,6 +556,15 @@ export interface CityInfra {
   readonly portos: number;
 }
 
+export interface CitySensitive {
+  readonly participacao_pct: number;
+  readonly idhm: number | null;
+  readonly gini: number | null;
+  readonly homicidio_100k: number;
+  readonly roubo_100k: number;
+  readonly baixa_populacao: boolean;
+}
+
 export interface CityProfile {
   readonly cd_mun: string;
   readonly nome: string;
@@ -550,6 +580,7 @@ export interface CityProfile {
   readonly education: CityEducation;
   readonly health: CityHealth;
   readonly infra: CityInfra;
+  readonly sensitive?: CitySensitive;
 }
 
 export interface CitiesDataset {
@@ -591,6 +622,7 @@ export function parseCitiesDataset(raw: unknown): CitiesDataset {
     const ed = isRecord(entry.education) ? entry.education : {};
     const hl = isRecord(entry.health) ? entry.health : {};
     const inf = isRecord(entry.infra) ? entry.infra : {};
+    const sens = isRecord(entry.sensitive) ? entry.sensitive : null;
 
     return {
       cd_mun: entry.cd_mun,
@@ -624,9 +656,77 @@ export function parseCitiesDataset(raw: unknown): CitiesDataset {
         potencia_mw: Number(inf.potencia_mw ?? 0),
         portos: Number(inf.portos ?? 0),
       },
+      ...(sens
+        ? {
+            sensitive: {
+              participacao_pct: Number(sens.participacao_pct ?? 0),
+              idhm: nullableNumber(sens.idhm),
+              gini: nullableNumber(sens.gini),
+              homicidio_100k: Number(sens.homicidio_100k ?? 0),
+              roubo_100k: Number(sens.roubo_100k ?? 0),
+              baixa_populacao: Boolean(sens.baixa_populacao),
+            },
+          }
+        : {}),
     };
   });
   return { uf: raw.uf, cities };
+}
+
+export interface ExplorerRow {
+  readonly cd_mun: string;
+  readonly nome: string;
+  readonly x: number;
+  readonly y: number;
+  readonly hex_idx: number;
+  readonly pop: number;
+  readonly pib_mil: number;
+  readonly pib_pc: number;
+  readonly vinculos: number;
+  readonly ideb_medio: number | null;
+  readonly leitos: number;
+  readonly idhm: number | null;
+  readonly gini: number | null;
+  readonly participacao_pct: number;
+  readonly homicidio_100k: number;
+  readonly roubo_100k: number;
+  readonly baixa_populacao: boolean;
+}
+
+export interface ExplorerDataset {
+  readonly uf: string;
+  readonly municipios: readonly ExplorerRow[];
+}
+
+export function parseExplorerDataset(raw: unknown): ExplorerDataset {
+  if (!isRecord(raw) || typeof raw.uf !== "string" || !Array.isArray(raw.municipios)) {
+    throw new Error("explorer.json inválido");
+  }
+  const municipios: ExplorerRow[] = raw.municipios.map((entry) => {
+    if (!isRecord(entry) || typeof entry.cd_mun !== "string" || typeof entry.nome !== "string") {
+      throw new Error("Linha inválida em explorer.json");
+    }
+    return {
+      cd_mun: entry.cd_mun,
+      nome: entry.nome,
+      x: Number(entry.x ?? 500),
+      y: Number(entry.y ?? 350),
+      hex_idx: Number(entry.hex_idx ?? -1),
+      pop: Number(entry.pop ?? 0),
+      pib_mil: Number(entry.pib_mil ?? 0),
+      pib_pc: Number(entry.pib_pc ?? 0),
+      vinculos: Number(entry.vinculos ?? 0),
+      ideb_medio: nullableNumber(entry.ideb_medio),
+      leitos: Number(entry.leitos ?? 0),
+      idhm: nullableNumber(entry.idhm),
+      gini: nullableNumber(entry.gini),
+      participacao_pct: Number(entry.participacao_pct ?? 0),
+      homicidio_100k: Number(entry.homicidio_100k ?? 0),
+      roubo_100k: Number(entry.roubo_100k ?? 0),
+      baixa_populacao: Boolean(entry.baixa_populacao),
+    };
+  });
+  return { uf: raw.uf, municipios };
 }
 
 export function tryParseOptional<T>(raw: unknown, parser: (value: unknown) => T): T | null {
@@ -637,5 +737,6 @@ export function tryParseOptional<T>(raw: unknown, parser: (value: unknown) => T)
     return null;
   }
 }
+
 
 

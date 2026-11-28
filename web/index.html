@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='16,2 28,9 28,23 16,30 4,23 4,9' fill='%23d4a226' stroke='%230a1019' stroke-width='2'/%3E%3C/svg%3E" />
     <title>civ-brasil — São Paulo em linguagem de Civilization</title>
   </head>
   <body>
@@ -16,6 +17,9 @@
         <div class="top-actions">
           <button id="btn-search" class="action-btn" type="button" title="Buscar município (/)">
             Buscar <kbd>/</kbd>
+          </button>
+          <button id="btn-explorer" class="action-btn" type="button" title="Abrir Explorer 645 municípios (E)">
+            Explorer <kbd>E</kbd>
           </button>
           <button id="btn-mode" class="action-btn" type="button" title="Alternar modo visual (M)">
             Modo: Atlas
@@ -69,6 +73,8 @@
         <ul id="search-results" class="search-results"></ul>
       </div>
     </div>
+
+    <div id="explorer-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Explorer de municípios"></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -103,3 +103,43 @@ lenses:
     palette: infra
     note: Soma da potência instalada (MW) das usinas em operação alocadas diretamente ao hex H3 de sua coordenada; pontos inválidos registrados no relatório de rejeitados.
 
+  - id: lealdade
+    civ_name: Lealdade
+    br_name: Participação Eleitoral (%)
+    source_id: tse_2024
+    source_label: TSE · Eleições Municipais 2024 (1º Turno)
+    ano_ref: 2024
+    column: participacao_pct
+    kind: rate
+    unit: "%"
+    scale: quantile
+    palette: loyalty
+    note: Percentual de comparecimento sobre o eleitorado apto no 1º turno de 2024 (TSE). Métrica estritamente cívica de comparecimento, sem juízo ou comparação partidária.
+
+  - id: desenvolvimento
+    civ_name: Desenvolvimento
+    br_name: IDHM (Atlas Brasil 2010)
+    source_id: ipea_idhm_2010
+    source_label: IPEA / PNUD / FJP · Atlas Brasil
+    ano_ref: 2010
+    column: idhm
+    kind: rate
+    unit: índice
+    scale: quantile
+    palette: development
+    note: Índice de Desenvolvimento Humano Municipal referente ao Censo 2010 (última série oficial municipal completa); reconciliado por média ponderada pela população (Gini 2010 no Explorer).
+
+  - id: descontentamento
+    civ_name: Descontentamento
+    br_name: Homicídios por 100 mil hab.
+    source_id: ssp_sp_2025
+    source_label: SSP-SP · Ocorrências Anuais Registradas
+    ano_ref: 2025
+    column: homicidio_100k
+    kind: rate
+    unit: /100k
+    scale: quantile
+    palette: unrest
+    note: Taxa de homicídios dolosos registrados por 100 mil habitantes (SSP-SP 2025). Sujeita a subnotificação de boletins e volatilidade em municípios com menos de 20 mil habitantes (flag baixa_populacao no Explorer).
+
+

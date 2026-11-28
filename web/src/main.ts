@@ -4,6 +4,7 @@ import { renderCityView } from "./city-view/cityView";
 import {
   normalizeSearchText,
   parseCitiesDataset,
+  parseExplorerDataset,
   parseLensIndex,
   parsePointsDataset,
   parsePositionalLens,
@@ -11,6 +12,7 @@ import {
   searchMunicipalities,
   tryParseOptional,
   type CityProfile,
+  type ExplorerDataset,
   type LensIndex,
   type LensMetadata,
   type PointsDataset,
@@ -18,6 +20,7 @@ import {
   type UfGridDataset,
   type VisualMode,
 } from "./data";
+import { mountExplorer } from "./explorer/explorer";
 import { HexMapRenderer, type CameraState } from "./renderer";
 import {
   buildTooltipHtml,
@@ -31,6 +34,7 @@ const GRID_URL = "/data/sp/grid.json";
 const LENS_INDEX_URL = "/data/sp/lentes/index.json";
 const POINTS_URL = "/data/sp/pontos.json";
 const CITIES_URL = "/data/sp/cities.json";
+const EXPLORER_URL = "/data/sp/explorer.json";
 
 type PointsMode = "auto" | "on" | "off";
 
@@ -69,11 +73,13 @@ async function bootstrap(): Promise<void> {
   const btnMode = document.getElementById("btn-mode");
   const btnBanners = document.getElementById("btn-banners");
   const btnPoints = document.getElementById("btn-points");
+  const btnExplorer = document.getElementById("btn-explorer");
   const btnPng = document.getElementById("btn-png");
   const btnReset = document.getElementById("btn-reset");
   const btnSearch = document.getElementById("btn-search");
   const btnCloseSearch = document.getElementById("btn-close-search");
   const searchModal = document.getElementById("search-modal");
+  const explorerModal = document.getElementById("explorer-modal");
   const searchInput = document.getElementById("search-input");
   const searchResults = document.getElementById("search-results");
 
@@ -89,11 +95,13 @@ async function bootstrap(): Promise<void> {
     !btnMode ||
     !btnBanners ||
     !btnPoints ||
+    !btnExplorer ||
     !btnPng ||
     !btnReset ||
     !btnSearch ||
     !btnCloseSearch ||
     !searchModal ||
+    !explorerModal ||
     !(searchInput instanceof HTMLInputElement) ||
     !searchResults
   ) {
@@ -108,6 +116,8 @@ async function bootstrap(): Promise<void> {
   let activeLensMeta: LensMetadata;
   let activeLensData: PositionalLensData;
   let pointsData: PointsDataset | null = null;
+  let explorerData: ExplorerDataset | null = null;
+  let explorerMounted = false;
   const cityByCd = new Map<string, CityProfile>();
   const cityByNormName = new Map<string, CityProfile>();
 
@@ -189,11 +199,12 @@ async function bootstrap(): Promise<void> {
   };
 
   try {
-    const [rawGrid, rawIndex, rawPoints, rawCities] = await Promise.all([
+    const [rawGrid, rawIndex, rawPoints, rawCities, rawExplorer] = await Promise.all([
       fetchJson(GRID_URL),
       fetchJson(LENS_INDEX_URL),
       fetchJson(POINTS_URL).catch(() => null),
       fetchJson(CITIES_URL).catch(() => null),
+      fetchJson(EXPLORER_URL).catch(() => null),
     ]);
     grid = parseUfGridDataset(rawGrid);
     lensIndex = parseLensIndex(rawIndex);
@@ -205,6 +216,7 @@ async function bootstrap(): Promise<void> {
         cityByNormName.set(normalizeSearchText(c.nome), c);
       }
     }
+    explorerData = tryParseOptional(rawExplorer, parseExplorerDataset);
     renderYieldsBar(yieldsBar, grid);
     renderer.resize();
     await loadLens(readInitialLensId(lensIndex));
@@ -397,6 +409,40 @@ async function bootstrap(): Promise<void> {
     searchInput.focus();
   };
 
+  const closeExplorer = (): void => {
+    explorerModal.classList.add("hidden");
+  };
+
+  const openExplorer = (): void => {
+    if (!explorerData) return;
+    if (!explorerMounted) {
+      mountExplorer(
+        explorerModal,
+        explorerData,
+        (row) => {
+          if (row.hex_idx >= 0) selectedIndex = row.hex_idx;
+          camera.x = row.x;
+          camera.y = row.y;
+          camera.zoom = 2.8;
+          closeExplorer();
+          const profile = cityByCd.get(row.cd_mun) ?? cityByNormName.get(normalizeSearchText(row.nome));
+          if (profile) {
+            openCityView(profile);
+          }
+          redraw();
+        },
+        closeExplorer,
+      );
+      explorerMounted = true;
+    }
+    explorerModal.classList.remove("hidden");
+  };
+
+  btnExplorer.addEventListener("click", openExplorer);
+  explorerModal.addEventListener("click", (e) => {
+    if (e.target === explorerModal) closeExplorer();
+  });
+
   btnSearch.addEventListener("click", openSearch);
   btnCloseSearch.addEventListener("click", () => searchModal.classList.add("hidden"));
   searchModal.addEventListener("click", (e) => {
@@ -405,13 +451,24 @@ async function bootstrap(): Promise<void> {
   searchInput.addEventListener("input", () => renderSearchList(searchInput.value));
 
   window.addEventListener("keydown", (e) => {
-    if (document.activeElement === searchInput) {
-      if (e.key === "Escape") searchModal.classList.add("hidden");
+    const target = e.target;
+    const isInput =
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement;
+    if (isInput) {
+      if (e.key === "Escape") {
+        searchModal.classList.add("hidden");
+        closeExplorer();
+      }
       return;
     }
     if (e.key === "/" || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) {
       e.preventDefault();
       openSearch();
+    } else if (e.key.toLowerCase() === "e") {
+      e.preventDefault();
+      openExplorer();
     } else if (e.key.toLowerCase() === "m") {
       toggleMode();
     } else if (e.key.toLowerCase() === "l") {
@@ -420,7 +477,9 @@ async function bootstrap(): Promise<void> {
       const next = lensIndex.lenses[(idx + step + lensIndex.lenses.length) % lensIndex.lenses.length];
       if (next) void loadLens(next.id);
     } else if (e.key === "Escape") {
-      if (!searchModal.classList.contains("hidden")) {
+      if (!explorerModal.classList.contains("hidden")) {
+        closeExplorer();
+      } else if (!searchModal.classList.contains("hidden")) {
         searchModal.classList.add("hidden");
       } else {
         closeCityView();

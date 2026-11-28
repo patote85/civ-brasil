@@ -173,9 +173,28 @@ export function renderCityView(
   infraSection.appendChild(infraGrid);
   container.appendChild(infraSection);
 
+  if (city.sensitive) {
+    const sensSection = makeSection("Indicadores Cívicos, IDHM (2010) & SSP-SP (2025)");
+    const sensGrid = document.createElement("div");
+    sensGrid.className = "city-stats-grid";
+    const idhmStr =
+      city.sensitive.idhm === null ? "—" : city.sensitive.idhm.toFixed(3).replace(".", ",");
+    const giniStr =
+      city.sensitive.gini === null ? "—" : city.sensitive.gini.toFixed(3).replace(".", ",");
+    sensGrid.append(
+      makeStatCard("Participação TSE 2024", formatPtBrCompact(city.sensitive.participacao_pct, "%")),
+      makeStatCard("IDHM (2010)", idhmStr),
+      makeStatCard("Gini (2010)", giniStr),
+      makeStatCard("Homicídios/100k", formatPtBrCompact(city.sensitive.homicidio_100k, "/100k")),
+      makeStatCard("Roubos/100k", formatPtBrCompact(city.sensitive.roubo_100k, "/100k")),
+    );
+    sensSection.appendChild(sensGrid);
+    container.appendChild(sensSection);
+  }
+
   const footer = document.createElement("footer");
   footer.className = "city-footer";
   footer.textContent =
-    "Fontes: IBGE Censo 2022 · IBGE PIB 2023 · MTE RAIS 2025 · INEP 2024/2025 · DataSUS CNES 2025 · EPE/ANEEL · InfraSA/ANTAQ.";
+    "Fontes: IBGE Censo 2022 · IBGE PIB 2021 · MTE RAIS 2025 · INEP 2024/2025 · CNES 2025 · EPE/ANEEL · InfraSA · TSE 2024 · IPEA 2010 · SSP-SP 2025.";
   container.appendChild(footer);
 }
